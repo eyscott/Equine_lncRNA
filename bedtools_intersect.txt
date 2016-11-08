@@ -1,0 +1,20 @@
+tr '\r' '\n' < novel_I.bed > novel_I_unix.bed 
+tr '\r' '\n' < novel_II.bed > novel_II_unix.bed 
+tr '\r' '\n' < novel_III.bed > novel_III_unix.bed 
+tr '\r' '\n' < merged_extended.bed > merged_extended_unix.bed
+tr '\r' '\n' < merged_5.bed > merged_5_unix.bed
+tr '\r' '\n' < merged_3.bed > merged_3_unix.bed
+
+module load BEDTools/2.24.0
+
+bedtools intersect -c -a novel_I.bed -b merged_5.bed -sorted > novel_I_5.bed
+bedtools intersect -c -a novel_II.bed -b merged_5.bed -sorted > novel_II_5.bed
+bedtools intersect -c -a novel_III.bed -b merged_5.bed -sorted > novel_III_5.bed
+
+bedtools intersect -c -a novel_I.bed -b merged_3.bed -sorted > novel_I_3.bed
+bedtools intersect -c -a novel_II.bed -b merged_3.bed -sorted > novel_II_3.bed
+bedtools intersect -c -a novel_III.bed -b merged_3.bed -sorted > novel_III_3.bed
+
+bedtools intersect -v -a novel_I.bed -b merged_extended.bed -sorted > novel_I_ex.bed
+bedtools intersect -v -a novel_II.bed -b merged_extended.bed -sorted > novel_II_ex.bed
+bedtools intersect -v -a novel_III.bed -b merged_extended.bed -sorted > novel_III_ex.bed
