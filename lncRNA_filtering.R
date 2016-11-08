@@ -39,6 +39,10 @@ novel_II_bed <- novel_II_bed[ ,c("V4","V2","V3","transcriptName","V5","V6","V7",
 names(novel_II_bed)[4]<-paste("V4")
 novel_III_bed <- novel_III_bed[ ,c("V4","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
 names(novel_III_bed)[4]<-paste("V4")
+#order chr properly
+novel_I_bed <- novel_I_bed[with(novel_I_bed, order(V4, V2)), ]
+novel_II_bed <- novel_II_bed[with(novel_II_bed, order(V4, V2)), ]
+novel_III_bed <- novel_III_bed[with(novel_III_bed, order(V4, V2)), ]
 
 #write the bedfiles
 write.table(novel_I_bed, "novel_I.bed", row.names=F, col.names=F)
@@ -63,10 +67,13 @@ write.table(merged_bed_extended, "merged_extended.bed", row.names=F, col.names=F
 merged_bed["minus"]<- (merged_bed[ ,2] - 1000)
 merged_bed_5 <- merged_bed[ ,c("V1","minus","V2","V4","V5","V6","V7","V8","V9","V10","V11","V12")]
 merged_bed_5$minus[merged_bed_5$minus < 0] <- 0
+#order chr properly
+merged_bed_5 <- merged_bed_5[with(merged_bed_5, order(V1, minus)), ]
 write.table(merged_bed_5, "merged_5.bed", row.names=F, col.names=F)
 #Now to isolate the +1000 (3'UTR)
 merged_bed["add"]<- (merged_bed[ ,3] + 1000)
 merged_bed_3 <- merged_bed[ ,c("V1","V3","add","V4","V5","V6","V7","V8","V9","V10","V11","V12")]
+merged_bed_3 <- merged_bed_3[with(merged_bed_3, order(V1, V3)), ]
 write.table(merged_bed_3, "merged_3.bed", row.names=F, col.names=F)
 
 ##use bedtool intersect function!
