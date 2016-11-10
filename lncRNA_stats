@@ -45,22 +45,22 @@ meanGC_novel_III<-mean(novel_III_GC[["V14"]])
 meanGC_intergenic<-mean(intergenic_GC[["V14"]])
 
 #calculating total length in bp of lncRNA
-sum_novel_I<-sum(novel_I[["length"]])#41724672
-sum_novel_II<-sum(novel_II[["length"]])#37447051
-sum_novel_III<-sum(novel_III[["length"]])#14928880
-sum_intergenic<-sum(intergenic[["length"]])#39200610
-sum_total <-sum(overallExpression[["length"]]) #982439642
+sum_novel_I<-sum(novel_I[["length"]])
+sum_novel_II<-sum(novel_II[["length"]])
+sum_novel_III<-sum(novel_III[["length"]])
+sum_intergenic<-sum(intergenic[["length"]])
+sum_total <-sum(overallExpression[["length"]]) 
 #calculating transcriptome coverage with overlap detected by bedtool intersect
 novel_I_over <- read.table("intersect_novel_I.bed", header=F, stringsAsFactors=F)
 novel_II_over <- read.table("intersect_novel_II.bed", header=F, stringsAsFactors=F)
 novel_III_over <- read.table("intersect_novel_III.bed", header=F, stringsAsFactors=F)
 intergenic_over <- read.table("intersect_intergenic.bed", header=F, stringsAsFactors=F)
-sum_over_novel_I<-sum(novel_I_over[["V25"]])#1087353080
-sum_over_novel_II<-sum(novel_II_over[["V25"]])#299741401
-sum_over_novel_III<-sum(novel_III_over[["V25"]])#13906413
-sum_over_intergenic<-sum(intergenic_over[["V25"]])#23991390
+sum_over_novel_I<-sum(novel_I_over[["V25"]])
+sum_over_novel_II<-sum(novel_II_over[["V25"]])
+sum_over_novel_III<-sum(novel_III_over[["V25"]])
+sum_over_intergenic<-sum(intergenic_over[["V25"]])
 #calculating % of overlap
-cov_novel_I <- (sum_novel_I/sum_total)#0.04247047
-cov_novel_II <- (sum_novel_II/sum_total)#0.03811639
-cov_novel_III <- (sum_novel_III/sum_total)#0.01519572
-cov_intergenic<- (sum_intergenic/sum_total)# 0.03990129
+cov_novel_I <- (sum_novel_I/sum_total)
+cov_novel_II <- (sum_novel_II/sum_total)
+cov_novel_III <- (sum_novel_III/sum_total)
+cov_intergenic<- (sum_intergenic/sum_total)
