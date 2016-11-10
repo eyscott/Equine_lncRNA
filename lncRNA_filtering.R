@@ -35,15 +35,40 @@ novel_I_bed <- merge(novel_I_f1, unfiltered_bed, by.x="transcriptName",by.y="V4"
 novel_II_bed <- merge(novel_II_f1, unfiltered_bed, by.x="transcriptName",by.y="V4" )
 novel_III_bed <- merge(novel_III_f1, unfiltered_bed, by.x="transcriptName",by.y="V4" )
 intergenic_bed <- merge(intergenic_f1, unfiltered_bed, by.x="transcriptName",by.y="V4" )
+
+#applying more stringent criteria to single exon transcripts
+##V10 in bed is exon number
+single_novel_I <- subset(novel_I_bed, c(calcTPM < 3 & length < 1000 & V10 <2))
+single_novel_II <- subset(novel_II_bed, c(calcTPM < 3 & length < 1000 & V10 <2))
+single_novel_III <- subset(novel_III_bed, c(calcTPM < 3 & length < 1000 & V10 <2))
+single_intergenic <- subset(intergenic_bed, c(calcTPM < 3 & length < 1000 & V10 <2))
+#remove this subset from bed file
+require(dplyr)
+novel_I_bed <- anti_join(novel_I_bed,single_novel_I, by="transcriptName")
+novel_II_bed <- anti_join(novel_II_bed,single_novel_II, by="transcriptName")
+novel_III_bed <- anti_join(novel_III_bed,single_novel_III, by="transcriptName")
+intergenic_bed <- anti_join(intergenic_bed,single_intergenic, by="transcriptName")
+#############
+
 #calculate some quick stats
-mean_TPM_I<-mean(novel_I_f1[["calcTPM"]])
-mean_TPM_II<-mean(novel_II_f1[["calcTPM"]])
-mean_TPM_III<-mean(novel_III_f1[["calcTPM"]])
-mean_TPM_intergenic<-mean(intergenic_f1[["calcTPM"]])
-mean_length_I<-mean(novel_I_f1[["length"]])
-mean_length_II<-mean(novel_II_f1[["length"]])
-mean_length_III<-mean(novel_III_f1[["length"]])
-mean_length_intergenic<-mean(intergenic_f1[["length"]])
+mean_TPM_I<-mean(novel_I_bed[["calcTPM"]])
+mean_TPM_II<-mean(novel_II_bed[["calcTPM"]])
+mean_TPM_III<-mean(novel_III_bed[["calcTPM"]])
+mean_TPM_intergenic<-mean(intergenic_bed[["calcTPM"]])
+mean_length_I<-mean(novel_I_bed[["length"]])
+mean_length_II<-mean(novel_II_bed[["length"]])
+mean_length_III<-mean(novel_III_bed[["length"]])
+mean_length_intergenic<-mean(intergenic_bed[["length"]])
+total_length_I <-sum(novel_I_bed[["length"]])
+total_length_II <-sum(novel_II_bed[["length"]])
+total_length_III <-sum(novel_III_bed[["length"]])
+total_length_intergenic <-sum(intergenic_bed[["length"]])
+sum_total <- sum(overallExpression[["length"]])
+#calculating % of overlap
+cov_novel_I <- (total_length_I/sum_total)
+cov_novel_II <- (total_length_II/sum_total)
+cov_novel_III <- (total_length_III/sum_total)
+cov_intergenic<- (total_length_intergenic/sum_total)
 
 #reorder for proper bed format
 novel_I_bed <- novel_I_bed[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
@@ -61,7 +86,7 @@ novel_III_bed <- novel_III_bed[with(novel_III_bed, order(V1, V2)), ]
 intergenic_bed <- intergenic_bed[with(intergenic_bed, order(V1, V2)), ]
 unfiltered_bed <- unfiltered_bed[with(unfiltered_bed, order(V1, V2)), ]
 #write the bedfiles
-
+setwd("~/Desktop/lncRNA")
 write.table(novel_I_bed, "novel_I.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_II_bed, "novel_II.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_III_bed, "novel_III.bed", row.names=F, col.names=F, quote=F, sep = "\t")
@@ -110,11 +135,11 @@ intergenic_5 <- read.table("intergenic_5.bed", header=F, stringsAsFactors=F)
 intergenic_3 <- read.table("intergenic_3.bed", header=F, stringsAsFactors=F)
 intergenic_rest <- read.table("intergenic_ex.bed", header=F, stringsAsFactors=F)
 
-novel_I_5_sum <- sum(novel_I_5[["V13"]]) #14406
-novel_I_3_sum <- sum(novel_I_3[["V13"]]) #14691 
-novel_II_5_sum <- sum(novel_II_5[["V13"]]) #4454 
-novel_II_3_sum <- sum(novel_II_3[["V13"]]) #4226
-novel_III_5_sum <- sum(novel_III_5[["V13"]]) #1794
-novel_III_3_sum <- sum(novel_III_3[["V13"]]) #1821
-intergenic_5_sum <- sum(intergenic_5[["V13"]]) #7336
-intergenic_3_sum <- sum(intergenic_3[["V13"]]) #6998
+novel_I_5_sum <- sum(novel_I_5[["V13"]])
+novel_I_3_sum <- sum(novel_I_3[["V13"]])  
+novel_II_5_sum <- sum(novel_II_5[["V13"]]) 
+novel_II_3_sum <- sum(novel_II_3[["V13"]]) 
+novel_III_5_sum <- sum(novel_III_5[["V13"]])
+novel_III_3_sum <- sum(novel_III_3[["V13"]])
+intergenic_5_sum <- sum(intergenic_5[["V13"]]) 
+intergenic_3_sum <- sum(intergenic_3[["V13"]]) 
