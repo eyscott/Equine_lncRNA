@@ -1,0 +1,66 @@
+#lncRNA quality stats from Transdecoder
+setwd("~/Desktop/lncRNA")
+#interpretting the Transdecoder stats
+#getting sequence quality
+setwd("~/Desktop/lncRNA/intergenic.fa.transdecoder_dir")
+intergenic_seqQ <- read.table("hexamer.scores", header=F, stringsAsFactors=F)
+setwd("~/Desktop/lncRNA/novel_I.fa.transdecoder_dir")
+novel_I_seqQ <- read.table("hexamer.scores", header=F, stringsAsFactors=F)
+setwd("~/Desktop/lncRNA/novel_II.fa.transdecoder_dir")
+novel_II_seqQ <- read.table("hexamer.scores", header=F, stringsAsFactors=F)
+setwd("~/Desktop/lncRNA/novel_III.fa.transdecoder_dir")
+novel_III_seqQ <- read.table("hexamer.scores", header=F, stringsAsFactors=F)
+#Getting ORF quality
+setwd("~/Desktop/lncRNA/intergenic.fa.transdecoder_dir")
+intergenic_ORF <- read.table("longest_orfs.cds.scores", header=F, stringsAsFactors=F)
+setwd("~/Desktop/lncRNA/novel_I.fa.transdecoder_dir")
+novel_I_ORF <- read.table("longest_orfs.cds.scores", header=F, stringsAsFactors=F)
+setwd("~/Desktop/lncRNA/novel_II.fa.transdecoder_dir")
+novel_II_ORF <- read.table("longest_orfs.cds.scores", header=F, stringsAsFactors=F)
+setwd("~/Desktop/lncRNA/novel_III.fa.transdecoder_dir")
+novel_III_ORF <- read.table("longest_orfs.cds.scores", header=F, stringsAsFactors=F)
+
+#calculating seq quality based on hexamer, k-mer
+meanQ_novel_I<-mean(novel_I_seqQ[["V2"]])
+meanQ_novel_II<-mean(novel_II_seqQ[["V2"]])
+meanQ_novel_III<-mean(novel_III_seqQ[["V2"]])
+meanQ_intergenic<-mean(intergenic_seqQ[["V2"]])
+
+#calculating ORF quality based on likely hood ratio test
+meanORF_novel_I<-mean(novel_I_ORF[["V2"]])
+meanORF_novel_II<-mean(novel_II_ORF[["V2"]])
+meanORF_novel_III<-mean(novel_III_ORF[["V2"]])
+meanORF_intergenic<-mean(intergenic_ORF[["V2"]])
+
+#compiling GC% after using bedtools nuc (V13=AT%, V14=GC%)
+setwd("~/Desktop/lncRNA")
+novel_I_GC <- read.table("novel_I_GC.bed", header=F, stringsAsFactors=F)
+novel_II_GC <- read.table("novel_II_GC.bed", header=F, stringsAsFactors=F)
+novel_III_GC <- read.table("novel_III_GC.bed", header=F, stringsAsFactors=F)
+intergenic_GC <- read.table("intergenic_GC.bed", header=F, stringsAsFactors=F)
+#calculating mean GC%
+meanGC_novel_I<-mean(novel_I_GC[["V14"]])
+meanGC_novel_II<-mean(novel_II_GC[["V14"]])
+meanGC_novel_III<-mean(novel_III_GC[["V14"]])
+meanGC_intergenic<-mean(intergenic_GC[["V14"]])
+
+#calculating total length in bp of lncRNA
+sum_novel_I<-sum(novel_I[["length"]])#41724672
+sum_novel_II<-sum(novel_II[["length"]])#37447051
+sum_novel_III<-sum(novel_III[["length"]])#14928880
+sum_intergenic<-sum(intergenic[["length"]])#39200610
+sum_total <-sum(overallExpression[["length"]]) #982439642
+#calculating transcriptome coverage with overlap detected by bedtool intersect
+novel_I_over <- read.table("intersect_novel_I.bed", header=F, stringsAsFactors=F)
+novel_II_over <- read.table("intersect_novel_II.bed", header=F, stringsAsFactors=F)
+novel_III_over <- read.table("intersect_novel_III.bed", header=F, stringsAsFactors=F)
+intergenic_over <- read.table("intersect_intergenic.bed", header=F, stringsAsFactors=F)
+sum_over_novel_I<-sum(novel_I_over[["V25"]])#1087353080
+sum_over_novel_II<-sum(novel_II_over[["V25"]])#299741401
+sum_over_novel_III<-sum(novel_III_over[["V25"]])#13906413
+sum_over_intergenic<-sum(intergenic_over[["V25"]])#23991390
+#calculating % of overlap
+cov_novel_I <- (sum_novel_I/sum_total)#0.04247047
+cov_novel_II <- (sum_novel_II/sum_total)#0.03811639
+cov_novel_III <- (sum_novel_III/sum_total)#0.01519572
+cov_intergenic<- (sum_intergenic/sum_total)# 0.03990129
