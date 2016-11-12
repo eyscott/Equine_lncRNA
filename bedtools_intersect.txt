@@ -1,4 +1,4 @@
-##observing overlap of lncRNA with transcriptome
+##observing overlap of lncRNA with transcriptome...done in R
 #minus 1 kb and add 1 kb to end of each gene for merged transcriptome
 merged_bed <- read.table("mergedTrans.bed", header=F,stringsAsFactors=F )
 merged_bed["minus"] <- (merged_bed[ ,2]-1000)
@@ -25,7 +25,8 @@ merged_bed_3 <- merged_bed[ ,c("V1","V3","add","V4","V5","V6","V7","V8","V9","V1
 merged_bed_3 <- merged_bed_3[with(merged_bed_3, order(V1, V3)), ]
 write.table(merged_bed_3, "merged_3.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
-#now use bedtools
+#Done on server: .sh file
+##now use bedtools
 bedtools intersect -c -a novel_I.bed -b merged_5.bed -sorted > novel_I_5.bed
 bedtools intersect -c -a novel_II.bed -b merged_5.bed -sorted > novel_II_5.bed
 bedtools intersect -c -a novel_III.bed -b merged_5.bed -sorted > novel_III_5.bed
