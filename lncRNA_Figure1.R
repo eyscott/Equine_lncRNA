@@ -5,16 +5,7 @@
 #B: chr plot
 #combine all lncRNA db
 setwd("~/Desktop/lncRNA")
-novel_I <- read.table("novel_I_f3.bed", header=F, stringsAsFactors=F)
-novel_II <- read.table("novel_II_f3.bed", header=F, stringsAsFactors=F)
-novel_III <- read.table("novel_III_f3.bed", header=F, stringsAsFactors=F)
-intergenic <- read.table("intergenic_f3.bed", header=F, stringsAsFactors=F)
-lncRNA_all <-rbind(data.frame(id="novel_I",novel_I),
-                   data.frame(id="novel_II",novel_II),
-                   data.frame(id="novel_III",novel_III),
-                   data.frame(id="intergenic",intergenic))
-
-lncRNA_all <- read.table("lncRNA_final8247_IDs", header=F, stringsAsFactors=F)
+lncRNA_all <- read.table("lncRNA_final21032_IDs", header=F, stringsAsFactors=F)
 #making chr plot
 library(ggplot2)
 keeps <- c("V1", "V2", "V3", "V4","V5")
@@ -31,7 +22,7 @@ m <- ggplot(data=lncRNA_keeps, aes(V2)) + geom_bar(aes(V2,group=V1,fill=V1),stat
   theme(legend.text = element_text(colour="black", size = 16)) +
   theme(axis.text = element_text(colour="black", size = 14)) +
   theme(axis.title = element_text(colour="black", size = 16)) +
-  geom_line(data=subset(chromSizes,chr %in% chrs), aes(x=chr, y= size / 150000, group=1), colour="blue")
+  geom_line(data=subset(chromSizes,chr %in% chrs), aes(x=chr, y= size / 80000, group=1), colour="blue")
 
 m
 
@@ -167,7 +158,13 @@ ggplot(novel_III_total_exp,aes(x=factor(1),weight=calcTPM,fill=V1)) +
   theme(axis.text = element_text(colour="black", size = 14)) +
   scale_fill_brewer(palette = "Set3",
                     labels=c("F1 rejects","F3 rejects","F4 rejects","lncRNA"))
-
+#Intergenic has F2 rejects, which the other categories did not because they were 
+#already filtered for size in the transcriptome pipeline, bc of this colours 
+#must be assigned so that lncRNA wedge has same colour in all pies.
+library(RColorBrewer)
+my.cols <- brewer.pal(5, "Set3")
+my.cols# "#8DD3C7" "#FFFFB3" "#BEBADA" "#FB8072" "#80B1D3"
+my.cols <- c( "#8DD3C7", "#FFFFB3", "#BEBADA", "#80B1D3","#FB8072")
 ggplot(intergenic_total_exp,aes(x=factor(1),weight=calcTPM,fill=V1)) + 
   geom_bar(width=1) + xlab(" ") + 
   ylab(" ") + coord_polar("y") + 
@@ -175,7 +172,7 @@ ggplot(intergenic_total_exp,aes(x=factor(1),weight=calcTPM,fill=V1)) +
   theme(legend.title = element_text(colour="black", size=18, face="bold")) +
   theme(legend.text = element_text(colour="black", size = 16)) +
   theme(axis.text = element_text(colour="black", size = 14)) +
-  scale_fill_brewer(palette = "Set3",
+  scale_fill_manual(values = my.cols,
                     labels=c("F1 rejects","F2 reject","F3 rejects","F4 rejects","lncRNA"))
 
 #calculate some quick stats
@@ -188,21 +185,21 @@ novel_III_exp_l <- subset(lncRNA_exp, V1 %in% "novel_III")
 intergenic_exp_l <- subset(lncRNA_exp, V1 %in% "intergenic")
 
 
-mean_TPM_I<-mean(novel_I_exp_l[["calcTPM"]])#6.08
-mean_TPM_II<-mean(novel_II_exp_l[["calcTPM"]])#2.47
-mean_TPM_III<-mean(novel_III_exp_l[["calcTPM"]])#1.35
-mean_TPM_intergenic<-mean(intergenic_exp_l[["calcTPM"]])#1.08
-mean_length_I<-mean(novel_I_exp_l[["length"]])#2192.6
-mean_length_II<-mean(novel_II_exp_l[["length"]])#1956.1
-mean_length_III<-mean(novel_III_exp_l[["length"]])#1933.9
-mean_length_intergenic<-mean(intergenic_exp_l[["length"]])#1512.1
-total_length_I <-sum(novel_I_exp_l[["length"]])#2014963
-total_length_II <-sum(novel_II_exp_l[["length"]])#2153683
-total_length_III <-sum(novel_III_exp_l[["length"]])#2417399
-total_length_intergenic <-sum(intergenic_exp_l[["length"]])#7525619
-sum_total <- sum(overallExpression[["length"]])#982439642
+mean_TPM_I<-mean(novel_I_exp_l[["calcTPM"]])
+mean_TPM_II<-mean(novel_II_exp_l[["calcTPM"]])
+mean_TPM_III<-mean(novel_III_exp_l[["calcTPM"]])
+mean_TPM_intergenic<-mean(intergenic_exp_l[["calcTPM"]])
+mean_length_I<-mean(novel_I_exp_l[["length"]])
+mean_length_II<-mean(novel_II_exp_l[["length"]])
+mean_length_III<-mean(novel_III_exp_l[["length"]])
+mean_length_intergenic<-mean(intergenic_exp_l[["length"]])
+total_length_I <-sum(novel_I_exp_l[["length"]])
+total_length_II <-sum(novel_II_exp_l[["length"]])
+total_length_III <-sum(novel_III_exp_l[["length"]])
+total_length_intergenic <-sum(intergenic_exp_l[["length"]])
+sum_total <- sum(overallExpression[["length"]])
 #calculating % of overlap
-cov_novel_I <- (total_length_I/sum_total)#0.002
-cov_novel_II <- (total_length_II/sum_total)#0.002
-cov_novel_III <- (total_length_III/sum_total)#0.002
-cov_intergenic<- (total_length_intergenic/sum_total)# 0.008
+cov_novel_I <- (total_length_I/sum_total)
+cov_novel_II <- (total_length_II/sum_total)
+cov_novel_III <- (total_length_III/sum_total)
+cov_intergenic<- (total_length_intergenic/sum_total)
