@@ -22,6 +22,7 @@ rownames(tissue_specific_exp) <- c()
 #combine
 tissue_specific_all_exp <- rbind(tissue_specific_intergenic_exp,tissue_specific_exp)
 ##merge with 
+setwd("~/Desktop/lncRNA")
 not_annotated <- read.table("nonannotated", header=T, stringsAsFactors=F)
 not_annotated <- merge(not_annotated,tissue_specific_all_exp, by.x="transcriptName",by.y="isoformName")
 lncRNA <- subset(not_annotated, V1 %in% c("novel_I_lncRNA","novel_II_lncRNA","novel_II_lncRNA","intergenic_lncRNA"))
@@ -64,6 +65,8 @@ Muscle <- total_exp[ ,c("id","Muscle")]
 Retina <- total_exp[ ,c("id","Retina")]
 Skin <- total_exp[ ,c("id","Skin")]
 SpinalCord <- total_exp[ ,c("id","SpinalCord")]
+# save each of these for distribution plot
+write.table(total_exp, "total_tissue_all_TPM", row.names=F, col.names=T, sep = "\t")
 #count number of lncRNA/tissue
 BS_lncRNA<-subset(BrainStem,id %in% "lncRNA")#18025
 C_lncRNA<-subset(Cerebellum,id %in% "lncRNA")#18025
@@ -144,7 +147,22 @@ pies(
     SpinalCord=nv(c(130291.6,973360.8 ,860672.0 ),c('lncRNA','uncertain','annotated'))),
   x0=c(34423,35784,33566,31633,29203,26419,29674,34636),
   y0=c(13308,14878,15640,11209,2848,3934,5417,12736),
-  radii=6, border=c('red','red','black','black','red','yellow','yellow','red'),edges = 8000)
+  radii=6, border=c('red','red','black','black','yellow','yellow','yellow','red'),edges = 8000)
+#Pies only including genes and lncRNA
+pies(
+  list(
+    BrainStem=nv(c(92915.81,804372.28),c('lncRNA','annotated')),
+    Cerebellum=nv(c(145327.4,919594.8 ),c('lncRNA','annotated')),
+    Embryo.ICM=nv(c(70288.96,618838.78),c('lncRNA','annotated')),
+    Embryo.TE=nv(c(47578.09,590603.21 ),c('lncRNA','annotated')),
+    Muscle=nv(c(6726.063,803600.748),c('lncRNA','annotated')),
+    Retina=nv(c(92837.49,900396.30),c('lncRNA','annotated')),
+    Skin=nv(c(49757.1,899838.1 ),c('lncRNA','annotated')),
+    SpinalCord=nv(c(130291.6,860672.0 ),c('lncRNA','annotated'))),
+  x0=c(34423,35784,33566,31633,29203,26419,29674,34636),
+  y0=c(13308,14878,15640,11209,2848,3934,5417,12736),
+  radii=6, border=c('red','red','black','black','yellow','yellow','yellow','red'),edges = 8000)
+
 
 
 #B) tissue-specific heatmap
@@ -159,7 +177,7 @@ melted_new<- ddply(melted, c("V4"), summarise,
 #Add the column of sum and sd to the original TPM values table
 complete <- merge(all_exp,melted_new,by="V4")
 #Subset data based on if sum>50 and sd>50
-sub <- subset(complete, c(sum > 20 & sem > 10))
+sub <- subset(complete, c(sum > 20 & sd > 10))
 #make row.names the geneName
 rownames(sub)<-sub$V4
 rownames(all_exp)<-all_exp$V4
@@ -218,3 +236,55 @@ hmap_order <- read.csv("hmap_order.csv", header=T)
 annotated <- read.table("RNAseqSupTrans.merge.reduced", header=T)
 m <- merge(hmap_order, annotated, by.x="X",by.y="gene.ID", sort=F)
 write.csv(m,"hmap_order_names.csv")
+
+#C) unique vs absent
+setwd("~/Dropbox/lncRNA/uniq_exp")
+library(ggplot2)
+library(reshape2)
+library(dplyr)
+library(plyr)
+
+###plotting figures with varying threshold for absent vs unique lncRNA
+data_0.1<-read.table("tissueSpecificSummary_cutoff.0.1")
+data_changed_0.1 <- cbind(as.data.frame(data_0.1[1:4,]),as.data.frame(data_0.1[5:8,]),as.data.frame(data_0.1[9:12,]),as.data.frame(data_0.1[13:16,]),as.data.frame(data_0.1[17:20,]),as.data.frame(data_0.1[21:24,]),as.data.frame(data_0.1[25:28,]),as.data.frame(data_0.1[29:32,]))   
+data_changed_0.1 <- sapply(data_changed_0.1, as.character)
+colnames(data_changed_0.1) <- data_changed_0.1[1,]
+data_changed_0.1 <- as.data.frame(data_changed_0.1[-1,])
+rownames(data_changed_0.1) <- c("total","unique_lncRNA","not_unique_lncRNA")
+data_0.1 <-as.data.frame(t(data_changed_0.1))
+write.table(data_0.1, "tissue_lncRNA_0.1.txt")
+
+data_0.1 <- read.table("tissue_lncRNA_0.1.txt",stringsAsFactors=FALSE)
+data_0.1$not_unique_lncRNA <- data_0.1$not_unique_lncRNA * -1
+
+
+Absent_U_data_0.1 <- as.data.frame(data_0.1$not_unique_lncRNA)
+rownames(Absent_U_data_0.1) <- rownames(data_0.1) 
+U_data_0.1 <- as.data.frame(data_0.1$unique_lncRNA)
+rownames(U_data_0.1) <- rownames(data_0.1)
+# to get cumulative TPM of those not expressed
+BrainStem <- read.table("TPM/BrainStem.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+Cerebellum <- read.table("TPM/Cerebellum.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+Embryo.ICM <- read.table("TPM/Embryo.ICM.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+Embryo.TE <- read.table("TPM/Embryo.TE.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+Muscle <- read.table("TPM/Muscle.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+Retina <- read.table("TPM/Retina.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+Skin <- read.table("TPM/Skin.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+SpinalCord <- read.table("TPM/SpinalCord.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+all_unique_exp <- rbind(BrainStem,Cerebellum,Embryo.ICM,Embryo.TE,Muscle,Retina,Skin,SpinalCord)
+names(all_unique_exp)<-c("id","BrainStem","Cerebellum","Embryo.ICM","Embryo.TE","Muscle","Retina","Skin","SpinalCord")
+melt_all_unique_exp <- melt(all_unique_exp,id.vars=c("id"))
+melt_all_unique_exp_stats<- ddply(melt_all_unique_exp, c("variable"), summarise,
+                      sum = sum(value))
+
+ggplot() +
+  geom_bar(data=U_data_0.1, aes(x=rownames(data_0.1),y=data_0.1$unique_lncRNA,color="aliceblue"), stat="identity") +
+  geom_bar(data=Absent_U_data_0.1, aes(x=rownames(data_0.1),y=data_0.1$not_unique_lncRNA,color="red"),stat = "identity") + 
+  ylab("Number of lncRNA") + scale_color_discrete(name="Unique lncRNA",
+                                                    labels=c("present","absent")) + xlab("Tissue") +
+  theme(legend.title = element_text(colour="black", size=14, face="bold")) +
+  theme(legend.text = element_text(colour="black", size = 12)) +
+  theme(axis.text.x = element_text(colour="black", size = 9)) +
+  theme(axis.title = element_text(colour="black", size = 14)) +
+  geom_line(data=melt_all_unique_exp_stats, aes(x=variable,y=sum / 5, group=1),colour="green")
+
