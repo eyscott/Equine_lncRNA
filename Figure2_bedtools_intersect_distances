@@ -1,0 +1,13 @@
+#Figure 2: determining number of horse lncRNA (only 9402 mapped to human) that are within 10 kb of human lncRNA
+##intersect btw human and horse lncRNA
+bedtools intersect -c -a mapped_lncRNA_horseThuman.bed -b hg19.lncRNAs.bed -sorted > lncRNA_human.bed
+bedtools intersect -c -a mapped_lncRNA_horseThuman.bed -b hg19.lncRNAs_1.bed -sorted > lncRNA_human_1.bed
+bedtools intersect -c -a mapped_lncRNA_horseThuman.bed -b hg19.lncRNAs_2.bed -sorted > lncRNA_human_2.bed
+bedtools intersect -c -a mapped_lncRNA_horseThuman.bed -b hg19.lncRNAs_3.bed -sorted > lncRNA_human_3.bed
+bedtools intersect -c -a mapped_lncRNA_horseThuman.bed -b hg19.lncRNAs_4.bed -sorted > lncRNA_human_4.bed
+bedtools intersect -c -a mapped_lncRNA_horseThuman.bed -b hg19.lncRNAs_5.bed -sorted > lncRNA_human_5.bed
+bedtools intersect -c -a mapped_lncRNA_horseThuman.bed -b hg19.lncRNAs_6.bed -sorted > lncRNA_human_6.bed
+bedtools intersect -c -a mapped_lncRNA_horseThuman.bed -b hg19.lncRNAs_7.bed -sorted > lncRNA_human_7.bed
+bedtools intersect -c -a mapped_lncRNA_horseThuman.bed -b hg19.lncRNAs_8.bed -sorted > lncRNA_human_8.bed
+bedtools intersect -c -a mapped_lncRNA_horseThuman.bed -b hg19.lncRNAs_9.bed -sorted > lncRNA_human_9.bed
+bedtools intersect -c -a mapped_lncRNA_horseThuman.bed -b hg19.lncRNAs_10.bed -sorted > lncRNA_human_10.bed
