@@ -6,7 +6,7 @@ tissue_specific_intergenic_exp <- read.table("intergenic_trans/allTissues_isofor
 tissue_specific_exp <- read.table("backmapping_stats/allTissues_isoformTPM", header=T, stringsAsFactors=F)
 #remove mt entries
 tissue_specific_exp <- tissue_specific_exp[-c(1,2),]
-rownames(tissue_specific_exp) <- c()
+#rownames(tissue_specific_exp) <- c()
 
 #tissue_specific_exp$transcriptName=rownames(tissue_specific_exp)
 #remove mt entries
@@ -32,11 +32,12 @@ novel_III <- unique(novel_III[keeps])
 intergenic <- unique(intergenic[keeps])
 
 #filter out transcripts GLOBALLY by <200 nt and with TPM < 0.1
-novel_I_f1 <- subset(novel_I, c(calcTPM > 0.1 & length > 200))
-novel_II_f1 <- subset(novel_II, c(calcTPM > 0.1 & length > 200))
-novel_III_f1 <- subset(novel_III, c(calcTPM > 0.1 & length > 200))
-intergenic_f1 <- subset(intergenic, c(calcTPM > 0.1 & length > 200))
+#novel_I_f1 <- subset(novel_I, c(calcTPM > 0.1 & length > 200))
+#novel_II_f1 <- subset(novel_II, c(calcTPM > 0.1 & length > 200))
+#novel_III_f1 <- subset(novel_III, c(calcTPM > 0.1 & length > 200))
+#intergenic_f1 <- subset(intergenic, c(calcTPM > 0.1 & length > 200))
 # obtaining what was lost in each filter
+library(dplyr)
 #F1 rejects:
 novel_I_f1 <- subset(novel_I, calcTPM > 0.1)
 f1_I_rejects <- anti_join(novel_I, novel_I_f1, by="transcriptName")
@@ -57,8 +58,7 @@ intergenic_f2 <- subset(intergenic_f1, length > 200)
 f2_intergenic_rejects <- anti_join(intergenic_f1,intergenic_f2,by="transcriptName")
 
 #Make each into a bed file to use with bedtools
-setwd("~/Dropbox/Horse_Transcriptome/downloads/allTissues_BED")
-unfiltered_bed <- read.table("unfiltered_Alltissues_Assembly.bed", header=F, stringsAsFactors=F)
+unfiltered_bed <- read.table("allTissues_BED/unfiltered_Alltissues_Assembly.bed", header=F, stringsAsFactors=F)
 novel_I_bed <- merge(novel_I_f2, unfiltered_bed, by.x="transcriptName",by.y="V4" )
 novel_II_bed <- merge(novel_II_f2, unfiltered_bed, by.x="transcriptName",by.y="V4" )
 novel_III_bed <- merge(novel_III_f2, unfiltered_bed, by.x="transcriptName",by.y="V4" )
