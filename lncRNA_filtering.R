@@ -71,21 +71,35 @@ single_novel_I <- subset(novel_I_bed, c(length < 1000 & V10 <2))
 single_novel_II <- subset(novel_II_bed, c(length < 1000 & V10 <2))
 single_novel_III <- subset(novel_III_bed, c(length < 1000 & V10 <2))
 single_intergenic <- subset(intergenic_bed, c(length < 1000 & V10 <2))
+#get all single exon transcripts to use for subsetting
+single_I <- subset(novel_I_bed, c(V10 <2))
+single_II <- subset(novel_II_bed, c(V10 <2))
+single_III <- subset(novel_III_bed, c(V10 <2))
+single_inter <- subset(intergenic_bed, c(V10 <2))
+
+#removing the single exon transcripts with do not satisfy length requirement
+f1_singles_I <-anti_join(single_I,single_novel_I, by.x="V4",by.y="transcriptName")
+f1_singles_II <-anti_join(single_I,single_novel_II, by.x="V4",by.y="transcriptName")
+f1_singles_III <-anti_join(single_I,single_novel_III, by.x="V4",by.y="transcriptName")
+f1_singles_intergenic <-anti_join(single_I,single_intergenic, by.x="V4",by.y="transcriptName")
+
 #removing this subset from the inputs, therefore these are products we will move on with
-f1_singles_I <-anti_join(novel_I_bed,single_novel_I, by="transcriptName")
-f1_singles_II <-anti_join(novel_II_bed,single_novel_II, by="transcriptName")
-f1_singles_III <-anti_join(novel_III_bed,single_novel_III, by="transcriptName")
-f1_singles_intergenic <-anti_join(intergenic_bed,single_intergenic, by="transcriptName")
+#f1_singles_I <-anti_join(novel_I_bed,single_novel_I, by="transcriptName")
+#f1_singles_II <-anti_join(novel_II_bed,single_novel_II, by="transcriptName")
+#f1_singles_III <-anti_join(novel_III_bed,single_novel_III, by="transcriptName")
+#f1_singles_intergenic <-anti_join(intergenic_bed,single_intergenic, by="transcriptName")
+
+
 
 ##must attach tissue-specific expression values to these singles that remain
-single_novel_I_exp <- merge(f1_singles_I,tissue_specific_exp,by.x="transcriptName",by.y="isoformName")
-single_novel_I_exp <- single_novel_I_exp[ ,c("transcriptName","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",	"Retina",	"Skin",	"SpinalCord")]
-single_novel_II_exp <- merge(f1_singles_II,tissue_specific_exp,by.x="transcriptName",by.y="isoformName")
-single_novel_II_exp <- single_novel_II_exp[ ,c("transcriptName","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",	"Muscle",	"Retina",	"Skin",	"SpinalCord")]
-single_novel_III_exp <- merge(f1_singles_III,tissue_specific_exp,by.x="transcriptName",by.y="isoformName")
-single_novel_III_exp <- single_novel_III_exp[ ,c("transcriptName","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",	"Muscle",	"Retina",	"Skin",	"SpinalCord")]
-single_intergenic_exp <- merge(f1_singles_intergenic,tissue_specific_intergenic_exp,by.x="transcriptName",by.y="isoformName")
-single_intergenic_exp <- single_intergenic_exp[ ,c("transcriptName","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",	"Retina",	"Skin",	"SpinalCord")]
+single_novel_I_exp <- merge(f1_singles_I,tissue_specific_exp,by.x="V4",by.y="isoformName")
+single_novel_I_exp <- single_novel_I_exp[ ,c("V4","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",	"Retina",	"Skin",	"SpinalCord")]
+single_novel_II_exp <- merge(f1_singles_II,tissue_specific_exp,by.x="V4",by.y="isoformName")
+single_novel_II_exp <- single_novel_II_exp[ ,c("V4","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",	"Muscle",	"Retina",	"Skin",	"SpinalCord")]
+single_novel_III_exp <- merge(f1_singles_III,tissue_specific_exp,by.x="V4",by.y="isoformName")
+single_novel_III_exp <- single_novel_III_exp[ ,c("V4","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",	"Muscle",	"Retina",	"Skin",	"SpinalCord")]
+single_intergenic_exp <- merge(f1_singles_intergenic,tissue_specific_intergenic_exp,by.x="V4",by.y="isoformName")
+single_intergenic_exp <- single_intergenic_exp[ ,c("V4","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",	"Retina",	"Skin",	"SpinalCord")]
 
 ##must attach tissue-specific expression values to these singles that were removed
 #single_novel_I_rejects_exp <- merge(single_novel_I,tissue_specific_exp,by.x="transcriptName",by.y="isoformName")
@@ -104,24 +118,23 @@ single_novel_III_2 <- single_novel_III_exp[apply(single_novel_III_exp[-1],1,func
 single_intergenic_2 <- single_intergenic_exp[apply(single_intergenic_exp[-1],1,function(row) {any(row > 3)}),]
 
 #need to subset the ones removed from this filter
-f2_singles_rejects_I <-anti_join(single_novel_I_exp,single_novel_I_2, by="transcriptName")
-f2_singles_rejects_II <-anti_join(single_novel_II_exp,single_novel_II_2, by="transcriptName")
-f2_singles_rejects_III <-anti_join(single_novel_III_exp,single_novel_III_2, by="transcriptName")
-f2_singles_rejects_intergenic <-anti_join(single_intergenic_exp,single_intergenic_2, by="transcriptName")
+f2_singles_rejects_I <-anti_join(single_novel_I_exp,single_novel_I_2, by.x="transcriptName", by.y="V4")
+f2_singles_rejects_II <-anti_join(single_novel_II_exp,single_novel_II_2, by.x="transcriptName", by.y="V4")
+f2_singles_rejects_III <-anti_join(single_novel_III_exp,single_novel_III_2, by.x="transcriptName", by.y="V4")
+f2_singles_rejects_intergenic <-anti_join(single_intergenic_exp,single_intergenic_2, by.x="transcriptName", by.y="V4")
 
 
 #merging transcripts that did not pass the filter 1 and 2 for single exons
-f12_singles_I_rejects <-merge(single_novel_I,f2_singles_rejects_I, by="transcriptName")
-f12_singles_II_rejects <-merge(single_novel_II,f2_singles_rejects_II, by="transcriptName")
-f12_singles_III_rejects <-merge(single_novel_III,f2_singles_rejects_III, by="transcriptName")
-f12_singles_intergenic_rejects <-merge(single_intergenic,f2_singles_rejects_intergenic, by="transcriptName")
+f12_singles_I_rejects <-merge(single_novel_I,f2_singles_rejects_I, by.x="transcriptName", by.y="V4")
+f12_singles_II_rejects <-merge(single_novel_II,f2_singles_rejects_II, by.x="transcriptName", by.y="V4")
+f12_singles_III_rejects <-merge(single_novel_III,f2_singles_rejects_III, by.x="transcriptName", by.y="V4")
+f12_singles_intergenic_rejects <-merge(single_intergenic,f2_singles_rejects_intergenic, by.x="transcriptName", by.y="V4")
 
 #merging transcripts that did pass the filter 1 and 2 for sinble exons
-f2_singles_I <-merge(f1_singles_I,single_novel_I_2, by="transcriptName")
-f2_singles_II <-merge(f1_singles_II,single_novel_II_2, by="transcriptName")
-f2_singles_III <-merge(f1_singles_III,single_novel_III_2, by="transcriptName")
-f2_singles_intergenic <-merge(f1_singles_intergenic,single_intergenic_2, by="transcriptName")
-
+f2_singles_I <-merge(f1_singles_I,single_novel_I_2, by.x="transcriptName", by.y="V4")
+f2_singles_II <-merge(f1_singles_II,single_novel_II_2, by.x="transcriptName", by.y="V4")
+f2_singles_III <-merge(f1_singles_III,single_novel_III_2, by.x="transcriptName", by.y="V4")
+f2_singles_intergenic <-merge(f1_singles_intergenic,single_intergenic_2, by.x="transcriptName", by.y="V4")
 #prepare the remaining singles in a bed format
 #single_novel_I_temp <- merge(f2_singles_I, unfiltered_bed, by.x="transcriptName",by.y="V4" )
 #single_novel_II_temp <- merge(f2_singles_I, unfiltered_bed, by.x="transcriptName",by.y="V4" )
