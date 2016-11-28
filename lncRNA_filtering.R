@@ -66,56 +66,107 @@ intergenic_bed <- merge(intergenic_f2, unfiltered_bed, by.x="transcriptName",by.
 
 #applying more stringent criteria to single exon transcripts
 #must get exon numbers by merging with bed file
-
-##V10 in bed is exon number
+##subsetting single exons that are less than 1 kb, V10 in bed is exon number  
 single_novel_I <- subset(novel_I_bed, c(length < 1000 & V10 <2))
 single_novel_II <- subset(novel_II_bed, c(length < 1000 & V10 <2))
 single_novel_III <- subset(novel_III_bed, c(length < 1000 & V10 <2))
 single_intergenic <- subset(intergenic_bed, c(length < 1000 & V10 <2))
-#getting these rejects
+#removing this subset from the inputs, therefore these are products we will move on with
 f1_singles_I <-anti_join(novel_I_bed,single_novel_I, by="transcriptName")
 f1_singles_II <-anti_join(novel_II_bed,single_novel_II, by="transcriptName")
 f1_singles_III <-anti_join(novel_III_bed,single_novel_III, by="transcriptName")
 f1_singles_intergenic <-anti_join(intergenic_bed,single_intergenic, by="transcriptName")
 
-##must attach tissue-specific expression values to these singles
-single_novel_I_exp <- merge(single_novel_I,tissue_specific_exp,by.x="transcriptName",by.y="isoformName")
-single_novel_I_exp <- single_novel_I_exp[ ,c("transcriptName","BrainStem", "Cerebellum",	"Embryo.ICM", "Embryo.TE",	"Muscle",	"Retina",	"Skin",	"SpinalCord")]
-single_novel_II_exp <- merge(single_novel_II,tissue_specific_exp,by.x="transcriptName",by.y="isoformName")
+##must attach tissue-specific expression values to these singles that remain
+single_novel_I_exp <- merge(f1_singles_I,tissue_specific_exp,by.x="transcriptName",by.y="isoformName")
+single_novel_I_exp <- single_novel_I_exp[ ,c("transcriptName","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",	"Retina",	"Skin",	"SpinalCord")]
+single_novel_II_exp <- merge(f1_singles_II,tissue_specific_exp,by.x="transcriptName",by.y="isoformName")
 single_novel_II_exp <- single_novel_II_exp[ ,c("transcriptName","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",	"Muscle",	"Retina",	"Skin",	"SpinalCord")]
-single_novel_III_exp <- merge(single_novel_III,tissue_specific_exp,by.x="transcriptName",by.y="isoformName")
+single_novel_III_exp <- merge(f1_singles_III,tissue_specific_exp,by.x="transcriptName",by.y="isoformName")
 single_novel_III_exp <- single_novel_III_exp[ ,c("transcriptName","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",	"Muscle",	"Retina",	"Skin",	"SpinalCord")]
-single_intergenic_exp <- merge(single_intergenic,tissue_specific_intergenic_exp,by.x="transcriptName",by.y="isoformName")
+single_intergenic_exp <- merge(f1_singles_intergenic,tissue_specific_intergenic_exp,by.x="transcriptName",by.y="isoformName")
 single_intergenic_exp <- single_intergenic_exp[ ,c("transcriptName","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",	"Retina",	"Skin",	"SpinalCord")]
 
-#Filter out expression of single-exon transcripts in a tissue-specific manner
+##must attach tissue-specific expression values to these singles that were removed
+#single_novel_I_rejects_exp <- merge(single_novel_I,tissue_specific_exp,by.x="transcriptName",by.y="isoformName")
+#single_novel_I_rejects_exp <- single_novel_I_rejects_exp[ ,c("transcriptName","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",	"Muscle",	"Retina",	"Skin",	"SpinalCord")]
+#single_novel_II_rejects_exp <- merge(single_novel_II,tissue_specific_exp,by.x="transcriptName",by.y="isoformName")
+#single_novel_II_rejects_exp <- single_novel_II_rejects_exp[ ,c("transcriptName","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",	"Muscle",	"Retina",	"Skin",	"SpinalCord")]
+#single_novel_III_rejects_exp <- merge(single_novel_III,tissue_specific_exp,by.x="transcriptName",by.y="isoformName")
+#single_novel_III_rejects_exp <- single_novel_III_rejects_exp[ ,c("transcriptName","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",	"Muscle",	"Retina",	"Skin",	"SpinalCord")]
+#single_intergenic_rejects_exp <- merge(single_intergenic,tissue_specific_intergenic_exp,by.x="transcriptName",by.y="isoformName")
+#single_intergenic_rejects_exp <- single_intergenic_rejects_exp[ ,c("transcriptName","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",	"Retina",	"Skin",	"SpinalCord")]
+
+#Filter out expression of single-exon transcripts in a tissue-specific manner, we keep these
 single_novel_I_2 <- single_novel_I_exp[apply(single_novel_I_exp[-1],1,function(row) {any(row > 3)}),]
 single_novel_II_2 <- single_novel_II_exp[apply(single_novel_II_exp[-1],1,function(row) {any(row > 3)}),]
 single_novel_III_2 <- single_novel_III_exp[apply(single_novel_III_exp[-1],1,function(row) {any(row > 3)}),]
 single_intergenic_2 <- single_intergenic_exp[apply(single_intergenic_exp[-1],1,function(row) {any(row > 3)}),]
-#getting these rejects
-f2_singles_I <-anti_join(single_novel_I,single_novel_I_2, by="transcriptName")
-f2_singles_II <-anti_join(single_novel_II,single_novel_II_2, by="transcriptName")
-f2_singles_III <-anti_join(single_novel_III,single_novel_III_2, by="transcriptName")
-f2_singles_intergenic <-anti_join(single_intergenic,single_intergenic_2, by="transcriptName")
+
+#need to subset the ones removed from this filter
+f2_singles_rejects_I <-anti_join(single_novel_I_exp,single_novel_I_2, by="transcriptName")
+f2_singles_rejects_II <-anti_join(single_novel_II_exp,single_novel_II_2, by="transcriptName")
+f2_singles_rejects_III <-anti_join(single_novel_III_exp,single_novel_III_2, by="transcriptName")
+f2_singles_rejects_intergenic <-anti_join(single_intergenic_exp,single_intergenic_2, by="transcriptName")
+
+
+#merging transcripts that did not pass the filter 1 and 2 for single exons
+f12_singles_I_rejects <-merge(single_novel_I,f2_singles_rejects_I, by="transcriptName")
+f12_singles_II_rejects <-merge(single_novel_II,f2_singles_rejects_II, by="transcriptName")
+f12_singles_III_rejects <-merge(single_novel_III,f2_singles_rejects_III, by="transcriptName")
+f12_singles_intergenic_rejects <-merge(single_intergenic,f2_singles_rejects_intergenic, by="transcriptName")
+
+#merging transcripts that did pass the filter 1 and 2 for sinble exons
+f2_singles_I <-merge(f1_singles_I,single_novel_I_2, by="transcriptName")
+f2_singles_II <-merge(f1_singles_II,single_novel_II_2, by="transcriptName")
+f2_singles_III <-merge(f1_singles_III,single_novel_III_2, by="transcriptName")
+f2_singles_intergenic <-merge(f1_singles_intergenic,single_intergenic_2, by="transcriptName")
 
 #prepare the remaining singles in a bed format
-single_novel_I_temp <- merge(single_novel_I_2, unfiltered_bed, by.x="transcriptName",by.y="V4" )
-single_novel_II_temp <- merge(single_novel_II_2, unfiltered_bed, by.x="transcriptName",by.y="V4" )
-single_novel_III_temp <- merge(single_novel_III_2, unfiltered_bed, by.x="transcriptName",by.y="V4" )
-single_intergenic_temp <- merge(single_intergenic_2, unfiltered_bed, by.x="transcriptName",by.y="V4" )
+#single_novel_I_temp <- merge(f2_singles_I, unfiltered_bed, by.x="transcriptName",by.y="V4" )
+#single_novel_II_temp <- merge(f2_singles_I, unfiltered_bed, by.x="transcriptName",by.y="V4" )
+#single_novel_III_temp <- merge(f2_singles_I, unfiltered_bed, by.x="transcriptName",by.y="V4" )
+#single_intergenic_temp <- merge(f2_singles_I, unfiltered_bed, by.x="transcriptName",by.y="V4" )
 
 #remove non-bed format columns and format properly
-single_novel_I_bed <- single_novel_I_temp[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
+#single_novel_I_bed <- single_novel_I_temp[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
+#names(single_novel_I_bed)[4]<-paste("V4")
+#rownames(single_novel_I_bed) <- c()
+#single_novel_II_bed <- single_novel_II_temp[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
+#names(single_novel_II_bed)[4]<-paste("V4")
+#rownames(single_novel_II_bed) <- c()
+#single_novel_III_bed <- single_novel_III_temp[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
+#names(single_novel_III_bed)[4]<-paste("V4")
+#rownames(single_novel_III_bed) <- c()
+#single_intergenic_bed <- single_intergenic_temp[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
+#names(single_intergenic_bed)[4]<-paste("V4")
+#rownames(single_intergenic_bed) <- c()
+
+#remove non-bed format columns and format properly for single exon transcripts that DID NOT F1 and F2
+single_novel_I_rejects_bed <- f12_singles_I_rejects[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
+names(single_novel_I_rejects_bed)[4]<-paste("V4")
+rownames(single_novel_I_rejects_bed) <- c()
+single_novel_II_rejects_bed <- f12_singles_II_rejects[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
+names(single_novel_II_rejects_bed)[4]<-paste("V4")
+rownames(single_novel_II_rejects_bed) <- c()
+single_novel_III_rejects_bed <- f12_singles_III_rejects[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
+names(single_novel_III_rejects_bed)[4]<-paste("V4")
+rownames(single_novel_III_rejects_bed) <- c()
+single_intergenic_rejects_bed <- f12_singles_intergenic_rejects[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
+names(single_intergenic_rejects_bed)[4]<-paste("V4")
+rownames(single_intergenic_rejects_bed) <- c()
+
+#remove non-bed format columns and format properly for single exon transcripts that PASSED F1 and F2
+single_novel_I_bed <- f2_singles_I[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
 names(single_novel_I_bed)[4]<-paste("V4")
 rownames(single_novel_I_bed) <- c()
-single_novel_II_bed <- single_novel_II_temp[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
+single_novel_II_bed <- f2_singles_II[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
 names(single_novel_II_bed)[4]<-paste("V4")
 rownames(single_novel_II_bed) <- c()
-single_novel_III_bed <- single_novel_III_temp[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
+single_novel_III_bed <- f2_singles_III[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
 names(single_novel_III_bed)[4]<-paste("V4")
 rownames(single_novel_III_bed) <- c()
-single_intergenic_bed <- single_intergenic_temp[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
+single_intergenic_bed <- f2_singles_intergenic[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
 names(single_intergenic_bed)[4]<-paste("V4")
 rownames(single_intergenic_bed) <- c()
 
@@ -131,10 +182,10 @@ names(intergenic_bed)[4]<-paste("V4")
 
 #remove this subset from bed file
 require(dplyr)
-novel_I_bed <- anti_join(novel_I_bed,single_novel_I_bed, by="V4")
-novel_II_bed <- anti_join(novel_II_bed,single_novel_II_bed, by="V4")
-novel_III_bed <- anti_join(novel_III_bed,single_novel_III_bed, by="V4")
-intergenic_bed <- anti_join(intergenic_bed,single_intergenic_bed, by="V4")
+novel_I_bed <- anti_join(novel_I_bed,single_novel_I_rejects_bed, by="V4")
+novel_II_bed <- anti_join(novel_II_bed,single_novel_II_rejects_bed, by="V4")
+novel_III_bed <- anti_join(novel_III_bed,single_novel_III_rejects_bed, by="V4")
+intergenic_bed <- anti_join(intergenic_bed,single_intergenic_rejects_bed, by="V4")
 
 #order chr properly
 novel_I_bed <- novel_I_bed[with(novel_I_bed, order(V1, V2)), ]
@@ -150,28 +201,33 @@ write.table(novel_III_bed, "novel_III.bed", row.names=F, col.names=F, quote=F, s
 write.table(intergenic_bed, "intergenic.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(unfiltered_bed, "unfiltered.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
-#compiling and writing a file for the F1 and F2 rejects
-f1_singles_I_trunc <- f1_singles_I[ ,c("transcriptName","length",	"calcTPM")]
+#compiling and writing a file for the F1 rejects for each input for single and multiexonic
+#f1 for single exonic got switched to f2, hence what looks like mergeing the wrong filters
+f2_singles_rejects_I <- merge(f2_singles_rejects_I,overallExpression,by="transcriptName")
+f1_singles_I_trunc <- f2_singles_rejects_I[ ,c("transcriptName","length",	"calcTPM")]
 F1_novel_I <-rbind(f1_I_rejects,f1_singles_I_trunc)
-f1_singles_II_trunc <- f1_singles_II[ ,c("transcriptName","length",  "calcTPM")]
+f2_singles_rejects_II <- merge(f2_singles_rejects_II,overallExpression,by="transcriptName")
+f1_singles_II_trunc <- f2_singles_rejects_II[ ,c("transcriptName","length",  "calcTPM")]
 F1_novel_II <-rbind(f1_II_rejects,f1_singles_II_trunc)
-f1_singles_III_trunc <- f1_singles_III[ ,c("transcriptName","length",  "calcTPM")]
+f2_singles_rejects_III <- merge(f2_singles_rejects_III,overallExpression,by="transcriptName")
+f1_singles_III_trunc <- f2_singles_rejects_III[ ,c("transcriptName","length",  "calcTPM")]
 F1_novel_III <-rbind(f1_III_rejects,f1_singles_III_trunc)
-f1_singles_intergenic_trunc <- f1_singles_intergenic[ ,c("transcriptName","length",  "calcTPM")]
+f2_singles_rejects_intergenic <- merge(f2_singles_rejects_intergenic,overallExpression,by="transcriptName")
+f1_singles_intergenic_trunc <- f2_singles_rejects_intergenic[ ,c("transcriptName","length",  "calcTPM")]
 F1_novel_intergenic <-rbind(f1_intergenic_rejects,f1_singles_intergenic_trunc)
 setwd("~/Desktop/lncRNA")
 write.table(F1_novel_I, "F1_novel_I", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(F1_novel_II, "F1_novel_II", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(F1_novel_III, "F1_novel_III", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(F1_novel_intergenic, "F1_novel_intergenic", row.names=F, col.names=F, quote=F, sep = "\t")
-
-f2_singles_I_trunc <- f2_singles_I[ ,c("transcriptName","length",  "calcTPM")]
+##doing the same for the F2
+f2_singles_I_trunc <- single_novel_I[ ,c("transcriptName","length",  "calcTPM")]
 F2_novel_I <-rbind(f2_I_rejects,f2_singles_I_trunc)
-f2_singles_II_trunc <- f2_singles_II[ ,c("transcriptName","length",  "calcTPM")]
+f2_singles_II_trunc <- single_novel_II[ ,c("transcriptName","length",  "calcTPM")]
 F2_novel_II <-rbind(f2_II_rejects,f2_singles_II_trunc)
-f2_singles_III_trunc <- f2_singles_III[ ,c("transcriptName","length",  "calcTPM")]
+f2_singles_III_trunc <- single_novel_III[ ,c("transcriptName","length",  "calcTPM")]
 F2_novel_III <-rbind(f2_III_rejects,f2_singles_III_trunc)
-f2_singles_intergenic_trunc <- f2_singles_intergenic[ ,c("transcriptName","length",  "calcTPM")]
+f2_singles_intergenic_trunc <- single_intergenic[ ,c("transcriptName","length",  "calcTPM")]
 F2_novel_intergenic <-rbind(f2_intergenic_rejects,f2_singles_intergenic_trunc)
 setwd("~/Desktop/lncRNA")
 write.table(F2_novel_I, "F2_novel_I", row.names=F, col.names=F, quote=F, sep = "\t")
