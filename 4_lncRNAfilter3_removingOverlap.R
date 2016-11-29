@@ -44,7 +44,7 @@ intergenic_3_in <- subset(intergenic_3, (V13 > 0))#2341
 intergenic_upAnddown <- rbind(intergenic_5_in,intergenic_3_in)
 intergenic_upAnddown <- intergenic_upAnddown[ ,c("V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12")] 
 rownames(intergenic_upAnddown) <- c()
-d <- intergenic_upAnddown[!duplicated(intergenic_upAnddown),]#2824, therefore 19 in both 5' and 3' U
+d <- intergenic_upAnddown[!duplicated(intergenic_upAnddown),]#4205, therefore 528 in both 5' and 3' up- and downstream sequences
 #intergenic_upAnddown are the F3 rejects for intergenic
 write.table(intergenic_upAnddown, "F3_intergenic", row.names=F, col.names=F, quote=F, sep = "\t")
 #remove 3' upstream and 5' upstream lncRNA
