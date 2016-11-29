@@ -2,16 +2,12 @@
 setwd("~/Desktop/lncRNA")
 novel_I_5 <- read.table("novel_I_5.bed", header=F, stringsAsFactors=F)
 novel_I_3 <- read.table("novel_I_3.bed", header=F, stringsAsFactors=F)
-novel_I_rest <- read.table("novel_I_ex.bed", header=F, stringsAsFactors=F)
 novel_II_5 <- read.table("novel_II_5.bed", header=F, stringsAsFactors=F)
 novel_II_3 <- read.table("novel_II_3.bed", header=F, stringsAsFactors=F)
-novel_II_rest <- read.table("novel_II_ex.bed", header=F, stringsAsFactors=F)
 novel_III_5 <- read.table("novel_III_5.bed", header=F, stringsAsFactors=F)
 novel_III_3 <- read.table("novel_III_3.bed", header=F, stringsAsFactors=F)
-novel_III_rest <- read.table("novel_III_ex.bed", header=F, stringsAsFactors=F)
 intergenic_5 <- read.table("intergenic_5.bed", header=F, stringsAsFactors=F)
 intergenic_3 <- read.table("intergenic_3.bed", header=F, stringsAsFactors=F)
-intergenic_rest <- read.table("intergenic_ex.bed", header=F, stringsAsFactors=F)
 #This gives you number of occurances when 
 novel_I_5_sum <- sum(novel_I_5[["V13"]]) #13969
 novel_I_3_sum <- sum(novel_I_3[["V13"]]) #13969 
