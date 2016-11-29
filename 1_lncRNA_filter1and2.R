@@ -83,10 +83,10 @@ single_novel_II_2 <- single_novel_II_exp[apply(single_novel_II_exp[-1],1,functio
 single_novel_III_2 <- single_novel_III_exp[apply(single_novel_III_exp[-1],1,function(row) {any(row > 5)}),]
 single_intergenic_2 <- single_intergenic_exp[apply(single_intergenic_exp[-1],1,function(row) {any(row > 5)}),]
 #need to subset the ones removed from this filter
-f1_singles_rejects_I <-anti_join(single_novel_I_exp,single_novel_I_2, by.x="transcriptName", by.y="V4")
-f1_singles_rejects_II <-anti_join(single_novel_II_exp,single_novel_II_2, by.x="transcriptName", by.y="V4")
-f1_singles_rejects_III <-anti_join(single_novel_III_exp,single_novel_III_2, by.x="transcriptName", by.y="V4")
-f1_singles_rejects_intergenic <-anti_join(single_intergenic_exp,single_intergenic_2, by.x="transcriptName", by.y="V4")
+f1_singles_rejects_I <-anti_join(single_novel_I_exp,single_novel_I_2, by="transcriptName")
+f1_singles_rejects_II <-anti_join(single_novel_II_exp,single_novel_II_2, by="transcriptName")
+f1_singles_rejects_III <-anti_join(single_novel_III_exp,single_novel_III_2, by="transcriptName")
+f1_singles_rejects_intergenic <-anti_join(single_intergenic_exp,single_intergenic_2, by="transcriptName")
 #remove the single exon transcripts that did not pass the TPM filter, we move forward with these products
 novel_I_f2single <-anti_join(novel_I_f2,f1_singles_rejects_I, by="transcriptName")
 novel_II_f2single <-anti_join(novel_II_f2,f1_singles_rejects_II, by="transcriptName")
