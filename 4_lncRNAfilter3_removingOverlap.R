@@ -2,16 +2,12 @@
 setwd("~/Desktop/lncRNA")
 novel_I_5 <- read.table("novel_I_5.bed", header=F, stringsAsFactors=F)
 novel_I_3 <- read.table("novel_I_3.bed", header=F, stringsAsFactors=F)
-novel_I_rest <- read.table("novel_I_ex.bed", header=F, stringsAsFactors=F)
 novel_II_5 <- read.table("novel_II_5.bed", header=F, stringsAsFactors=F)
 novel_II_3 <- read.table("novel_II_3.bed", header=F, stringsAsFactors=F)
-novel_II_rest <- read.table("novel_II_ex.bed", header=F, stringsAsFactors=F)
 novel_III_5 <- read.table("novel_III_5.bed", header=F, stringsAsFactors=F)
 novel_III_3 <- read.table("novel_III_3.bed", header=F, stringsAsFactors=F)
-novel_III_rest <- read.table("novel_III_ex.bed", header=F, stringsAsFactors=F)
 intergenic_5 <- read.table("intergenic_5.bed", header=F, stringsAsFactors=F)
 intergenic_3 <- read.table("intergenic_3.bed", header=F, stringsAsFactors=F)
-intergenic_rest <- read.table("intergenic_ex.bed", header=F, stringsAsFactors=F)
 #This gives you number of occurances when 
 novel_I_5_sum <- sum(novel_I_5[["V13"]]) #13969
 novel_I_3_sum <- sum(novel_I_3[["V13"]]) #13969 
@@ -48,10 +44,16 @@ intergenic_3_in <- subset(intergenic_3, (V13 > 0))#2341
 intergenic_upAnddown <- rbind(intergenic_5_in,intergenic_3_in)
 intergenic_upAnddown <- intergenic_upAnddown[ ,c("V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12")] 
 rownames(intergenic_upAnddown) <- c()
-d <- intergenic_upAnddown[!duplicated(intergenic_upAnddown),]#2824, therefore 19 in both 5' and 3' U
+d <- intergenic_upAnddown[!duplicated(intergenic_upAnddown),]#4205, therefore 528 in both 5' and 3' up- and downstream sequences
 #intergenic_upAnddown are the F3 rejects for intergenic
 write.table(intergenic_upAnddown, "F3_intergenic", row.names=F, col.names=F, quote=F, sep = "\t")
 #remove 3' upstream and 5' upstream lncRNA
+setwd("~/Desktop/lncRNA")
+novel_I_bed <-read.table("novel_I_f2.bed",header=F)
+novel_II_bed <-read.table("novel_II_f2.bed",header=F)
+novel_III_bed <-read.table("novel_III_f2.bed",header=F)
+intergenic_bed <-read.table("intergenic_f2.bed",header=F)
+
 require(dplyr)
 novel_I_bed_f3 <- anti_join(novel_I_bed,novel_I_upAnddown, by="V4")
 novel_II_bed_f3 <- anti_join(novel_II_bed,novel_II_upAnddown, by="V4")
