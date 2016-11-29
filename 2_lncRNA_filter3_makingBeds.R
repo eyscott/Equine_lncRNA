@@ -11,7 +11,7 @@ names(merged_bed_extended)[3]<-paste("V3")
 merged_bed_extended$V2[merged_bed_extended$V2 < 0] <- 0
 #order chr properly
 merged_bed_extended <- merged_bed_extended[with(merged_bed_extended, order(V1, V2)), ]
-write.table(merged_bed_extended, "merged_extended.bed", row.names=F, col.names=F, quote=F,, sep = "\t")
+write.table(merged_bed_extended, "merged_extended.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 #this is to allow for removal of any transcripts within 1 kb of an annotated gene
 #Now to isolate the -1000 (5'UTR)
 merged_bed["minus"]<- (merged_bed[ ,2] - 1000)
