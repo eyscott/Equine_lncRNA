@@ -48,6 +48,12 @@ d <- intergenic_upAnddown[!duplicated(intergenic_upAnddown),]#4205, therefore 52
 #intergenic_upAnddown are the F3 rejects for intergenic
 write.table(intergenic_upAnddown, "F3_intergenic", row.names=F, col.names=F, quote=F, sep = "\t")
 #remove 3' upstream and 5' upstream lncRNA
+setwd("~/Desktop/lncRNA")
+novel_I_bed <-read.table("novel_I_f2.bed",header=F)
+novel_II_bed <-read.table("novel_II_f2.bed",header=F)
+novel_III_bed <-read.table("novel_III_f2.bed",header=F)
+intergenic_bed <-read.table("intergenic_f2.bed",header=F)
+
 require(dplyr)
 novel_I_bed_f3 <- anti_join(novel_I_bed,novel_I_upAnddown, by="V4")
 novel_II_bed_f3 <- anti_join(novel_II_bed,novel_II_upAnddown, by="V4")
