@@ -7,16 +7,18 @@ gunzip Pfam-A.hmm.gz
 #getFastaFromBed [OPTIONS] -fi <input FASTA> -bed <BED/GFF/VCF>
 
 ##main script for all novel categories passing the filters so far
-module load bedtools2
-bedtools getfasta -s -fi equCab2.0_genome.fa -bed novel_I_f3.bed -fo novel_I_f3.fa
-bedtools getfasta -s -fi equCab2.0_genome.fa -bed novel_II_f3.bed -fo novel_II_f3.fa
-bedtools getfasta -s -fi equCab2.0_genome.fa -bed novel_III_f3.bed -fo novel_III_f3.fa
-bedtools getfasta -s -fi equCab2.0_genome.fa -bed intergenic_f3.bed -fo intergenic_f3.fa
-#WARNING. chromosome (chrUn) was not found in the FASTA file. Skipping
+wget --timestamping 'ftp://hgdownload.cse.ucsc.edu/goldenPath/equCab2/bigZips/chromFa.tar.gz' -O chromFa.tar.gz
+tar xvzf chromFa.tar.gz
+cat *.fa > equCab2.0_genome.fa
+module load BEDTools/2.24.0  
+bedtools getfasta -s -fi equCab2.0_genome.fa -bed novel_I_f3_new.bed -fo novel_I_f3.fa
+bedtools getfasta -s -fi equCab2.0_genome.fa -bed novel_II_f3_new.bed -fo novel_II_f3.fa
+bedtools getfasta -s -fi equCab2.0_genome.fa -bed novel_III_f3_new.bed -fo novel_III_f3.fa
+bedtools getfasta -s -fi equCab2.0_genome.fa -bed intergenic_f3_new.bed -fo intergenic_f3.fa
 
 #step 3: get the protein coding/ORF sequences of your data using Transdecoder (this takes quite some time):
 #main
-module load Transdecoder
+module load TransDecoder/3.0.0
 TransDecoder.LongOrfs -t novel_I_f3.fa -m 20
 TransDecoder.LongOrfs -t novel_II_f3.fa -m 20
 TransDecoder.LongOrfs -t novel_III_f3.fa -m 20
