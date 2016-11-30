@@ -33,14 +33,12 @@ hmmsearch --cpu 8 --domtblout novel_II_pfam.domtblout Pfam-A.hmm novel_II_f3.fa.
 hmmsearch --cpu 8 --domtblout novel_III_pfam.domtblout Pfam-A.hmm novel_III_f3.fa.transdecoder_dir/longest_orfs.pep
 hmmsearch --cpu 8 --domtblout intergenic_pfam.domtblout Pfam-A.hmm intergenic_f3.fa.transdecoder_dir/longest_orfs.pep
 
-##step 5: retain those significant hits to the Pfam-A db using Transdecoder:
-#main
-TransDecoder.Predict -t novel_I_f3.fa --retain_pfam_hits novel_I_pfam.domtblout
-TransDecoder.Predict -t novel_II_f3.fa --retain_pfam_hits novel_II_pfam.domtblout
-TransDecoder.Predict -t novel_III_f3.fa --retain_pfam_hits novel_III_pfam.domtblout
-TransDecoder.Predict -t intergenic_f3.fa --retain_pfam_hits intergenic_pfam.domtblout
+hmmsearch --cpu 10 --tblout novel_I_pfam_new.tblout Pfam-A.hmm novel_I_f3.fa.transdecoder_dir/longest_orfs.pep
+hmmsearch --cpu 10 --tblout novel_II_pfam_new.tblout Pfam-A.hmm novel_II_f3.fa.transdecoder_dir/longest_orfs.pep
+hmmsearch --cpu 10 --tblout novel_III_pfam_new.tblout Pfam-A.hmm novel_III_f3.fa.transdecoder_dir/longest_orfs.pep
+hmmsearch --cpu 10 --tblout intergenic_pfam_new.tblout Pfam-A.hmm intergenic_f3.fa.transdecoder_dir/longest_orfs.pep
 
-###step 6 running blastp
+###step 5 running blastp
 curl -O ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref90/uniref90.fasta.gz
 gunzip uniref90.fasta.gz
 module load GNU/4.8.3

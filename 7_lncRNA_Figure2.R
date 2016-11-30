@@ -1,11 +1,11 @@
 ##lncRNA figures
 #Will have Table 1
-#Figure 1
-#A) pipeline
-#B: chr plot
+#Figure 2
+#Figure1=pipeline
+#2C: chr plot
 #combine all lncRNA db
 setwd("~/Desktop/lncRNA")
-lncRNA_all <- read.table("lncRNA_final21032_IDs", header=F, stringsAsFactors=F)
+lncRNA_all <- read.table("lncRNA_final_IDs", header=F, stringsAsFactors=F)
 #making chr plot
 library(ggplot2)
 keeps <- c("V1", "V2", "V3", "V4","V5")
@@ -26,7 +26,7 @@ m <- ggplot(data=lncRNA_keeps, aes(V2)) + geom_bar(aes(V2,group=V1,fill=V1),stat
 
 m
 
-##Figure 1C
+##Figure 2B
 #merge lncRNA_keeps with expression data
 setwd("~/Dropbox/Horse_Transcriptome/downloads")
 overallExpression <- read.table("dataSummary", header=T, stringsAsFactors=F)
@@ -50,7 +50,7 @@ ggplot(subset(lncRNA_exp_exons, V10 %in% c(1:10)), aes(V1.x,group=V10,fill=V10))
   theme(axis.text = element_text(colour="black", size = 14)) +
   theme(axis.title = element_text(colour="black", size = 16))
 
-#Figure 1D: pie charts for overall RNAseq output for novel I,II,II, intergenic
+#Figure 2A: pie charts for overall RNAseq output for novel I,II,II, intergenic
 #genes=those retained from hmmer and blastp
 
 setwd("~/Desktop/lncRNA")
@@ -137,7 +137,107 @@ ggplot(novel_I_total_exp,aes(x=factor(1),weight=calcTPM,fill=V1)) +
   theme(legend.text = element_text(colour="black", size = 16)) +
   theme(axis.text = element_text(colour="black", size = 14)) +
   scale_fill_brewer(palette = "Set3",
-                    labels=c("F1 rejects","F3 rejects","F4 rejects","lncRNA"))
+setwd("~/Desktop/lncRNA")
+all <- read.table("all_cats_PandnoP", header=F, stringsAsFactors=F)
+novel_I_all <- subset(all, V1 %in% c("novel_I_lncRNA", "novel_I_genes"))
+novel_II_all <- subset(all, V1 %in% c("novel_II_lncRNA", "novel_II_genes"))
+novel_III_all <- subset(all, V1 %in% c("novel_III_lncRNA", "novel_III_genes"))
+intergenic_all <- subset(all, V1 %in% c("intergenic_lncRNA", "intergenic_genes"))
+
+##Pie charts based on cumulative TPM
+setwd("~/Dropbox/Horse_Transcriptome/downloads")
+overallExpression <- read.table("dataSummary", header=T, stringsAsFactors=F)
+overallExpression$transcriptName=rownames(overallExpression)
+all_exp <- merge(overallExpression, all, by.x="transcriptName",by.y="V5" )
+keeps <- c("transcriptName","calcTPM","V1")
+all_exp <- all_exp[keeps]
+novel_I_all_exp <- subset(all_exp, V1 %in% c("novel_I_lncRNA", "novel_I_genes"))
+novel_II_all_exp <- subset(all_exp, V1 %in% c("novel_II_lncRNA", "novel_II_genes"))
+novel_III_all_exp <- subset(all_exp, V1 %in% c("novel_III_lncRNA", "novel_III_genes"))
+intergenic_all_exp <- subset(all_exp, V1 %in% c("intergenic_lncRNA", "intergenic_genes"))
+
+#binding all transcripts removed in filters
+setwd("~/Desktop/lncRNA")
+F1_I <- read.table("F1_novel_I", header=F, stringsAsFactors=F)
+F1_II <- read.table("F1_novel_II", header=F, stringsAsFactors=F)
+F1_III <- read.table("F1_novel_III", header=F, stringsAsFactors=F)
+F1_intergenic <- read.table("F1_novel_intergenic", header=F, stringsAsFactors=F)
+F2_I <- read.table("F2_novel_I", header=F, stringsAsFactors=F)
+F2_II <- read.table("F2_novel_II", header=F, stringsAsFactors=F)
+F2_III <- read.table("F2_novel_III", header=F, stringsAsFactors=F)
+F2_intergenic <- read.table("F2_novel_intergenic", header=F, stringsAsFactors=F)
+F3_I <- read.table("F3_novel_I", header=F, stringsAsFactors=F)
+F3_II <- read.table("F3_novel_II", header=F, stringsAsFactors=F)
+F3_III <- read.table("F3_novel_III", header=F, stringsAsFactors=F)
+F3_intergenic <- read.table("F3_intergenic", header=F, stringsAsFactors=F)
+F3_I_ids <- data.frame(F3_I[ ,"V4"]) 
+F3_II_ids <- data.frame(F3_II[ ,"V4"]) 
+F3_III_ids <- data.frame(F3_III[ ,"V4"]) 
+F3_intergenic_ids <- data.frame(F3_intergenic[ ,"V4"])
+F3_I_exp <- merge(overallExpression, F3_I_ids, by.x="transcriptName",by.y="F3_I....V4.." )
+F3_II_exp <- merge(overallExpression, F3_II_ids, by.x="transcriptName",by.y="F3_II....V4.." )
+F3_III_exp <- merge(overallExpression, F3_III_ids, by.x="transcriptName",by.y="F3_III....V4.." )
+F3_intergenic_exp <- merge(overallExpression, F3_intergenic_ids, by.x="transcriptName",by.y="F3_intergenic....V4.." )
+F3_I_exp <- F3_I_exp[ ,c("transcriptName","length","calcTPM")]
+F3_II_exp <- F3_II_exp[ ,c("transcriptName","length","calcTPM")]
+F3_III_exp <- F3_III_exp[ ,c("transcriptName","length","calcTPM")]
+F3_intergenic_exp <- F3_intergenic_exp[ ,c("transcriptName","length","calcTPM")]
+names(F1_I)<-names(F3_I_exp)
+names(F1_II)<-names(F3_II_exp)
+names(F1_III)<-names(F3_III_exp)
+names(F1_intergenic)<-names(F3_intergenic_exp)
+names(F2_I)<-names(F3_I_exp)
+names(F2_II)<-names(F3_II_exp)
+names(F2_III)<-names(F3_III_exp)
+names(F2_intergenic)<-names(F3_intergenic_exp)
+
+novel_I_rejects <- rbind(data.frame(id="novel_I_F1",F1_I),
+                         data.frame(id="novel_I_F2",F2_I),
+                         data.frame(id="novel_I_F3",F3_I_exp))
+novel_I_rejects_sub <- novel_I_rejects[ ,c("transcriptName","calcTPM","id")]
+names(novel_I_rejects_sub)[3]<-paste("V1")
+novel_II_rejects <- rbind(data.frame(id="novel_II_F1",F1_II),
+                         data.frame(id="novel_II_F2",F2_II),
+                         data.frame(id="novel_II_F3",F3_II_exp))
+novel_II_rejects_sub <- novel_II_rejects[ ,c("transcriptName","calcTPM","id")]
+names(novel_II_rejects_sub)[3]<-paste("V1")
+novel_III_rejects <- rbind(data.frame(id="novel_III_F1",F1_III),
+                          data.frame(id="novel_III_F2",F2_III),
+                          data.frame(id="novel_III_F3",F3_III_exp))
+novel_III_rejects_sub <- novel_III_rejects[ ,c("transcriptName","calcTPM","id")]
+names(novel_III_rejects_sub)[3]<-paste("V1")
+intergenic_rejects <- rbind(data.frame(id="intergenic_F1",F1_intergenic),
+                           data.frame(id="intergenic_F2",F2_intergenic),
+                           data.frame(id="intergenic_F3",F3_intergenic_exp))
+intergenic_rejects_sub <- intergenic_rejects[ ,c("transcriptName","calcTPM","id")]
+names(intergenic_rejects_sub)[3]<-paste("V1")
+
+novel_I_total_exp <-rbind(novel_I_all_exp,novel_I_rejects_sub)
+novel_II_total_exp <-rbind(novel_II_all_exp,novel_II_rejects_sub)
+novel_III_total_exp <-rbind(novel_III_all_exp,novel_III_rejects_sub)
+intergenic_total_exp <-rbind(intergenic_all_exp,intergenic_rejects_sub)
+
+nonannotated <- rbind(novel_I_total_exp,novel_II_total_exp,
+                      novel_III_total_exp,intergenic_total_exp)
+write.table(nonannotated, "nonannotated", row.names=F, col.names=T, sep = "\t")
+
+#Pie Chart based on cumulative TPM
+library(RColorBrewer)
+my.cols <- brewer.pal(5, "Set3")
+my.cols# "#8DD3C7" "#FFFFB3" "#BEBADA" "#FB8072" "#80B1D3"
+my.cols <- c( "#8DD3C7", "#FFFFB3", "#BEBADA", "#80B1D3","#FB8072")
+
+ggplot(novel_I_total_exp,aes(x=factor(1),weight=calcTPM,fill=V1)) + 
+  geom_bar(width=1) + xlab(" ") + 
+  ylab(" ") + coord_polar("y") + 
+  guides(fill=guide_legend(title="composition")) +
+  theme(legend.title = element_text(colour="black", size=18, face="bold")) +
+  theme(legend.text = element_text(colour="black", size = 16)) +
+  theme(axis.text = element_text(colour="black", size = 14)) +
+  scale_fill_manual(values = my.cols,
+                    labels=c("F1","F2","F3","F4","lncRNA")) +
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank())
 
 ggplot(novel_II_total_exp,aes(x=factor(1),weight=calcTPM,fill=V1)) + 
   geom_bar(width=1) + xlab(" ") + 
@@ -146,8 +246,10 @@ ggplot(novel_II_total_exp,aes(x=factor(1),weight=calcTPM,fill=V1)) +
   theme(legend.title = element_text(colour="black", size=18, face="bold")) +
   theme(legend.text = element_text(colour="black", size = 16)) +
   theme(axis.text = element_text(colour="black", size = 14)) +
-  scale_fill_brewer(palette = "Set3",
-                    labels=c("F1 rejects","F3 rejects","F4 rejects","lncRNA"))
+  scale_fill_manual(values = my.cols,
+                    labels=c("F1","F2","F3","F4","lncRNA")) +
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank())
 
 ggplot(novel_III_total_exp,aes(x=factor(1),weight=calcTPM,fill=V1)) + 
   geom_bar(width=1) + xlab(" ") + 
@@ -156,15 +258,11 @@ ggplot(novel_III_total_exp,aes(x=factor(1),weight=calcTPM,fill=V1)) +
   theme(legend.title = element_text(colour="black", size=18, face="bold")) +
   theme(legend.text = element_text(colour="black", size = 16)) +
   theme(axis.text = element_text(colour="black", size = 14)) +
-  scale_fill_brewer(palette = "Set3",
-                    labels=c("F1 rejects","F3 rejects","F4 rejects","lncRNA"))
-#Intergenic has F2 rejects, which the other categories did not because they were 
-#already filtered for size in the transcriptome pipeline, bc of this colours 
-#must be assigned so that lncRNA wedge has same colour in all pies.
-library(RColorBrewer)
-my.cols <- brewer.pal(5, "Set3")
-my.cols# "#8DD3C7" "#FFFFB3" "#BEBADA" "#FB8072" "#80B1D3"
-my.cols <- c( "#8DD3C7", "#FFFFB3", "#BEBADA", "#80B1D3","#FB8072")
+  scale_fill_manual(values = my.cols,
+                    labels=c("F1","F2","F3","F4","lncRNA")) +
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank())
+
 ggplot(intergenic_total_exp,aes(x=factor(1),weight=calcTPM,fill=V1)) + 
   geom_bar(width=1) + xlab(" ") + 
   ylab(" ") + coord_polar("y") + 
@@ -173,7 +271,9 @@ ggplot(intergenic_total_exp,aes(x=factor(1),weight=calcTPM,fill=V1)) +
   theme(legend.text = element_text(colour="black", size = 16)) +
   theme(axis.text = element_text(colour="black", size = 14)) +
   scale_fill_manual(values = my.cols,
-                    labels=c("F1 rejects","F2 reject","F3 rejects","F4 rejects","lncRNA"))
+                    labels=c("F1","F2","F3","F4","lncRNA")) +
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank())
 
 #calculate some quick stats
 lncRNA_exp <- merge(lncRNA_keeps, overallExpression, by.x="V5",by.y="transcriptName" )
