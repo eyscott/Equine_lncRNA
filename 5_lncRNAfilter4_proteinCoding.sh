@@ -26,7 +26,7 @@ TransDecoder.LongOrfs -t intergenic_f3.fa -m 20
 #with -m 20, meaning ORF minimum of 20 (default=100) because we are dealing with lncRNA
 
 ##step 4: Predict likely coding regions with HMMER: hmmsearch, using ORFs predicted above:
-module load hmmer
+module load HMMER/3.1b2
 #main
 hmmsearch --cpu 8 --domtblout novel_I_pfam.domtblout Pfam-A.hmm novel_I_f3.fa.transdecoder_dir/longest_orfs.pep
 hmmsearch --cpu 8 --domtblout novel_II_pfam.domtblout Pfam-A.hmm novel_II_f3.fa.transdecoder_dir/longest_orfs.pep
@@ -35,16 +35,18 @@ hmmsearch --cpu 8 --domtblout intergenic_pfam.domtblout Pfam-A.hmm intergenic_f3
 
 ##step 5: retain those significant hits to the Pfam-A db using Transdecoder:
 #main
-TransDecoder.Predict -t novel_I.fa --retain_pfam_hits novel_I_pfam.domtblout
-TransDecoder.Predict -t novel_II.fa --retain_pfam_hits novel_II_pfam.domtblout
-TransDecoder.Predict -t novel_III.fa --retain_pfam_hits novel_III_pfam.domtblout
-TransDecoder.Predict -t intergenic.fa --retain_pfam_hits intergenic_pfam.domtblout
+#TransDecoder.Predict -t novel_I.fa --retain_pfam_hits novel_I_pfam.domtblout
+#TransDecoder.Predict -t novel_II.fa --retain_pfam_hits novel_II_pfam.domtblout
+#TransDecoder.Predict -t novel_III.fa --retain_pfam_hits novel_III_pfam.domtblout
+#TransDecoder.Predict -t intergenic.fa --retain_pfam_hits intergenic_pfam.domtblout
 
 ###step 6 running blastp
-curl -O ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref90
+curl -O ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref90/uniref90.fasta.gz
 gunzip uniref90.fasta.gz
-module load blast
-blastp -query novel_I_f3.fa.transdecoder_dir/longest_orfs.pep  -db uniref90.fasta  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 10 > novel_I_blastp.outfmt6
-blastp -query novel_II_f3.fa.transdecoder_dir/longest_orfs.pep  -db uniref90.fasta  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 10 > novel_II_blastp.outfmt6
-blastp -query novel_III_f3.fa.transdecoder_dir/longest_orfs.pep  -db uniref90.fasta  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 10 > novel_III_blastp.outfmt6
-blastp -query intergenic_f3.fa.transdecoder_dir/longest_orfs.pep  -db uniref90.fasta  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 10 > intergenic_blastp.outfmt6
+module load GNU/4.8.3
+module load BLAST+/2.3.0
+makeblastdb -in uniref90.fasta -dbtype prot
+blastp -query novel_I_f3.fa.transdecoder_dir/longest_orfs.pep  -db uniref90.fasta  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 8 > novel_I_blastp.outfmt6
+blastp -query novel_II_f3.fa.transdecoder_dir/longest_orfs.pep  -db uniref90.fasta  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 8 > novel_II_blastp.outfmt6
+blastp -query novel_III_f3.fa.transdecoder_dir/longest_orfs.pep  -db uniref90.fasta  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 8 > novel_III_blastp.outfmt6
+blastp -query intergenic_f3.fa.transdecoder_dir/longest_orfs.pep  -db uniref90.fasta  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 8 > intergenic_blastp.outfmt6
