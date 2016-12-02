@@ -1,9 +1,9 @@
 ###Looking at BLASTp results
 ##looking at blastp.outfmt6 tables
-novel_I_blastp <- read.table("novel_I_blastp.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
-novel_II_blastp <- read.table("novel_II_blastp.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
-novel_III_blastp <- read.table("novel_III_blastp.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
-intergenic_blastp <- read.table("intergenic_blastp.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
+novel_I_blastp <- read.table("novel_I_sprot.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
+novel_II_blastp <- read.table("novel_II_sprot.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
+novel_III_blastp <- read.table("novel_III_sprot.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
+intergenic_blastp <- read.table("intergenic_sprot.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
 #parse out column V1 to get gene IDs
 require(tidyr)
 novel_I_blastp_new <- separate(data = novel_I_blastp, col = V1, into = c("gene","chrs","g","m"), sep = "::")
@@ -119,6 +119,11 @@ names(novel_II_blastp_bed)<-names(novel_II_pfam_sub)
 names(novel_III_blastp_bed)<-names(novel_III_pfam_sub)
 names(intergenic_blastp_bed)<-names(intergenic_pfam_sub)
 
+novel_I_bed_f3=read.table("novel_I_f3_new.bed", header=F, stringsAsFactors=F,sep = "\t")
+novel_II_bed_f3=read.table("novel_II_f3_new.bed", header=F, stringsAsFactors=F,sep = "\t")
+novel_III_bed_f3=read.table("novel_III_f3_new.bed", header=F, stringsAsFactors=F,sep = "\t")
+intergenic_bed_f3=read.table("intergenic_f3_new.bed", header=F, stringsAsFactors=F,sep = "\t")
+
 novel_I_bed_trunc <-novel_I_bed_f3[ ,c("V1","V2","V3","V4")]
 novel_II_bed_trunc <-novel_II_bed_f3[ ,c("V1","V2","V3","V4")]
 novel_III_bed_trunc <-novel_III_bed_f3[ ,c("V1","V2","V3","V4")]
@@ -149,11 +154,12 @@ novel_I_blastp_bed_trunc <- novel_I_blastp_bed_trunc[with(novel_I_blastp_bed_tru
 novel_II_blastp_bed_trunc <- novel_II_blastp_bed_trunc[with(novel_II_blastp_bed_trunc, order(chr, start)), ]
 novel_III_blastp_bed_trunc <- novel_III_blastp_bed_trunc[with(novel_III_blastp_bed_trunc, order(chr, start)), ]
 intergenic_blastp_bed_trunc <- intergenic_blastp_bed_trunc[with(intergenic_blastp_bed_trunc, order(chr, start)), ]
+
 #format tables for anti_join
-novel_I_bed_trunc <-novel_I_bed_f3[ ,c("V1","V2","V3","V4")]
-novel_II_bed_trunc <-novel_II_bed_f3[ ,c("V1","V2","V3","V4")]
-novel_III_bed_trunc <-novel_III_bed_f3[ ,c("V1","V2","V3","V4")]
-intergenic_bed_trunc <- intergenic_bed_f3[ ,c("V1","V2","V3","V4")]
+#novel_I_bed_trunc <-novel_I_bed_f3[ ,c("V1","V2","V3","V4")]
+#novel_II_bed_trunc <-novel_II_bed_f3[ ,c("V1","V2","V3","V4")]
+#novel_III_bed_trunc <-novel_III_bed_f3[ ,c("V1","V2","V3","V4")]
+#intergenic_bed_trunc <- intergenic_bed_f3[ ,c("V1","V2","V3","V4")]
 ##anti-join to get non PCG
 names(novel_I_blastp_bed)<-names(novel_I_bed_trunc)
 names(novel_II_blastp_bed)<-names(novel_II_bed_trunc)
