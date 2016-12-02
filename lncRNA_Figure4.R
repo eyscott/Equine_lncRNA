@@ -38,7 +38,7 @@ cumulative_annotated_TPM_SC<-sum(mergedTrans_noNovel_exp[["SpinalCord"]])
 #attach tissue specific expression to our lncRNA
 lncRNA_exp <- merge(all,tissue_specific_all_exp, by.x="V4",by.y="isoformName")
 lncRNA_exp <- lncRNA_exp[ , c("V4","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",  "Retina",	"Skin",	"SpinalCord")] 
-
+write.table(lncRNA_exp,"lncRNA_exp.txt")
 #combine all
 total_exp <- rbind(data.frame(id="lncRNA",lncRNA_exp),
                    data.frame(id="annotated",mergedTrans_noNovel_exp))
