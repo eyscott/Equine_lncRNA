@@ -20,3 +20,14 @@ lncRNA_down <- lncRNA_down[with(lncRNA_down, order(V1, V3)), ]
 
 write.table(lncRNA_promoters, "lncRNA_promoters.bed", row.names=F, col.names=F, quote=F,, sep = "\t")
 write.table(lncRNA_down, "lncRNA_down.bed", row.names=F, col.names=F, quote=F,, sep = "\t")
+
+#also make an overall lncRNA_final bed
+setwd("~/Desktop/lncRNA")
+novel_I_bed <- read.table("novel_I_final.bed", header=F, stringsAsFactors=F)
+novel_II_bed <- read.table("novel_II_final.bed", header=F, stringsAsFactors=F)
+novel_III_bed <- read.table("novel_III_final.bed", header=F, stringsAsFactors=F)
+intergenic_bed <- read.table("intergenic_final.bed", header=F, stringsAsFactors=F)
+lncRNA_bed <- rbind(novel_I_bed,novel_II_bed,novel_III_bed,intergenic_bed)
+lncRNA_bed <- lncRNA_bed[with(lncRNA_bed, order(V1, V2)), ]
+write.table(lncRNA_bed, "lncRNA_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+
