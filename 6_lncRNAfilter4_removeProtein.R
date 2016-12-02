@@ -118,7 +118,7 @@ names(novel_I_blastp_bed)<-names(novel_I_pfam_sub)
 names(novel_II_blastp_bed)<-names(novel_II_pfam_sub)
 names(novel_III_blastp_bed)<-names(novel_III_pfam_sub)
 names(intergenic_blastp_bed)<-names(intergenic_pfam_sub)
-
+#read in the remaining transcripts after filter 3
 novel_I_bed_f3=read.table("novel_I_f3_new.bed", header=F, stringsAsFactors=F,sep = "\t")
 novel_II_bed_f3=read.table("novel_II_f3_new.bed", header=F, stringsAsFactors=F,sep = "\t")
 novel_III_bed_f3=read.table("novel_III_f3_new.bed", header=F, stringsAsFactors=F,sep = "\t")
@@ -139,50 +139,53 @@ novel_II_blastp_bed_trunc <-novel_II_blastp_bed[ ,c("chr","start","stop","V3")]
 novel_III_blastp_bed_trunc <-novel_III_blastp_bed[ ,c("chr","start","stop","V3")]
 intergenic_blastp_bed_trunc <-intergenic_blastp_bed[ ,c("chr","start","stop","V3")]
 
-#order chr properly
-novel_I_bed_trunc <- novel_I_bed_trunc[with(novel_I_bed_trunc, order(V1, V2)), ]
-novel_II_bed_trunc <- novel_II_bed_trunc[with(novel_II_bed_trunc, order(V1, V2)), ]
-novel_III_bed_trunc <- novel_III_bed_trunc[with(novel_III_bed_trunc, order(V1, V2)), ]
-intergenic_bed_trunc <- intergenic_bed_trunc[with(intergenic_bed_trunc, order(V1, V2)), ]
+##merge the protein findings
+novel_I_P <- rbind(novel_I_blastp_bed_trunc[c("chr","start","stop","V3")],novel_I_pfam_sub_trunc[c("chr","start","stop","V3")])
+novel_I_P <- novel_I_P[with(novel_I_P, order(chr,start)), ]
 
-novel_I_pfam_sub_trunc <- novel_I_pfam_sub_trunc[with(novel_I_pfam_sub_trunc, order(chr, start)), ]
-novel_II_pfam_sub_trunc <- novel_II_pfam_sub_trunc[with(novel_II_pfam_sub_trunc, order(chr, start)), ]
-novel_III_pfam_sub_trunc <- novel_III_pfam_sub_trunc[with(novel_III_pfam_sub_trunc, order(chr, start)), ]
-intergenic_pfam_sub_trunc <- intergenic_pfam_sub_trunc[with(intergenic_pfam_sub_trunc, order(chr, start)), ]
+novel_II_P <- rbind(novel_II_blastp_bed_trunc[c("chr","start","stop","V3")],novel_II_pfam_sub_trunc[c("chr","start","stop","V3")])
+novel_II_P <- novel_II_P[with(novel_II_P, order(chr,start)), ]
 
-novel_I_blastp_bed_trunc <- novel_I_blastp_bed_trunc[with(novel_I_blastp_bed_trunc, order(chr, start)), ]
-novel_II_blastp_bed_trunc <- novel_II_blastp_bed_trunc[with(novel_II_blastp_bed_trunc, order(chr, start)), ]
-novel_III_blastp_bed_trunc <- novel_III_blastp_bed_trunc[with(novel_III_blastp_bed_trunc, order(chr, start)), ]
-intergenic_blastp_bed_trunc <- intergenic_blastp_bed_trunc[with(intergenic_blastp_bed_trunc, order(chr, start)), ]
+novel_III_P <- rbind(novel_III_blastp_bed_trunc[c("chr","start","stop","V3")],novel_III_pfam_sub_trunc[c("chr","start","stop","V3")])
+novel_III_P <- novel_III_P[with(novel_III_P, order(chr,start)), ]
 
-#format tables for anti_join
-#novel_I_bed_trunc <-novel_I_bed_f3[ ,c("V1","V2","V3","V4")]
-#novel_II_bed_trunc <-novel_II_bed_f3[ ,c("V1","V2","V3","V4")]
-#novel_III_bed_trunc <-novel_III_bed_f3[ ,c("V1","V2","V3","V4")]
-#intergenic_bed_trunc <- intergenic_bed_f3[ ,c("V1","V2","V3","V4")]
-##anti-join to get non PCG
-names(novel_I_blastp_bed)<-names(novel_I_bed_trunc)
-names(novel_II_blastp_bed)<-names(novel_II_bed_trunc)
-names(novel_III_blastp_bed)<-names(novel_III_bed_trunc)
-names(intergenic_blastp_bed)<-names(intergenic_bed_trunc)
+intergenic_P <- rbind(intergenic_blastp_bed_trunc[c("chr","start","stop","V3")],intergenic_pfam_sub_trunc[c("chr","start","stop","V3")])
+intergenic_P <- intergenic_P[with(intergenic_P, order(chr,start)), ]
 
-names(novel_I_pfam_sub_trunc)<-names(novel_I_bed_trunc)
-names(novel_II_pfam_sub_trunc)<-names(novel_II_bed_trunc)
-names(novel_III_pfam_sub_trunc)<-names(novel_III_bed_trunc)
-names(intergenic_pfam_sub_trunc)<-names(intergenic_bed_trunc)
-##filtering out PCGs 
-novel_I_P_bed <- merge(novel_I_bed_trunc,novel_I_pfam_sub_trunc, by.x=c("V1","V2","V3"),by.y=c("V1","V2","V3"))
-novel_I_noP_bed <- anti_join(novel_I_bed_trunc,novel_I_P_bed, by.x="V4",by.y="V4.x")
+write.table(novel_I_P, "novel_I_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(novel_II_P, "novel_II_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(novel_III_P, "novel_III_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(intergenic_P, "intergenic_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
-novel_II_P_bed <- merge(novel_II_bed_trunc,novel_II_pfam_sub_trunc, by.x=c("V1","V2","V3"),by.y=c("V1","V2","V3"))
-novel_II_noP_bed <- anti_join(novel_II_bed_trunc,novel_II_P_bed, by.x="V4",by.y="V4.x")
+write.table(novel_I_bed_trunc, "novel_I_trunc_bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(novel_II_bed_trunc, "novel_II_trunc_bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(novel_III_bed_trunc, "novel_III_trunc_bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(intergenic_bed_trunc, "intergenic_trunc_bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
-novel_III_P_bed <- merge(novel_III_bed_trunc,novel_III_pfam_sub_trunc, by.x=c("V1","V2","V3"),by.y=c("V1","V2","V3"))
-novel_III_noP_bed <- anti_join(novel_III_bed_trunc,novel_III_P_bed, by.x="V4",by.y="V4.x")
+######################
+novel_I_P <-  read.table("novel_I_P.bed", header=F, stringsAsFactors=F)
+novel_II_P <-  read.table("novel_II_P.bed", header=F, stringsAsFactors=F)
+novel_III_P <-  read.table("novel_III_P.bed", header=F, stringsAsFactors=F)
+intergenic_P <-  read.table("intergenic_P.bed", header=F, stringsAsFactors=F)
+#removing duplicates from the two protein searches because they are causing
+#problems with anti_join, as is the order of the chrs
+novel_I_P_noDups <- novel_I_P[!duplicated(novel_I_P[,1:3]),]
+novel_I_P_noDups <- novel_I_P_noDups[with(novel_I_P_noDups, order(V1,V2)), ]
 
-intergenic_P_bed <- merge(intergenic_bed_trunc,intergenic_pfam_sub_trunc, by.x=c("V1","V2","V3"),by.y=c("V1","V2","V3"))
-intergenic_noP_bed <- anti_join(intergenic_bed_trunc,intergenic_P_bed, by.x="V4",by.y="V4.x")
+novel_II_P_noDups <- novel_II_P[!duplicated(novel_II_P[,1:3]),]
+novel_II_P_noDups <- novel_II_P_noDups[with(novel_II_P_noDups, order(V1,V2)), ]
 
+novel_III_P_noDups <- novel_III_P[!duplicated(novel_III_P[,1:3]),]
+novel_III_P_noDups <- novel_III_P_noDups[with(novel_III_P_noDups, order(V1,V2)), ]
+
+intergenic_P_noDups <- intergenic_P[!duplicated(intergenic_P[,1:3]),]
+intergenic_noDups <- intergenic_noDups[with(intergenic_P_noDups, order(V1,V2)), ]
+#performing anti_join to get rid of any transcript which had a hit in blastp or hmmsearch
+require(dplyr)
+novel_I_noP <- anti_join(novel_I_bed_trunc,novel_I_P_noDups, by=c("V1","V2","V3"))
+novel_II_noP <- anti_join(novel_II_bed_trunc,novel_II_P_noDups, by=c("V1","V2","V3"))
+novel_III_noP <- anti_join(novel_III_bed_trunc,novel_III_P_noDups, by=c("V1","V2","V3"))
+intergenic_noP <- anti_join(intergenic_bed_trunc,intergenic_P_noDups, by=c("V1","V2","V3"))
 
 write.table(novel_I_P_bed, "novel_I_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_I_noP_bed, "novel_I_noP.bed", row.names=F, col.names=F, quote=F, sep = "\t")
