@@ -187,23 +187,18 @@ novel_II_noP <- anti_join(novel_II_bed_trunc,novel_II_P_noDups, by=c("V1","V2","
 novel_III_noP <- anti_join(novel_III_bed_trunc,novel_III_P_noDups, by=c("V1","V2","V3"))
 intergenic_noP <- anti_join(intergenic_bed_trunc,intergenic_P_noDups, by=c("V1","V2","V3"))
 
-write.table(novel_I_P_bed, "novel_I_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(novel_I_noP_bed, "novel_I_noP.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(novel_II_P_bed, "novel_II_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(novel_II_noP_bed, "novel_II_noP.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(novel_III_P_bed, "novel_III_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(novel_III_noP_bed, "novel_III_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(intergenic_P_bed, "intergenic_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(intergenic_noP_bed, "intergenic_noP.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+#make the f4 outputs into bed files
+setwd("~/Dropbox/Horse_Transcriptome/downloads")
+unfiltered_bed <- read.table("allTissues_BED/unfiltered_Alltissues_Assembly.bed", header=F, stringsAsFactors=F)
 
-novel_I_bed <- merge(novel_I_P_bed, unfiltered_bed, by.x="V4.x",by.y="V4")
-novel_II_bed <- merge(novel_II_P_bed, unfiltered_bed, by.x="V4.x",by.y="V4")
-novel_III_bed <- merge(novel_III_P_bed, unfiltered_bed, by.x="V4.x",by.y="V4")
-intergenic_bed <- merge(intergenic_P_bed, unfiltered_bed, by.x="V4.x",by.y="V4")
-novel_I_bed <- novel_I_bed[ ,c("V1.x","V2.x","V3.x","V4.x","V5","V6","V7","V8","V9","V10","V11","V12")]
-novel_II_bed <- novel_II_bed[ ,c("V1.x","V2.x","V3.x","V4.x","V5","V6","V7","V8","V9","V10","V11","V12")]
-novel_III_bed <- novel_III_bed[ ,c("V1.x","V2.x","V3.x","V4.x","V5","V6","V7","V8","V9","V10","V11","V12")]
-intergenic_bed <- intergenic_bed[ ,c("V1.x","V2.x","V3.x","V4.x","V5","V6","V7","V8","V9","V10","V11","V12")]
+novel_I_bed <- merge(novel_I_noP, unfiltered_bed,by="V4")
+novel_II_bed <- merge(novel_II_noP, unfiltered_bed, by="V4")
+novel_III_bed <- merge(novel_III_noP, unfiltered_bed, by="V4")
+intergenic_bed <- merge(intergenic_noP, unfiltered_bed, by="V4")
+novel_I_bed <- novel_I_bed[ ,c("V1.x","V2.x","V3.x","V4","V5","V6","V7","V8","V9","V10","V11","V12")]
+novel_II_bed <- novel_II_bed[ ,c("V1.x","V2.x","V3.x","V4","V5","V6","V7","V8","V9","V10","V11","V12")]
+novel_III_bed <- novel_III_bed[ ,c("V1.x","V2.x","V3.x","V4","V5","V6","V7","V8","V9","V10","V11","V12")]
+intergenic_bed <- intergenic_bed[ ,c("V1.x","V2.x","V3.x","V4","V5","V6","V7","V8","V9","V10","V11","V12")]
 
 setwd("~/Desktop/lncRNA")
 write.table(novel_I_bed, "novel_I_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
@@ -211,45 +206,20 @@ write.table(novel_II_bed, "novel_II_final.bed", row.names=F, col.names=F, quote=
 write.table(novel_III_bed, "novel_III_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(intergenic_bed, "intergenic_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
-
-all_lncRNA <- rbind(novel_I_noP_bed,novel_II_noP_bed,novel_III_noP_bed,intergenic_noP_bed)
-all_lncRNA <- all_lncRNA[with(all_lncRNA, order(V1, V2)), ]
-lncRNA_all_Cat <-rbind(data.frame(id="novel_I",novel_I_noP_bed),
-                       data.frame(id="novel_II",novel_II_noP_bed),
-                       data.frame(id="novel_III",novel_III_noP_bed),
-                       data.frame(id="intergenic",intergenic_noP_bed))
+#now lets concat. them with labels to make them easier to make figures with later
+lncRNA_all_Cat <-rbind(data.frame(id="novel_I",novel_I_noP),
+                       data.frame(id="novel_II",novel_II_noP),
+                       data.frame(id="novel_III",novel_III_noP),
+                       data.frame(id="intergenic",intergenic_noP))
 lncRNA_all_Cat <- lncRNA_all_Cat[with(lncRNA_all_Cat, order(V1, V2)), ]
-write.table(all_lncRNA, "lncRNA_final", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(lncRNA_all_Cat, "lncRNA_final_IDs", row.names=F, col.names=F, quote=F, sep = "\t")
-
-novel_I_P_bed <- novel_I_P_bed[ ,c("V1","V2","V3","V4.x")]
-novel_I_P_bed <- novel_I_P_bed[!duplicated(novel_I_P_bed),]
-names(novel_I_P_bed)[4]<-paste("V4")
-
-novel_II_P_bed <- novel_II_P_bed[ ,c("V1","V2","V3","V4.x")]
-novel_II_P_bed <- novel_II_P_bed[!duplicated(novel_II_P_bed),]
-names(novel_II_P_bed)[4]<-paste("V4")
-
-novel_III_P_bed <- novel_III_P_bed[ ,c("V1","V2","V3","V4.x")]
-novel_III_P_bed <- novel_III_P_bed[!duplicated(novel_III_P_bed),]
-names(novel_III_P_bed)[4]<-paste("V4")
-
-intergenic_P_bed <- intergenic_P_bed[ ,c("V1","V2","V3","V4.x")]
-intergenic_P_bed <- intergenic_P_bed[!duplicated(intergenic_P_bed),]
-names(intergenic_P_bed)[4]<-paste("V4")
-
-
-all_ID <-rbind(data.frame(id="novel_I_lncRNA",novel_I_noP_bed),
-               data.frame(id="novel_I_genes",novel_I_P_bed),
-               data.frame(id="novel_II_lncRNA",novel_II_noP_bed),
-               data.frame(id="novel_II_genes",novel_II_P_bed),
-               data.frame(id="novel_III_lncRNA",novel_III_noP_bed),
-               data.frame(id="novel_III_genes",novel_III_P_bed),
-               data.frame(id="intergenic_lncRNA",intergenic_noP_bed),
-               data.frame(id="intergenic_genes",intergenic_P_bed))
-
+##now just making a table of f3, sub-divided into the protein coding vs non protein coding found in filter 4
+all_ID <-rbind(data.frame(id="novel_I_lncRNA",novel_I_noP),
+               data.frame(id="novel_I_genes",novel_I_P_noDups),
+               data.frame(id="novel_II_lncRNA",novel_II_noP),
+               data.frame(id="novel_II_genes",novel_II_P_noDups),
+               data.frame(id="novel_III_lncRNA",novel_III_noP),
+               data.frame(id="novel_III_genes",novel_III_P_noDups),
+               data.frame(id="intergenic_lncRNA",intergenic_noP),
+               data.frame(id="intergenic_genes",intergenic_P_noDups))
 write.table(all_ID, "all_cats_PandnoP", row.names=F, col.names=F, quote=F, sep = "\t")
-
-
-
-
