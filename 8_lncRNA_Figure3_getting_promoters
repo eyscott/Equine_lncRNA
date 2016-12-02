@@ -1,6 +1,6 @@
 ##obtaining lncRNA promoters < 1kb 5'
 setwd("~/Desktop/lncRNA")
-lncRNA_all_bed <- read.table("all_lncRNA_final.bed", header=F,stringsAsFactors=F )
+lncRNA_all_bed <- read.table("lncRNA_final.bed", header=F,stringsAsFactors=F )
 lncRNA_all_bed ["up"] <- (lncRNA_all_bed [ ,2]-1000)
 lncRNA_all_bed ["down"]<- (lncRNA_all_bed [ ,3] + 1000)
 #convert all negative numbers into 0
