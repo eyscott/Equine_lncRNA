@@ -1,5 +1,5 @@
 ##get fasta files for our lncRNA
-bedtools getfasta -s -fi equCab2.0_genome.fa -bed lncRNA_final.bed -fo lncRNA_all_final.fa
+bedtools getfasta -s -fi equCab2.0_genome.fa -bed lncRNA_final.bed -fo lncRNA_final.fa
 ##then our transcriptome
 bedtools getfasta -s -fi equCab2.0_genome.fa -bed mergedTrans.bed -fo mergedTrans.fa
 #then all our associated promoters
