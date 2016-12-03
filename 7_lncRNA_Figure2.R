@@ -13,7 +13,8 @@ lncRNA_keeps <- lncRNA_all[keeps]
 chrs <- c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15", "chr16", "chr17", "chr18", "chr19", "chr20", "chr21", "chr22", "chr23", "chr24", "chr25", "chr26", "chr27", "chr28", "chr29", "chr30", "chr31", "chrUn", "chrX")
 chrs_N <- c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "Un", "X")    
 chromSizes<-read.table("equCab2.chrom.sizes.txt", header=T, col.names=c("chr","size"),stringsAsFactors=FALSE) 
-m <- ggplot(data=lncRNA_keeps, aes(V2)) + geom_bar(aes(V2,group=V1,fill=V1),stat = "count") + 
+pdf("Fig1A.pdf")
+ggplot(data=lncRNA_keeps, aes(V2)) + geom_bar(aes(V2,group=V1,fill=V1),stat = "count") + 
   scale_x_discrete(limits = chrs, labels = chrs_N) + ylab("lncRNA count") + xlab("Chr") +
   scale_fill_discrete(name  ="Input", 
                     guide = guide_legend(reverse = TRUE),
@@ -23,8 +24,7 @@ m <- ggplot(data=lncRNA_keeps, aes(V2)) + geom_bar(aes(V2,group=V1,fill=V1),stat
   theme(axis.text = element_text(colour="black", size = 14)) +
   theme(axis.title = element_text(colour="black", size = 16)) +
   geom_line(data=subset(chromSizes,chr %in% chrs), aes(x=chr, y= size / 80000, group=1), colour="blue")
-
-m
+dev.off()
 
 ##Figure 2B
 #merge lncRNA_keeps with expression data
@@ -34,11 +34,11 @@ overallExpression$transcriptName=rownames(overallExpression)
 lncRNA_exp <- merge(overallExpression, lncRNA_keeps, by.x="transcriptName",by.y="V5" )
 lncRNA_exp <-lncRNA_exp[ ,c("V2","V3","V4","transcriptName","calcTPM","V1")]
 #get exon information from unfiltered bed
-setwd("~/Dropbox/Horse_Transcriptome/downloads/allTissues_BED")
-unfiltered_bed <- read.table("unfiltered_Alltissues_Assembly.bed", header=F, stringsAsFactors=F)
+unfiltered_bed <- read.table("allTissues_BED/unfiltered_Alltissues_Assembly.bed", header=F, stringsAsFactors=F)
 lncRNA_exp_exons <- merge(lncRNA_exp, unfiltered_bed, by.x="transcriptName",by.y="V4" )
 lncRNA_exp_exons <-lncRNA_exp_exons[ ,c("transcriptName","calcTPM","V10","V1.x")]
 #Figure 1C:cumulative expression and exons with categories
+pdf("Fig1C.pdf")
 ggplot(subset(lncRNA_exp_exons, V10 %in% c(1:10)), aes(V1.x,group=V10,fill=V10)) + 
   geom_bar(aes(weight=calcTPM),position="stack") + xlab("Input") + 
   ylab("cumulative expression (TPM)") + scale_fill_gradientn(colours=rainbow(10),
@@ -49,6 +49,7 @@ ggplot(subset(lncRNA_exp_exons, V10 %in% c(1:10)), aes(V1.x,group=V10,fill=V10))
   theme(legend.text = element_text(colour="black", size = 16)) +
   theme(axis.text = element_text(colour="black", size = 14)) +
   theme(axis.title = element_text(colour="black", size = 16))
+dev.off()
 
 #Figure 2A: pie charts for overall RNAseq output for novel I,II,II, intergenic
 #genes=those retained from hmmer and blastp

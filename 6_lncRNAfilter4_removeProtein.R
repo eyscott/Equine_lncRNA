@@ -181,10 +181,10 @@ write.table(novel_III_bed, "novel_III_final.bed", row.names=F, col.names=F, quot
 write.table(intergenic_bed, "intergenic_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
 #now lets concat. them with labels to make them easier to make figures with later
-lncRNA_all_Cat <-rbind(data.frame(id="novel_I",novel_I_bed[,1:3]),
-                       data.frame(id="novel_II",novel_II_bed[,1:3]),
-                       data.frame(id="novel_III",novel_III_bed[,1:3]),
-                       data.frame(id="intergenic",intergenic_bed[,1:3]))
+lncRNA_all_Cat <-rbind(data.frame(id="novel_I",novel_I_bed),
+                       data.frame(id="novel_II",novel_II_bed),
+                       data.frame(id="novel_III",novel_III_bed),
+                       data.frame(id="intergenic",intergenic_bed))
 lncRNA_all_Cat <- lncRNA_all_Cat[with(lncRNA_all_Cat, order(chr, start)), ]
 write.table(lncRNA_all_Cat, "lncRNA_final_IDs", row.names=F, col.names=F, quote=F, sep = "\t")
 ##now just making a table of f3, sub-divided into the protein coding vs non protein coding found in filter 4
