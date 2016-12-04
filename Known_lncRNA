@@ -1,0 +1,93 @@
+#get the known ncRNA from our merged Trans
+setwd("~/Dropbox/Horse_Transcriptome/downloads")
+merged_bed <- read.table("allTissues_BED/mergedTrans.bed", header=F,stringsAsFactors=F )
+merged_bed_lncRNA <- subset(merged_bed,grepl("^XR_", V4))#4727 in here
+#order chr properly
+merged_bed_lncRNA <- merged_bed_lncRNA[with(merged_bed_lncRNA, order(V1, V2)), ]
+setwd("~/Desktop/lncRNA")
+write.table(merged_bed_lncRNA,"known_lncRNA.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+
+##run bedtools-intersect to see which of these are in our transcriptome
+#bedtools intersect -c -a unfiltered.bed -b known_lncRNA.bed -sorted > known_unfiltered.bed
+bedtools intersect -c -a known_lncRNA.bed -b unfiltered.bed -sorted > known_unfiltered2.bed
+
+setwd("~/Desktop/lncRNA")
+known_lncRNA_unfiltered <-read.table("known_unfiltered.bed",header=F)
+known_lncRNA_bed <- subset(known_lncRNA_unfiltered, (V13 > 0))#18589
+
+#known_lncRNA_unfiltered <-read.table("known_lncRNA_unfiltered2.bed",header=F)
+#known_lncRNA_bed <- subset(known_lncRNA_unfiltered2, (V13 > 0))#18589
+
+
+##running through first filter
+setwd("~/Dropbox/Horse_Transcriptome/downloads")
+overallExpression <- read.table("dataSummary", header=T, stringsAsFactors=F)
+overallExpression$transcriptName=rownames(overallExpression)
+tissue_specific_intergenic_exp <- read.table("intergenic_trans/allTissues_isoformTPM", header=T, stringsAsFactors=F)
+tissue_specific_exp <- read.table("backmapping_stats/allTissues_isoformTPM", header=T, stringsAsFactors=F)
+#remove mt entries
+tissue_specific_exp <- tissue_specific_exp[-c(1,2),]
+#combine
+tissue_exp <- rbind(tissue_specific_intergenic_exp,tissue_specific_exp)
+
+#attach global gene expression values and lenth 
+known_lncRNA <- merge(overallExpression, known_lncRNA_bed, by.x="transcriptName",by.y="V4" )
+#slim down to columns you want
+keeps <- c("transcriptName","length", "calcTPM")
+known_lncRNA_slim <- unique(known_lncRNA[keeps])
+knownlncRNA_length <- mean(known_lncRNA_slim[["length"]])
+knownlncRNA_TPM <- mean(known_lncRNA_slim[["calcTPM"]])
+
+library(dplyr)
+#F1 rejects (TPM):
+known_lncRNA_f1 <- subset(known_lncRNA_slim, calcTPM > 0.1)
+f1_I_rejects <- anti_join(known_lncRNA_slim, known_lncRNA_f1, by="transcriptName")
+#F2 rejects
+known_lncRNA_f2 <- subset(known_lncRNA_f1, length > 200)
+f2_I_rejects <- anti_join(known_lncRNA_f1, known_lncRNA_f2, by="transcriptName")
+#get all single exon transcripts to use for subsetting
+known_lncRNA_singles <- subset(known_lncRNA, c(V10 <2))
+#attach tissue-specific expression
+known_lncRNA_singles_exp <- merge(known_lncRNA_singles,tissue_exp,by.x="transcriptName",by.y="isoformName")
+#3 lncRNA are lost here bc there are no expression values for them
+known_lncRNA_singles_exp <- known_lncRNA_singles_exp[ ,c("transcriptName","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",  "Retina",	"Skin",	"SpinalCord")]
+#Filter out expression of single-exon transcripts in a tissue-specific manner, we keep these
+known_lncRNA_singles_2 <- known_lncRNA_singles_exp[apply(known_lncRNA_singles_exp[-1],1,function(row) {any(row > 5)}),]
+#need to subset the ones removed from this filter
+f1_singles_rejects_known_lncRNA <-anti_join(known_lncRNA_singles_exp,known_lncRNA_singles_2, by.x="transcriptName", by.y="V4")
+
+#remove the single exon transcripts that did not pass the TPM filter, we move forward with these products
+known_lncRNA_f2single <-anti_join(known_lncRNA_f2,f1_singles_rejects_known_lncRNA, by="transcriptName")
+
+#convert this output into a bed file
+known_lncRNA_f2_bed <- merge(known_lncRNA_f2single, known_lncRNA_bed, by.x="transcriptName",by.y="V4" )
+#remove non-bed format columns and format properly
+known_lncRNA_f2_bed <- known_lncRNA_f2_bed[ ,c("V1","V2","V3","transcriptName","V5","V6","V7","V8","V9","V10","V11","V12")] 
+names(known_lncRNA_f2_bed)[4]<-paste("V4")
+rownames(known_lncRNA_f2_bed) <- c()
+#order chr properly
+known_lncRNA_f2_bed <- known_lncRNA_f2_bed[with(known_lncRNA_f2_bed, order(V1, V2)), ] #there are 717 here
+setwd("~/Desktop/lncRNA")
+write.table(known_lncRNA_f2_bed, "known_lncRNA_f2.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+
+##run in bedtools
+#bedtools intersect -c -a known_lncRNA_f2.bed -b merged_5.bed -sorted > known_lncRNA_5.bed
+#bedtools intersect -c -a known_lncRNA_f2.bed -b merged_3.bed -sorted > known_lncRNA_3.bed
+
+setwd("~/Desktop/lncRNA")
+known_lncRNA_5 <- read.table("known_lncRNA_5.bed", header=F, stringsAsFactors=F)
+known_lncRNA_3 <- read.table("known_lncRNA_3.bed", header=F, stringsAsFactors=F)
+#Now to look at number of lncRNA falling in this area
+known_lncRNA_5_in <- subset(known_lncRNA_5, (V13 > 0))#10483
+known_lncRNA_3_in <- subset(known_lncRNA_3, (V13 > 0))#10469
+known_lncRNA_upAnddown <- rbind(known_lncRNA_5_in,known_lncRNA_3_in)
+known_lncRNA_upAnddown <- known_lncRNA_upAnddown[ ,c("V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12")] 
+rownames(known_lncRNA_upAnddown) <- c()
+
+require(dplyr)
+known_lncRNA_bed_f3 <- anti_join(known_lncRNA_f2_bed,known_lncRNA_upAnddown, by="V4")#474 produced here
+
+#order chr properly
+known_lncRNA_bed_f3 <- known_lncRNA_bed_f3[with(known_lncRNA_bed_f3, order(V1, V2)), ] #there are 717 here
+setwd("~/Desktop/lncRNA")
+write.table(known_lncRNA_bed_f3, "known_lncRNA_f3.bed", row.names=F, col.names=F, quote=F, sep = "\t")
