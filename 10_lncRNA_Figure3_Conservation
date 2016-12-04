@@ -10,7 +10,7 @@ library(plyr)
 blast_lncRNA_new<- ddply(blast_lncRNA, c("V1"), summarise,
                          cons=V3*(V4/100))
 blast_genes_new<- ddply(blast_genes, c("V1"), summarise,
-                         cons=V3*(V4/100))
+                        cons=V3*(V4/100))
 
 #need to calc or count-freq of each identity*coverage then cumsum(this)=y
 blast_lncRNA_freq <- count(blast_lncRNA_new,'cons')
@@ -23,11 +23,11 @@ names(blast_lncRNA_freq_cumsum)[3] <-"cumsum"
 names(blast_genes_freq_cumsum)[3] <-"cumsum"
 #divide the cumulative sum by the number of rows in the blast_lncRNA and blast_genes
 #to get cumulative relative freq
-blast_lncRNA_freq_cumsum["cum_rel"]<-(blast_lncRNA_freq_cumsum$cumsum/6932)
+blast_lncRNA_freq_cumsum["cum_rel"]<-(blast_lncRNA_freq_cumsum$cumsum/311)
 blast_genes_freq_cumsum["cum_rel"]<-(blast_genes_freq_cumsum$cumsum/464021)
 
 blast_lncRNA_gene_cumsum_rel <- rbind(data.frame(id="lncRNA",blast_lncRNA_freq_cumsum),
-                            data.frame(id="PCG",blast_genes_freq_cumsum))
+                                      data.frame(id="PCG",blast_genes_freq_cumsum))
 write.table(blast_lncRNA_gene_cumsum_rel, "blast_lncRNA_gene_cumsum_rel.txt")
 # plot
 require(ggplot2)
@@ -44,13 +44,13 @@ blast_lncRNA_down <- read.table("lncRNAdown_human_nt.outfmt6")
 
 library(plyr)
 blast_lncRNA_promoter_new<- ddply(blast_lncRNA_promoter, c("V1"), summarise,
-                         cons=V3*(V4/100))
+                                  cons=V3*(V4/100))
 blast_lncRNA_down_new<- ddply(blast_lncRNA_down, c("V1"), summarise,
-                                  cons=V3*(V4/100))
+                              cons=V3*(V4/100))
 blast_genes_promoter_new<- ddply(blast_genes_promoter, c("V1"), summarise,
-                        cons=V3*(V4/100))
+                                 cons=V3*(V4/100))
 blast_genes_down_new<- ddply(blast_genes_down, c("V1"), summarise,
-                                  cons=V3*(V4/100))
+                             cons=V3*(V4/100))
 
 blast_lncRNA_promoter_freq <- count(blast_lncRNA_promoter_new,'cons')
 blast_lncRNA_down_freq <- count(blast_lncRNA_down_new,'cons')
