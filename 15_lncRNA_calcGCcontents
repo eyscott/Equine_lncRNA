@@ -1,5 +1,5 @@
 
-
+module load BEDTools/2.24.0  
 bedtools nuc -fi equCab2.0_genome.fa -bed novel_I.bed > novel_I_GC.bed
 bedtools nuc -fi equCab2.0_genome.fa -bed novel_II.bed > novel_II_GC.bed
 bedtools nuc -fi equCab2.0_genome.fa -bed novel_III.bed > novel_III_GC.bed
