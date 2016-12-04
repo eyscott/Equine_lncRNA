@@ -31,3 +31,17 @@ lncRNA_down <- lncRNA_down[with(lncRNA_down, order(V1, V3)), ]
 
 write.table(lncRNA_promoters, "lncRNA_promoters.bed", row.names=F, col.names=F, quote=F,, sep = "\t")
 write.table(lncRNA_down, "lncRNA_down.bed", row.names=F, col.names=F, quote=F,, sep = "\t")
+
+setwd("~/Dropbox/Horse_Transcriptome/downloads")
+mergedTrans_bed <- read.table("allTissues_BED/mergedTrans.bed", header=F, stringsAsFactors=F)
+mergedTrans <- mergedTrans_bed[ ,c("V1","V2","V3","V4")]
+setwd("~/Desktop/lncRNA")
+all <- read.table("lncRNA_final", header=F, stringsAsFactors=F)
+#make sure the mergedtrans has none of the novel I,II,III lncRNA
+library(dplyr)
+mergedTrans_noNovel <- anti_join(mergedTrans,all)
+mergedTrans_noNovel_bed <- anti_join(mergedTrans_bed,all)
+#order chr properly
+mergedTrans_noNovel_bed <- mergedTrans_noNovel_bed[with(mergedTrans_noNovel_bed, order(V1, V2)), ]
+write.table(mergedTrans_noNovel_bed,"mergedTrans_noNovel.bed",row.names=F, col.names=F, quote=F, sep = "\t")
+
