@@ -73,10 +73,15 @@ novel_III_bed_f4 <- novel_III_bed_f4[with(novel_III_bed_f4, order(V1, V2)), ]
 intergenic_bed_f4 <- intergenic_bed_f4[with(intergenic_bed_f4, order(V1, V2)), ]
 known_bed_f4 <- known_bed_f4[with(known_bed_f4, order(V1, V2)), ]
 
+#combining all lncRNA
+all_lncRNA_bed <- rbind(novel_I_bed_f4,novel_II_bed_f4,novel_III_bed_f4,intergenic_bed_f4,known_bed_f4)
+all_lncRNA_bed <- all_lncRNA_bed[with(all_lncRNA_bed, order(V1, V2)), ]
+
 #write the bed file
 setwd("~/Desktop/lncRNA")
 write.table(novel_I_bed_f4, "novel_I_f4.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_II_bed_f4, "novel_II_f4.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_III_bed_f4, "novel_III_f4.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(intergenic_bed_f4, "intergenic_f4.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(kown_bed_f4, "intergenic_f4.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(known_bed_f4, "known_f4.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(all_lncRNA_bed, "lncRNA_final_IDs", row.names=F, col.names=F, quote=F, sep = "\t")
