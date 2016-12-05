@@ -191,8 +191,8 @@ novel_II_bed_f2=read.table("novel_II_f2.bed", header=F, colClasses = "character"
 novel_III_bed_f2=read.table("novel_III_f2.bed", header=F, colClasses = "character",sep = "\t")
 intergenic_bed_f2=read.table("intergenic_f2.bed", header=F, colClasses = "character",sep = "\t")
 known_lncRNA_bed_f2=read.table("known_ncRNA_f2.bed", header=F, colClasses = "character",sep = "\t")
-
-
+#combine all
+all_f2_lncRNA <- rbind(novel_I_bed_f2,novel_II_bed_f2,novel_III_bed_f2,intergenic_bed_f2,known_lncRNA_bed_f2)
 #format tables for comparison
 trunc_headers=c("chr","start","stop")
 names(novel_I_bed_f2)[1:3]=trunc_headers
@@ -200,6 +200,7 @@ names(novel_II_bed_f2)[1:3]=trunc_headers
 names(novel_III_bed_f2)[1:3]=trunc_headers
 names(intergenic_bed_f2)[1:3]=trunc_headers
 names(known_lncRNA_bed_f2)[1:3]=trunc_headers
+names(all_f2_lncRNA)[1:3]=trunc_headers
 
 novel_I_pfam_sub_trunc <-novel_I_pfam_sub[ ,trunc_headers]
 novel_II_pfam_sub_trunc <-novel_II_pfam_sub[ ,trunc_headers]
@@ -249,7 +250,9 @@ P_noDups <-rbind(data.frame(id="novel_I",novel_I_P_noDups),
                        data.frame(id="novel_III",novel_III_P_noDups),
                        data.frame(id="intergenic",intergenic_P_noDups),
                        data.frame(id="known",known_lncRNA_P_noDups))
-
+#merge with TCONS names
+P_noDups <- merge(P_noDups,all_f2_lncRNA,by=c("chr","start","stop"))
+P_noDups <- P_noDups[with(P_noDups, order(chr,start)), ]
 
 write.table(novel_I_P_noDups, "novel_I_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_II_P_noDups, "novel_II_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
@@ -282,7 +285,7 @@ lncRNA_all_Cat <-rbind(data.frame(id="novel_I",novel_I_bed),
                        
 lncRNA_all_Cat <- lncRNA_all_Cat[with(lncRNA_all_Cat, order(chr, start)), ]
 write.table(lncRNA_all_Cat, "lncRNA_f3_IDs", row.names=F, col.names=F, quote=F, sep = "\t")
-##now just making a table of f2, sub-divided into the protein coding vs non protein coding found in filter 4
+##now just making a table of f3, sub-divided into the protein coding vs non protein coding found in filter 3
 all_ID <-rbind(data.frame(id="novel_I_lncRNA",novel_I_bed[,1:3]),
                data.frame(id="novel_I_genes",novel_I_P_noDups),
                data.frame(id="novel_II_lncRNA",novel_II_bed[,1:3]),
