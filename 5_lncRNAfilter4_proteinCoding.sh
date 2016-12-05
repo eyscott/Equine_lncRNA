@@ -28,10 +28,10 @@ TransDecoder.LongOrfs -t intergenic_f3.fa -m 20
 ##step 4: Predict likely coding regions with HMMER: hmmsearch, using ORFs predicted above:
 module load HMMER/3.1b2
 #main
-hmmsearch --cpu 8 --domtblout novel_I_pfam.domtblout Pfam-A.hmm novel_I_f3.fa.transdecoder_dir/longest_orfs.pep
-hmmsearch --cpu 8 --domtblout novel_II_pfam.domtblout Pfam-A.hmm novel_II_f3.fa.transdecoder_dir/longest_orfs.pep
-hmmsearch --cpu 8 --domtblout novel_III_pfam.domtblout Pfam-A.hmm novel_III_f3.fa.transdecoder_dir/longest_orfs.pep
-hmmsearch --cpu 8 --domtblout intergenic_pfam.domtblout Pfam-A.hmm intergenic_f3.fa.transdecoder_dir/longest_orfs.pep
+#hmmsearch --cpu 8 --domtblout novel_I_pfam.domtblout Pfam-A.hmm novel_I_f3.fa.transdecoder_dir/longest_orfs.pep
+#hmmsearch --cpu 8 --domtblout novel_II_pfam.domtblout Pfam-A.hmm novel_II_f3.fa.transdecoder_dir/longest_orfs.pep
+#hmmsearch --cpu 8 --domtblout novel_III_pfam.domtblout Pfam-A.hmm novel_III_f3.fa.transdecoder_dir/longest_orfs.pep
+#hmmsearch --cpu 8 --domtblout intergenic_pfam.domtblout Pfam-A.hmm intergenic_f3.fa.transdecoder_dir/longest_orfs.pep
 
 hmmsearch --cpu 10 --tblout novel_I_pfam_new.tblout Pfam-A.hmm novel_I_f3.fa.transdecoder_dir/longest_orfs.pep
 hmmsearch --cpu 10 --tblout novel_II_pfam_new.tblout Pfam-A.hmm novel_II_f3.fa.transdecoder_dir/longest_orfs.pep
