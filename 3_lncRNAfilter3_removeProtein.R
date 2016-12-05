@@ -245,7 +245,7 @@ known_lncRNA_P_noDups <- known_lncRNA_P[!duplicated(known_lncRNA_P),]
 known_lncRNA_P_noDups <- known_lncRNA_P_noDups[with(known_lncRNA_P_noDups, order(chr,start)), ]
 
 P_noDups <- rbind(novel_I_P_noDups,novel_II_P_noDups,novel_III_P_noDups,known_lncRNA_P_noDups)
-
+                       
 write.table(novel_I_P_noDups, "novel_I_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_II_P_noDups, "novel_II_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_III_P_noDups, "novel_III_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
