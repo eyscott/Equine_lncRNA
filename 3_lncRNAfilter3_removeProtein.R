@@ -244,12 +244,14 @@ intergenic_P_noDups <- intergenic_P_noDups[with(intergenic_P_noDups, order(chr,s
 known_lncRNA_P_noDups <- known_lncRNA_P[!duplicated(known_lncRNA_P),]
 known_lncRNA_P_noDups <- known_lncRNA_P_noDups[with(known_lncRNA_P_noDups, order(chr,start)), ]
 
+P_noDups <- rbind(novel_I_P_noDups,novel_II_P_noDups,novel_III_P_noDups,known_lncRNA_P_noDups)
 
 write.table(novel_I_P_noDups, "novel_I_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_II_P_noDups, "novel_II_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_III_P_noDups, "novel_III_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(intergenic_P_noDups, "intergenic_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(known_lncRNA_P_noDups, "known_lncRNA_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(P_noDups, "P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
 #performing anti_join to get rid of any transcript which had a hit in blastp or hmmsearch && make the f4 outputs into bed files
 novel_I_bed <- anti_join(novel_I_bed_f2,novel_I_P_noDups, by=c("chr","start","stop"))
