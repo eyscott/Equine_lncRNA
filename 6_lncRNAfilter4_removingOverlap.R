@@ -83,9 +83,9 @@ all_lncRNA_bed <- all_lncRNA_bed[with(all_lncRNA_bed, order(V1, V2)), ]
 
 #write the bed file
 setwd("~/Desktop/lncRNA")
-write.table(novel_I_bed_f4, "novel_I_f4.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(novel_II_bed_f4, "novel_II_f4.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(novel_III_bed_f4, "novel_III_f4.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(intergenic_bed_f4, "intergenic_f4.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(known_bed_f4, "known_f4.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(novel_I_bed_f4, "novel_I_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(novel_II_bed_f4, "novel_II_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(novel_III_bed_f4, "novel_III_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(intergenic_bed_f4, "intergenic_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(known_bed_f4, "known_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(all_lncRNA_bed, "lncRNA_final_IDs", row.names=F, col.names=F, quote=F, sep = "\t")
