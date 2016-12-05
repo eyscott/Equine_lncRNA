@@ -57,9 +57,9 @@ module load GNU/4.8.3
 module load BLAST+/2.3.0
 makeblastdb -in Homo_sapiens.GRCh38.cdna.ptn.fa -dbtype nucl -out hg38_cdnaPtn_db
 
-blastn -query novel_I_f2.fa  -db hg38_cdna_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > novel_I_hg38_cdna.outfmt6
-blastn -query novel_II_f2.fa  -db hg38_cdna_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > novel_II_hg38_cdna.outfmt6
-blastn -query novel_III_f2.fa  -db hg38_cdna_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > novel_III_hg38_cdna.outfmt6
-blastn -query intergenic_f2.fa  -db hg38_cdna_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > intergenic_hg38_cdna.outfmt6
-blastn -query known_ncRNA_f2.fa  -db hg38_cdna_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > known_lncRNA_hg38_cdna.outfmt6
+blastn -query novel_I_f3.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > novel_I_hg38_cdna.outfmt6
+blastn -query novel_II_f3.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > novel_II_hg38_cdna.outfmt6
+blastn -query novel_III_f3.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > novel_III_hg38_cdna.outfmt6
+blastn -query intergenic_f3.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > intergenic_hg38_cdna.outfmt6
+blastn -query known_ncRNA_f2.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > known_lncRNA_hg38_cdna.outfmt6
 
