@@ -74,7 +74,11 @@ intergenic_bed_f4 <- intergenic_bed_f4[with(intergenic_bed_f4, order(V1, V2)), ]
 known_bed_f4 <- known_bed_f4[with(known_bed_f4, order(V1, V2)), ]
 
 #combining all lncRNA
-all_lncRNA_bed <- rbind(novel_I_bed_f4,novel_II_bed_f4,novel_III_bed_f4,intergenic_bed_f4,known_bed_f4)
+all_lncRNA_bed <-rbind(data.frame(id="novel_I",novel_I_bed_f4),
+                       data.frame(id="novel_II",novel_II_bed_f4),
+                       data.frame(id="novel_III",novel_III_bed_f4),
+                       data.frame(id="intergenic",intergenic_bed_f4),
+                       data.frame(id="known",known_bed_f4))
 all_lncRNA_bed <- all_lncRNA_bed[with(all_lncRNA_bed, order(V1, V2)), ]
 
 #write the bed file
