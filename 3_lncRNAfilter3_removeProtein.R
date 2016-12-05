@@ -276,7 +276,7 @@ lncRNA_all_Cat <-rbind(data.frame(id="novel_I",novel_I_bed),
                        data.frame(id="known",known_lncRNA_bed))
                        
 lncRNA_all_Cat <- lncRNA_all_Cat[with(lncRNA_all_Cat, order(chr, start)), ]
-write.table(lncRNA_all_Cat, "lncRNA_final_IDs", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(lncRNA_all_Cat, "lncRNA_f3_IDs", row.names=F, col.names=F, quote=F, sep = "\t")
 ##now just making a table of f2, sub-divided into the protein coding vs non protein coding found in filter 4
 all_ID <-rbind(data.frame(id="novel_I_lncRNA",novel_I_bed[,1:3]),
                data.frame(id="novel_I_genes",novel_I_P_noDups),
