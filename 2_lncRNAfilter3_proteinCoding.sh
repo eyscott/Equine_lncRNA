@@ -47,7 +47,6 @@ blastp -query known_ncRNA_f2.fa.transdecoder_dir/longest_orfs.pep  -db uniprot_s
 
 wget ftp://ftp.ensembl.org/pub/release-86/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz
 gunzip Homo_sapiens.GRCh38.cdna.all.fa.gz
-makeblastdb -in Homo_sapiens.GRCh38.cdna.all.fa -dbtype nucl -out hg38_cdna_db
 
 grep "gene_biotype:protein_coding" Homo_sapiens.GRCh38.cdna.all.fa | awk -F"[> ]" '{print $2;}' > protein_coding.ids
 module load GNU/4.4.5
