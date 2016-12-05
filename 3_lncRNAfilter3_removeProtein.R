@@ -244,8 +244,13 @@ intergenic_P_noDups <- intergenic_P_noDups[with(intergenic_P_noDups, order(chr,s
 known_lncRNA_P_noDups <- known_lncRNA_P[!duplicated(known_lncRNA_P),]
 known_lncRNA_P_noDups <- known_lncRNA_P_noDups[with(known_lncRNA_P_noDups, order(chr,start)), ]
 
-P_noDups <- rbind(novel_I_P_noDups,novel_II_P_noDups,novel_III_P_noDups,known_lncRNA_P_noDups)
-                       
+P_noDups <-rbind(data.frame(id="novel_I",novel_I_P_noDups),
+                       data.frame(id="novel_II",novel_II_P_noDups),
+                       data.frame(id="novel_III",novel_III_P_noDups),
+                       data.frame(id="intergenic",intergenic_P_noDups),
+                       data.frame(id="known",known_lncRNA_P_noDups))
+
+
 write.table(novel_I_P_noDups, "novel_I_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_II_P_noDups, "novel_II_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_III_P_noDups, "novel_III_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
