@@ -18,10 +18,10 @@ bedtools getfasta -s -fi equCab2.0_genome.fa -bed known_ncRNA_f2.bed -fo known_n
 #step 3: get the protein coding/ORF sequences of your data using Transdecoder (this takes quite some time):
 #main
 module load TransDecoder/3.0.0
-TransDecoder.LongOrfs -t novel_I_f3.fa -m 20
-TransDecoder.LongOrfs -t novel_II_f3.fa -m 20
-TransDecoder.LongOrfs -t novel_III_f3.fa -m 20
-TransDecoder.LongOrfs -t intergenic_f3.fa -m 20
+TransDecoder.LongOrfs -t novel_I_f2.fa -m 20
+TransDecoder.LongOrfs -t novel_II_f2.fa -m 20
+TransDecoder.LongOrfs -t novel_III_f2.fa -m 20
+TransDecoder.LongOrfs -t intergenic_f2.fa -m 20
 TransDecoder.LongOrfs -t known_ncRNA_f2.fa -m 20 
 #with -m 20, meaning ORF minimum of 20 (default=100) because we are dealing with lncRNA
 
