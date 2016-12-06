@@ -57,82 +57,118 @@ dev.off()
 #Figure 2A: pie charts for overall RNAseq output for novel I,II,II, intergenic
 #genes=those retained from hmmer and blastp
 ##Pie charts based on cumulative TPM
+#get final lncRNA
 setwd("~/Desktop/lncRNA")
-all <- read.table("all_cats_PandnoP", header=F, stringsAsFactors=F)
+all <- read.table("lncRNA_final_IDs", header=F, stringsAsFactors=F)
+#attach expression values to these puppies
 names(all)=c("id","V1","V2","V3")
-#must attach coordinate numbers to overall expression to capture protein coding transcripts detected by 
-#hmmer and blastp
+#Attach coordinates to the expression values
 overallExpression_coord <- merge(overallExpression,unfiltered_bed,by.x="transcriptName",by.y="V4")
 overallExpression_coord <- overallExpression_coord[c("transcriptName","calcTPM","V1","V2","V3")]
 
 all_exp <- merge(overallExpression_coord, all,by=c("V1","V2","V3"))  
 keeps <- c("transcriptName","calcTPM","id")
 all_exp <- all_exp[keeps]
-novel_I_all_exp <- subset(all_exp, id %in% c("novel_I_lncRNA", "novel_I_genes"))
-novel_II_all_exp <- subset(all_exp, id %in% c("novel_II_lncRNA", "novel_II_genes"))
-novel_III_all_exp <- subset(all_exp, id %in% c("novel_III_lncRNA", "novel_III_genes"))
-intergenic_all_exp <- subset(all_exp, id %in% c("intergenic_lncRNA", "intergenic_genes"))
+novel_I_all_exp <- subset(all_exp, id %in% c("novel_I"))
+novel_II_all_exp <- subset(all_exp, id %in% c("novel_II"))
+novel_III_all_exp <- subset(all_exp, id %in% c("novel_III"))
+intergenic_all_exp <- subset(all_exp, id %in% c("intergenic"))
+known_all_exp <- subset(all_exp, id %in% c("known"))
 
-#binding all transcripts removed in filters
-setwd("~/Desktop/lncRNA")
+#getting expression values for transcripts removed by filters
+#Filter 1
 F1_I <- read.table("F1_novel_I", header=F, stringsAsFactors=F)
 F1_II <- read.table("F1_novel_II", header=F, stringsAsFactors=F)
 F1_III <- read.table("F1_novel_III", header=F, stringsAsFactors=F)
 F1_intergenic <- read.table("F1_intergenic", header=F, stringsAsFactors=F)
+F1_known <- read.table("F1_known_ncRNA", header=F, stringsAsFactors=F)
+
+#Filter 2
 #F2_I <- read.table("F2_novel_I", header=F, stringsAsFactors=F)       ## no lines available in input
 #F2_II <- read.table("F2_novel_II", header=F, stringsAsFactors=F)     ## no lines available in input
 #F2_III <- read.table("F2_novel_III", header=F, stringsAsFactors=F)   ## no lines available in input
 F2_intergenic <- read.table("F2_novel_intergenic", header=F, stringsAsFactors=F)
-F3_I <- read.table("F3_novel_I", header=F, stringsAsFactors=F)
-F3_II <- read.table("F3_novel_II", header=F, stringsAsFactors=F)
-F3_III <- read.table("F3_novel_III", header=F, stringsAsFactors=F)
-F3_intergenic <- read.table("F3_intergenic", header=F, stringsAsFactors=F)
-F3_I_ids <- data.frame(F3_I[ ,"V4"]) 
-F3_II_ids <- data.frame(F3_II[ ,"V4"]) 
-F3_III_ids <- data.frame(F3_III[ ,"V4"]) 
-F3_intergenic_ids <- data.frame(F3_intergenic[ ,"V4"])
-F3_I_exp <- merge(overallExpression, F3_I_ids, by.x="transcriptName",by.y="F3_I....V4.." )
-F3_II_exp <- merge(overallExpression, F3_II_ids, by.x="transcriptName",by.y="F3_II....V4.." )
-F3_III_exp <- merge(overallExpression, F3_III_ids, by.x="transcriptName",by.y="F3_III....V4.." )
-F3_intergenic_exp <- merge(overallExpression, F3_intergenic_ids, by.x="transcriptName",by.y="F3_intergenic....V4.." )
-F3_I_exp <- F3_I_exp[ ,c("transcriptName","length","calcTPM")]
-F3_II_exp <- F3_II_exp[ ,c("transcriptName","length","calcTPM")]
-F3_III_exp <- F3_III_exp[ ,c("transcriptName","length","calcTPM")]
-F3_intergenic_exp <- F3_intergenic_exp[ ,c("transcriptName","length","calcTPM")]
-names(F1_I)<-names(F3_I_exp)
-names(F1_II)<-names(F3_II_exp)
-names(F1_III)<-names(F3_III_exp)
-names(F1_intergenic)<-names(F3_intergenic_exp)
-#names(F2_I)<-names(F3_I_exp)
-#names(F2_II)<-names(F3_II_exp)
-#names(F2_III)<-names(F3_III_exp)
-names(F2_intergenic)<-names(F3_intergenic_exp)
+F2_known <- read.table("F2_known_ncRNA", header=F, stringsAsFactors=F)
+
+#Filter 3
+Pcoding <- read.table("P.bed", header=F, stringsAsFactors=F)
+Pcoding_exp <- merge(Pcoding,overallExpression,by.x="V4",by.y="transcriptName")
+F3_I <- subset(Pcoding_exp, id %in% c("novel_I"))
+F3_I <- F3_I[ ,c("V4","length","calcTPM")]
+F3_II <- subset(Pcoding_exp, id %in% c("novel_II"))
+F3_II <- F3_II[ ,c("V4","length","calcTPM")]
+F3_III <- subset(Pcoding_exp, id %in% c("novel_III"))
+F3_III <- F3_III[ ,c("V4","length","calcTPM")]
+F3_intergenic <- subset(Pcoding_exp, id %in% c("intergenic"))
+F3_intergenic <- F3_intergenic[ ,c("V4","length","calcTPM")]
+F3_known <- subset(Pcoding_exp, id %in% c("known"))
+F3_known <- F3_known[ ,c("V4","length","calcTPM")]
+
+#Filter 4
+F4_I <- read.table("F4_novel_I", header=F, stringsAsFactors=F)
+F4_II <- read.table("F4_novel_II", header=F, stringsAsFactors=F)
+F4_III <- read.table("F4_novel_III", header=F, stringsAsFactors=F)
+F4_intergenic <- read.table("F4_intergenic", header=F, stringsAsFactors=F)
+F4_known <- read.table("F4_known", header=F, stringsAsFactors=F)
+
+F4_I_exp <- merge(F4_I,overallExpression,by.x="V4",by.y="transcriptName")
+F4_II_exp <- merge(F4_II,overallExpression,by.x="V4",by.y="transcriptName")
+F4_III_exp <- merge(F4_III,overallExpression,by.x="V4",by.y="transcriptName")
+F4_intergenic_exp <- merge(F4_intergenic,overallExpression,by.x="V4",by.y="transcriptName")
+F4_known_exp <- merge(F4_known,overallExpression,by.x="V4",by.y="transcriptName")
+
+F4_I_exp <- F4_I_exp[ ,c("V4","length","calcTPM")]
+F4_II_exp <- F4_II_exp[ ,c("V4","length","calcTPM")]
+F4_III_exp <- F4_III_exp[ ,c("V4","length","calcTPM")]
+F4_intergenic_exp <- F4_intergenic_exp[ ,c("V4","length","calcTPM")]
+F4_known_exp <- F4_known_exp[ ,c("V4","length","calcTPM")]
+
+names(F3_I_exp)<-names(F1_I)
+names(F3_II_exp)<-names(F1_II)
+names(F3_III_exp)<-names(F1_III)
+names(F3_intergenic_exp)<-names(F1_intergenic)
+
+names(F4_I_exp)<-names(F1_I)
+names(F4_II_exp)<-names(F1_II)
+names(F4_III_exp)<-names(F1_III)
+names(F4_intergenic_exp)<-names(F1_intergenic)
 
 novel_I_rejects <- rbind(data.frame(id="novel_I_F1",F1_I),
                          #data.frame(id="novel_I_F2",F2_I),
-                         data.frame(id="novel_I_F3",F3_I_exp))
+                         data.frame(id="novel_I_F3",F3_I_exp),
+                         data.frame(id="novel_I_F4",F4_I_exp))
 novel_I_rejects_sub <- novel_I_rejects[ ,c("transcriptName","calcTPM","id")]
+
 novel_II_rejects <- rbind(data.frame(id="novel_II_F1",F1_II),
                          #data.frame(id="novel_II_F2",F2_II),
-                         data.frame(id="novel_II_F3",F3_II_exp))
+                         data.frame(id="novel_II_F3",F3_II_exp),
+                         data.frame(id="novel_II_F4",F4_II_exp))
 novel_II_rejects_sub <- novel_II_rejects[ ,c("transcriptName","calcTPM","id")]
+
 novel_III_rejects <- rbind(data.frame(id="novel_III_F1",F1_III),
                           #data.frame(id="novel_III_F2",F2_III),
-                          data.frame(id="novel_III_F3",F3_III_exp))
+                          data.frame(id="novel_III_F3",F3_III_exp),
+                          data.frame(id="novel_III_F4",F4_III_exp))
 novel_III_rejects_sub <- novel_III_rejects[ ,c("transcriptName","calcTPM","id")]
+
 intergenic_rejects <- rbind(data.frame(id="intergenic_F1",F1_intergenic),
                            data.frame(id="intergenic_F2",F2_intergenic),
-                           data.frame(id="intergenic_F3",F3_intergenic_exp))
+                           data.frame(id="intergenic_F3",F3_intergenic_exp),
+                           data.frame(id="intergenic_F4",F4_intergenic_exp))
 intergenic_rejects_sub <- intergenic_rejects[ ,c("transcriptName","calcTPM","id")]
 
+known_rejects <- rbind(data.frame(id="known_F1",F1_known),
+                           data.frame(id="known_F2",F2_known),
+                           data.frame(id="known_F3",F3_known_exp),
+                           data.frame(id="known_F4",F4_known_exp))
+known_rejects_sub <- known_rejects[ ,c("transcriptName","calcTPM","id")]
+
+#combine final lncRNA expression with rejects
 novel_I_total_exp <-rbind(novel_I_all_exp,novel_I_rejects_sub)
 novel_II_total_exp <-rbind(novel_II_all_exp,novel_II_rejects_sub)
 novel_III_total_exp <-rbind(novel_III_all_exp,novel_III_rejects_sub)
 intergenic_total_exp <-rbind(intergenic_all_exp,intergenic_rejects_sub)
-
-nonannotated <- rbind(novel_I_total_exp,novel_II_total_exp,
-                      novel_III_total_exp,intergenic_total_exp)
-write.table(nonannotated, "nonannotated", row.names=F, col.names=T, sep = "\t")
+known_total_exp <-rbind(known_all_exp,known_rejects_sub)
 
 #Pie Chart based on cumulative TPM
 library(RColorBrewer)
@@ -196,7 +232,21 @@ ggplot(intergenic_total_exp,aes(x=factor(1),weight=calcTPM,fill=id)) +
   theme(axis.text = element_blank(),
         axis.ticks = element_blank())
 dev.off()
-  
+
+pdf("Fig2A_known.pdf")
+ggplot(known_total_exp,aes(x=factor(1),weight=calcTPM,fill=id)) + 
+  geom_bar(width=1) + xlab(" ") + 
+  ylab(" ") + coord_polar("y") + 
+  guides(fill=guide_legend(title="composition")) +
+  theme(legend.title = element_text(colour="black", size=18, face="bold")) +
+  theme(legend.text = element_text(colour="black", size = 16)) +
+  theme(axis.text = element_text(colour="black", size = 14)) +
+  scale_fill_manual(values = my.cols,
+                    labels=c("F1","F2","F3","F4","lncRNA")) +
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank())
+dev.off()
+
 #calculate some quick stats
 lncRNA_exp <- merge(lncRNA_keeps, overallExpression, by.x="V5",by.y="transcriptName" )
 lncRNA_exp <-lncRNA_exp[ ,c("V5","calcTPM","length","V1")]
@@ -205,18 +255,25 @@ novel_I_exp_l <- subset(lncRNA_exp, V1 %in% "novel_I")
 novel_II_exp_l <- subset(lncRNA_exp, V1 %in% "novel_II")
 novel_III_exp_l <- subset(lncRNA_exp, V1 %in% "novel_III")
 intergenic_exp_l <- subset(lncRNA_exp, V1 %in% "intergenic")
+known_exp_l <- subset(lncRNA_exp, V1 %in% "known")
 
 
 mean_TPM_I<-mean(novel_I_exp_l[["calcTPM"]])
 mean_TPM_II<-mean(novel_II_exp_l[["calcTPM"]])
 mean_TPM_III<-mean(novel_III_exp_l[["calcTPM"]])
 mean_TPM_intergenic<-mean(intergenic_exp_l[["calcTPM"]])
+mean_TPM_known<-mean(known_exp_l[["calcTPM"]])
+
 mean_length_I<-mean(novel_I_exp_l[["length"]])
 mean_length_II<-mean(novel_II_exp_l[["length"]])
 mean_length_III<-mean(novel_III_exp_l[["length"]])
 mean_length_intergenic<-mean(intergenic_exp_l[["length"]])
+mean_length_known<-mean(known_exp_l[["length"]])
+
 total_length_I <-sum(novel_I_exp_l[["length"]])
 total_length_II <-sum(novel_II_exp_l[["length"]])
 total_length_III <-sum(novel_III_exp_l[["length"]])
 total_length_intergenic <-sum(intergenic_exp_l[["length"]])
+total_length_known <-sum(known_exp_l[["length"]])
+
 sum_total <- sum(overallExpression[["length"]])
