@@ -268,6 +268,12 @@ novel_III_bed <- anti_join(novel_III_bed_f2,novel_III_P_noDups, by=c("chr","star
 intergenic_bed <- anti_join(intergenic_bed_f2,intergenic_P_noDups, by=c("chr","start","stop"))
 known_lncRNA_bed <- anti_join(known_lncRNA_bed_f2,intergenic_P_noDups, by=c("chr","start","stop"))
 
+novel_I_bed[, c("start")] <- sapply(novel_I_bed[, c("start")], as.numeric)
+novel_II_bed[, c("start")] <- sapply(novel_II_bed[, c("start")], as.numeric)
+novel_III_bed[, c("start")] <- sapply(novel_III_bed[, c("start")], as.numeric)
+intergenic_bed[, c("start")] <- sapply(intergenic_bed[, c("start")], as.numeric)
+known_lncRNA_bed[, c("start")] <- sapply(known_lncRNA_bed[, c("start")], as.numeric)
+
 novel_I_bed <- novel_I_bed[with(novel_I_bed, order(chr, start)), ]
 novel_II_bed <- novel_II_bed[with(novel_II_bed, order(chr, start)), ]
 novel_III_bed <- novel_III_bed[with(novel_III_bed, order(chr, start)), ]
