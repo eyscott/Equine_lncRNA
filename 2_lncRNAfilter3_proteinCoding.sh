@@ -27,11 +27,11 @@ TransDecoder.LongOrfs -t known_ncRNA_f2.fa -m 20
 
 ##step 4: Predict likely coding regions with HMMER: hmmsearch, using ORFs predicted above:
 module load HMMER/3.1b2
-hmmsearch --cpu 10 --tblout novel_I_pfam_new.tblout Pfam-A.hmm novel_I_f2.fa.transdecoder_dir/longest_orfs.pep
-hmmsearch --cpu 10 --tblout novel_II_pfam_new.tblout Pfam-A.hmm novel_II_f2.fa.transdecoder_dir/longest_orfs.pep
-hmmsearch --cpu 10 --tblout novel_III_pfam_new.tblout Pfam-A.hmm novel_III_f2.fa.transdecoder_dir/longest_orfs.pep
-hmmsearch --cpu 10 --tblout intergenic_pfam_new.tblout Pfam-A.hmm intergenic_f2.fa.transdecoder_dir/longest_orfs.pep
-hmmsearch --cpu 10 --tblout known_lncRNA_pfam_new.tblout Pfam-A.hmm known_ncRNA_f2.fa.transdecoder_dir/longest_orfs.pep
+hmmsearch --cpu 8 --tblout novel_I_pfam_new.tblout Pfam-A.hmm novel_I_f2.fa.transdecoder_dir/longest_orfs.pep
+hmmsearch --cpu 8 --tblout novel_II_pfam_new.tblout Pfam-A.hmm novel_II_f2.fa.transdecoder_dir/longest_orfs.pep
+hmmsearch --cpu 8 --tblout novel_III_pfam_new.tblout Pfam-A.hmm novel_III_f2.fa.transdecoder_dir/longest_orfs.pep
+hmmsearch --cpu 8 --tblout intergenic_pfam_new.tblout Pfam-A.hmm intergenic_f2.fa.transdecoder_dir/longest_orfs.pep
+hmmsearch --cpu 8 --tblout known_lncRNA_pfam_new.tblout Pfam-A.hmm known_ncRNA_f2.fa.transdecoder_dir/longest_orfs.pep
 
 ###step 5 running blastp
 module load GNU/4.8.3
@@ -56,9 +56,9 @@ module load GNU/4.8.3
 module load BLAST+/2.3.0
 makeblastdb -in Homo_sapiens.GRCh38.cdna.ptn.fa -dbtype nucl -out hg38_cdnaPtn_db
 
-blastn -query novel_I_f3.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > novel_I_hg38_cdna.outfmt6
-blastn -query novel_II_f3.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > novel_II_hg38_cdna.outfmt6
-blastn -query novel_III_f3.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > novel_III_hg38_cdna.outfmt6
-blastn -query intergenic_f3.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > intergenic_hg38_cdna.outfmt6
+blastn -query novel_I_f2.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > novel_I_hg38_cdna.outfmt6
+blastn -query novel_II_f2.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > novel_II_hg38_cdna.outfmt6
+blastn -query novel_III_f2.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > novel_III_hg38_cdna.outfmt6
+blastn -query intergenic_f2.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > intergenic_hg38_cdna.outfmt6
 blastn -query known_ncRNA_f2.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > known_lncRNA_hg38_cdna.outfmt6
 
