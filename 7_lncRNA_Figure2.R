@@ -17,7 +17,7 @@ ggplot(data=lncRNA_keeps, aes(V2)) + geom_bar(aes(V2,group=V1,fill=V1),stat = "c
   scale_x_discrete(limits = chrs, labels = chrs_N) + ylab("lncRNA count") + xlab("Chr") +
   scale_fill_discrete(name  ="Input", 
                     guide = guide_legend(reverse = F),
-                    labels=c("intergenic","novel I","novel II","novel III")) +
+                    labels=c("intergenic","known lncRNA","novel I","novel II","novel III")) +
   theme(legend.title = element_text(colour="black", size=18, face="bold")) +
   theme(legend.text = element_text(colour="black", size = 16)) +
   theme(axis.text = element_text(colour="black", size = 14)) +
@@ -37,7 +37,7 @@ lncRNA_exp <-lncRNA_exp[ ,c("V2","V3","V4","transcriptName","calcTPM","V1")]
 unfiltered_bed <- read.table("allTissues_BED/unfiltered_Alltissues_Assembly.bed", header=F, stringsAsFactors=F)
 lncRNA_exp_exons <- merge(lncRNA_exp, unfiltered_bed, by.x="transcriptName",by.y="V4" )
 lncRNA_exp_exons <-lncRNA_exp_exons[ ,c("transcriptName","calcTPM","V10","V1.x")]
-#Figure 1C:cumulative expression and exons with categories
+#Figure 2B:cumulative expression and exons with categories
 library(RColorBrewer)
 my.cols <- brewer.pal(6, "Set1")
 pdf("Fig1C.pdf")
@@ -46,7 +46,7 @@ ggplot(subset(lncRNA_exp_exons, V10 %in% c(1:10)), aes(V1.x,group=V10,fill=V10))
   ylab("cumulative expression (TPM)") + scale_fill_gradientn(colours=my.cols,
                                                              breaks=c(1,2,3,4,5,6),
                                                           labels=c("1","2","3","4","5","6-10")) +
-  scale_x_discrete(labels=c("intergenic","novel I", "novel II", "novel III")) +
+  scale_x_discrete(labels=c("intergenic","known lncRNA","novel I", "novel II", "novel III")) +
   guides(fill=guide_legend(title="exon number")) +
   theme(legend.title = element_text(colour="black", size=18, face="bold")) +
   theme(legend.text = element_text(colour="black", size = 16)) +
