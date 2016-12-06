@@ -17,7 +17,7 @@ ggplot(data=lncRNA_keeps, aes(V2)) + geom_bar(aes(V2,group=V1,fill=V1),stat = "c
   scale_x_discrete(limits = chrs, labels = chrs_N) + ylab("lncRNA count") + xlab("Chr") +
   scale_fill_discrete(name  ="Input", 
                     guide = guide_legend(reverse = F),
-                    labels=c("intergenic","novel I","novel II","novel III")) +
+                    labels=c("intergenic","known lncRNA","novel I","novel II","novel III")) +
   theme(legend.title = element_text(colour="black", size=18, face="bold")) +
   theme(legend.text = element_text(colour="black", size = 16)) +
   theme(axis.text = element_text(colour="black", size = 14)) +
