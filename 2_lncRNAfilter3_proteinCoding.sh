@@ -31,7 +31,7 @@ hmmsearch --cpu 8 --tblout novel_I_pfam_new.tblout Pfam-A.hmm novel_I_f2.fa.tran
 hmmsearch --cpu 8 --tblout novel_II_pfam_new.tblout Pfam-A.hmm novel_II_f2.fa.transdecoder_dir/longest_orfs.pep
 hmmsearch --cpu 8 --tblout novel_III_pfam_new.tblout Pfam-A.hmm novel_III_f2.fa.transdecoder_dir/longest_orfs.pep
 hmmsearch --cpu 8 --tblout intergenic_pfam_new.tblout Pfam-A.hmm intergenic_f2.fa.transdecoder_dir/longest_orfs.pep
-hmmsearch --cpu 8 --tblout known_lncRNA_pfam_new.tblout Pfam-A.hmm known_ncRNA_f2.fa.transdecoder_dir/longest_orfs.pep
+hmmsearch --cpu 8 --tblout known_ncRNA_pfam_new.tblout Pfam-A.hmm known_ncRNA_f2.fa.transdecoder_dir/longest_orfs.pep
 
 ###step 5 running blastp
 module load GNU/4.8.3
@@ -43,7 +43,7 @@ blastp -query novel_I_f2.fa.transdecoder_dir/longest_orfs.pep  -db uniprot_sprot
 blastp -query novel_II_f2.fa.transdecoder_dir/longest_orfs.pep  -db uniprot_sprot.fasta  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 8 > novel_II_sprot.outfmt6
 blastp -query novel_III_f2.fa.transdecoder_dir/longest_orfs.pep  -db uniprot_sprot.fasta  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 8 > novel_III_sprot.outfmt6
 blastp -query intergenic_f2.fa.transdecoder_dir/longest_orfs.pep  -db uniprot_sprot.fasta  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 8 > intergenic_sprot.outfmt6
-blastp -query known_ncRNA_f2.fa.transdecoder_dir/longest_orfs.pep  -db uniprot_sprot.fasta  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 8 > known_lncRNA_sprot.outfmt6
+blastp -query known_ncRNA_f2.fa.transdecoder_dir/longest_orfs.pep  -db uniprot_sprot.fasta  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 8 > known_ncRNA_sprot.outfmt6
 
 wget ftp://ftp.ensembl.org/pub/release-86/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz
 gunzip Homo_sapiens.GRCh38.cdna.all.fa.gz
@@ -60,5 +60,5 @@ blastn -query novel_I_f2.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -
 blastn -query novel_II_f2.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > novel_II_hg38_cdna.outfmt6
 blastn -query novel_III_f2.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > novel_III_hg38_cdna.outfmt6
 blastn -query intergenic_f2.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > intergenic_hg38_cdna.outfmt6
-blastn -query known_ncRNA_f2.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > known_lncRNA_hg38_cdna.outfmt6
+blastn -query known_ncRNA_f2.fa  -db hg38_cdnaPtn_db  -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads 4 > known_ncRNA_hg38_cdna.outfmt6
 
