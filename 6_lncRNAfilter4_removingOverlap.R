@@ -1,5 +1,5 @@
 ##transcripts to 5' and 3'...reading the bedtools intersect files
-setwd("~/Desktop/lncRNA")
+setwd("~/lncRNA")
 novel_I_5 <- read.table("novel_I_5.bed", header=F, stringsAsFactors=F)
 novel_I_3 <- read.table("novel_I_3.bed", header=F, stringsAsFactors=F)
 novel_II_5 <- read.table("novel_II_5.bed", header=F, stringsAsFactors=F)
@@ -52,12 +52,11 @@ write.table(known_upAnddown, "F4_known", row.names=F, col.names=F, quote=F, sep 
 
 
 #remove 3' upstream and 5' upstream lncRNA
-setwd("~/Desktop/lncRNA")
 novel_I_bed <-read.table("novel_I_f3.bed",header=F)
 novel_II_bed <-read.table("novel_II_f3.bed",header=F)
 novel_III_bed <-read.table("novel_III_f3.bed",header=F)
 intergenic_bed <-read.table("intergenic_f3.bed",header=F)
-known_bed <-read.table("known_lncRNA_f3.bed",header=F)
+known_bed <-read.table("known_ncRNA_f3.bed",header=F)
 
 require(dplyr)
 novel_I_bed_f4 <- anti_join(novel_I_bed,novel_I_upAnddown, by="V4")
@@ -82,7 +81,6 @@ all_lncRNA_bed <-rbind(data.frame(id="novel_I",novel_I_bed_f4),
 all_lncRNA_bed <- all_lncRNA_bed[with(all_lncRNA_bed, order(V1, V2)), ]
 
 #write the bed file
-setwd("~/Desktop/lncRNA")
 write.table(novel_I_bed_f4, "novel_I_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_II_bed_f4, "novel_II_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_III_bed_f4, "novel_III_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")

@@ -7,7 +7,7 @@ novel_I_blastp <- read.table("novel_I_sprot.outfmt6", header=F, stringsAsFactors
 novel_II_blastp <- read.table("novel_II_sprot.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
 novel_III_blastp <- read.table("novel_III_sprot.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
 intergenic_blastp <- read.table("intergenic_sprot.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
-known_lncRNA_blastp <- read.table("known_lncRNA_sprot.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
+known_lncRNA_blastp <- read.table("known_ncRNA_sprot.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
 
 #parse out column V1 to get gene IDs
 novel_I_blastp_new <- separate(data = novel_I_blastp, col = V1, into = c("gene","chrs","g","m"), sep = "::")
@@ -65,14 +65,14 @@ write.table(novel_I_blastp_bed, "novel_I_blastp.bed", row.names=F, col.names=F, 
 write.table(novel_II_blastp_bed, "novel_II_blastp.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_III_blastp_bed, "novel_III_blastp.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(intergenic_blastp_bed, "intergenic_blastp.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(known_lncRNA_blastp_bed, "known_lncRNA_blastp.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(known_lncRNA_blastp_bed, "known_ncRNA_blastp.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
 ##look at HMMER PFAM results
 novel_I_pfam <- read.table("novel_I_pfam_new.tblout", header=F, stringsAsFactors=F)
 novel_II_pfam <- read.table("novel_II_pfam_new.tblout", header=F, stringsAsFactors=F)
 novel_III_pfam <- read.table("novel_III_pfam_new.tblout", header=F, stringsAsFactors=F)
 intergenic_pfam <- read.table("intergenic_pfam_new.tblout", header=F, stringsAsFactors=F)
-known_lncRNA_pfam <- read.table("known_lncRNA_pfam_new.tblout", header=F, stringsAsFactors=F)
+known_lncRNA_pfam <- read.table("known_ncRNA_pfam_new.tblout", header=F, stringsAsFactors=F)
 
 ###processing hmmsearch .tblout output to be compatible with blastp
 novel_I_pfam_new <- separate(data = novel_I_pfam, col = V22, into = c("chr","starts","subj"), sep = ":")
@@ -135,7 +135,7 @@ write.table(novel_I_pfam_sub, "novel_I_pfam_sub.bed", row.names=F, col.names=F, 
 write.table(novel_II_pfam_sub, "novel_II_pfam_sub.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_III_pfam_sub, "novel_III_pfam_sub.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(intergenic_pfam_sub, "intergenic_pfam_sub.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(known_lncRNA_pfam_sub, "known_lncRNA_pfam_sub.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(known_lncRNA_pfam_sub, "known_ncRNA_pfam_sub.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
 # order of table: chr,starts,stop,V3-Name,length
 
@@ -144,7 +144,7 @@ novel_I_blastn <- read.table("novel_I_hg38_cdna.outfmt6", header=F, stringsAsFac
 novel_II_blastn <- read.table("novel_II_hg38_cdna.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
 novel_III_blastn <- read.table("novel_III_hg38_cdna.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
 intergenic_blastn <- read.table("intergenic_hg38_cdna.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
-known_lncRNA_blastn <- read.table("known_lncRNA_hg38_cdna.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
+known_lncRNA_blastn <- read.table("known_ncRNA_hg38_cdna.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
 
 #parse out column V1 to get gene IDs
 novel_I_blastn_temp1=data.frame(str_split_fixed(novel_I_blastn$V1, ":", 2))
@@ -182,7 +182,7 @@ write.table(novel_I_blastn_bed, "novel_I_blastn.bed", row.names=F, col.names=F, 
 write.table(novel_II_blastn_bed, "novel_II_blastn.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_III_blastn_bed, "novel_III_blastn.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(intergenic_blastn_bed, "intergenic_blastn.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(known_lncRNA_blastn_bed, "known_lncRNA_blastn.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(known_lncRNA_blastn_bed, "known_ncRNA_blastn.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
 
 #read in the remaining transcripts after filter 2
@@ -258,7 +258,7 @@ write.table(novel_I_P_noDups, "novel_I_P.bed", row.names=F, col.names=F, quote=F
 write.table(novel_II_P_noDups, "novel_II_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_III_P_noDups, "novel_III_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(intergenic_P_noDups, "intergenic_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(known_lncRNA_P_noDups, "known_lncRNA_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(known_lncRNA_P_noDups, "known_ncRNA_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 #write.table(P_noDups, "P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
 #performing anti_join to get rid of any transcript which had a hit in blastp or hmmsearch && make the f4 outputs into bed files
@@ -284,7 +284,7 @@ write.table(novel_I_bed, "novel_I_f3.bed", row.names=F, col.names=F, quote=F, se
 write.table(novel_II_bed, "novel_II_f3.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_III_bed, "novel_III_f3.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(intergenic_bed, "intergenic_f3.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(known_lncRNA_bed, "known_lncRNA_f3.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(known_lncRNA_bed, "known_ncRNA_f3.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
 
 #now lets concat. them with labels to make them easier to make figures with later

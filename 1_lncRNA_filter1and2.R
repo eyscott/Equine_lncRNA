@@ -166,5 +166,5 @@ write.table(f2_known_rejects, "F2_known_ncRNA", row.names=F, col.names=F, quote=
 write.table(f2_I_rejects, "F2_novel_I", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(f2_II_rejects, "F2_novel_II", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(f2_III_rejects, "F2_novel_III", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(f2_intergenic_rejects, "F2_novel_intergenic", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(f2_intergenic_rejects, "F2_intergenic", row.names=F, col.names=F, quote=F, sep = "\t")
 
