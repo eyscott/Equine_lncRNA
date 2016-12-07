@@ -100,14 +100,3 @@ lncRNA_bed <- rbind(novel_I_bed,novel_II_bed,novel_III_bed,intergenic_bed,P_lncR
 lncRNA_bed <- lncRNA_bed[with(lncRNA_bed, order(V1, V2)), ]
 write.table(lncRNA_bed, "lncRNA_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
-setwd("~/Desktop/lncRNA")
-novel_I_bed <- read.table("novel_I_final.bed", header=F, stringsAsFactors=F)
-novel_II_bed <- read.table("novel_II_final.bed", header=F, stringsAsFactors=F)
-novel_III_bed <- read.table("novel_III_final.bed", header=F, stringsAsFactors=F)
-intergenic_bed <- read.table("intergenic_final.bed", header=F, stringsAsFactors=F)
-P_lncRNA_bed<- read.table("P_lncRNA.bed", header=F, stringsAsFactors=F,sep = "\t")[-1]
-known_bed <- read.table("known_final.bed", header=F, stringsAsFactors=F)
-names(P_lncRNA_bed) <- names(novel_I_bed)
-lncRNA_bed <- rbind(novel_I_bed,novel_II_bed,novel_III_bed,intergenic_bed,P_lncRNA_bed,known_bed)
-lncRNA_bed <- lncRNA_bed[with(lncRNA_bed, order(V1, V2)), ]
-write.table(lncRNA_bed, "lncRNA_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
