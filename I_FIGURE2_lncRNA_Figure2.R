@@ -36,6 +36,35 @@ ggplot(data=lncRNA_keeps, aes(V2)) + geom_bar(aes(V2,group=V1,fill=V1),stat = "c
 
 dev.off()
 
+##Figure 2B
+#merge lncRNA_keeps with expression data
+setwd("~/Dropbox/lncRNA/inputs")
+overallExpression <- read.table("dataSummary", header=T, stringsAsFactors=F)
+overallExpression$transcriptName=rownames(overallExpression)
+lncRNA_exp <- merge(overallExpression, lncRNA_keeps, by.x="transcriptName",by.y="V5" )
+lncRNA_exp <-lncRNA_exp[ ,c("V2","V3","V4","transcriptName","calcTPM","V1")]
+#get exon information from unfiltered bed
+unfiltered_bed <- read.table("allTissues_BED/unfiltered_Alltissues_Assembly.bed", header=F, stringsAsFactors=F)
+lncRNA_exp_exons <- merge(lncRNA_exp, unfiltered_bed, by.x="transcriptName",by.y="V4" )
+lncRNA_exp_exons <-lncRNA_exp_exons[ ,c("transcriptName","calcTPM","V10","V1.x")]
+#Figure 2F:cumulative expression and exons with categories
+library(RColorBrewer)
+my.cols <- brewer.pal(6, "Set1")
+pdf("Fig2F.pdf")
+ggplot(subset(lncRNA_exp_exons, V10 %in% c(1:10)), aes(V1.x,group=V10,fill=V10)) + 
+  geom_bar(aes(weight=calcTPM),position="stack") + xlab("Input") + 
+  ylab("cumulative expression (TPM)") + scale_fill_gradientn(colours=my.cols,
+                                                             breaks=c(1,2,3,4,5,6),
+                                                             labels=c("1","2","3","4","5","6-10")) +
+  scale_x_discrete(labels=c("intergenic","known lncRNA","novel I", "novel II", "novel III")) +
+  guides(fill=guide_legend(title="exon number")) +
+  theme(legend.title = element_text(colour="black", size=18, face="bold")) +
+  theme(legend.text = element_text(colour="black", size = 16)) +
+  theme(axis.text = element_text(colour="black", size = 14)) +
+  theme(axis.title = element_text(colour="black", size = 16))
+dev.off()
+
+
 #Figure 2A: pie charts for overall RNAseq output for novel I,II,II, intergenic
 #genes=those retained from hmmer and blastp
 ##Pie charts based on cumulative TPM
@@ -228,7 +257,7 @@ ggplot(known_total_exp,aes(x=factor(1),weight=calcTPM,fill=id)) +
 dev.off()
 
 
-my.cols <- c("#FB8072","#BEBADA","#80B1D3","#8DD3C7","#FFFFB3")
+my.cols <- c("#FB8072","#80B1D3","#BEBADA","#8DD3C7","#FFFFB3")
 pdf("Fig2A_intergenic.pdf")
 ggplot(intergenic_total_exp,aes(x=factor(1),weight=calcTPM,fill=id)) + 
   geom_bar(width=1) + xlab(" ") + 
@@ -241,35 +270,6 @@ ggplot(intergenic_total_exp,aes(x=factor(1),weight=calcTPM,fill=id)) +
                     labels=c("lncRNA","F1","F2","F3","F4")) +
   theme(axis.text = element_blank(),
         axis.ticks = element_blank())
-dev.off()
-
-
-##Figure 2B
-#merge lncRNA_keeps with expression data
-setwd("~/Dropbox/lncRNA/inputs")
-overallExpression <- read.table("dataSummary", header=T, stringsAsFactors=F)
-overallExpression$transcriptName=rownames(overallExpression)
-lncRNA_exp <- merge(overallExpression, lncRNA_keeps, by.x="transcriptName",by.y="V5" )
-lncRNA_exp <-lncRNA_exp[ ,c("V2","V3","V4","transcriptName","calcTPM","V1")]
-#get exon information from unfiltered bed
-unfiltered_bed <- read.table("allTissues_BED/unfiltered_Alltissues_Assembly.bed", header=F, stringsAsFactors=F)
-lncRNA_exp_exons <- merge(lncRNA_exp, unfiltered_bed, by.x="transcriptName",by.y="V4" )
-lncRNA_exp_exons <-lncRNA_exp_exons[ ,c("transcriptName","calcTPM","V10","V1.x")]
-#Figure 2F:cumulative expression and exons with categories
-library(RColorBrewer)
-my.cols <- brewer.pal(6, "Set1")
-pdf("Fig2F.pdf")
-ggplot(subset(lncRNA_exp_exons, V10 %in% c(1:10)), aes(V1.x,group=V10,fill=V10)) + 
-  geom_bar(aes(weight=calcTPM),position="stack") + xlab("Input") + 
-  ylab("cumulative expression (TPM)") + scale_fill_gradientn(colours=my.cols,
-                                                             breaks=c(1,2,3,4,5,6),
-                                                             labels=c("1","2","3","4","5","6-10")) +
-  scale_x_discrete(labels=c("intergenic","known lncRNA","novel I", "novel II", "novel III")) +
-  guides(fill=guide_legend(title="exon number")) +
-  theme(legend.title = element_text(colour="black", size=18, face="bold")) +
-  theme(legend.text = element_text(colour="black", size = 16)) +
-  theme(axis.text = element_text(colour="black", size = 14)) +
-  theme(axis.title = element_text(colour="black", size = 16))
 dev.off()
 
 
