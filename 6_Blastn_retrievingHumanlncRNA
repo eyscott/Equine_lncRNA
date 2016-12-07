@@ -2,7 +2,7 @@
 module load GNU/4.4.5 
 module load BEDTools/2.24.0  
 
-bedtools getfasta -s -fi equCab2.0_genome.fa -bed P.bed -fo P.fa
+bedtools getfasta -s -fi equCab2.0_genome.fa -bed P.bed -name -fo P.fa
 
 curl -O ftp://ftp.ensembl.org/pub/release-86/fasta/homo_sapiens/ncrna/Homo_sapiens.GRCh38.ncrna.fa.gz
 gunzip Homo_sapiens.GRCh38.ncrna.fa.gz
