@@ -245,21 +245,26 @@ intergenic_P_noDups <- intergenic_P_noDups[with(intergenic_P_noDups, order(chr,s
 known_lncRNA_P_noDups <- known_lncRNA_P[!duplicated(known_lncRNA_P),]
 known_lncRNA_P_noDups <- known_lncRNA_P_noDups[with(known_lncRNA_P_noDups, order(chr,start)), ]
 
-#P_noDups <-rbind(data.frame(id="novel_I",novel_I_P_noDups),
-#                       data.frame(id="novel_II",novel_II_P_noDups),
-#                       data.frame(id="novel_III",novel_III_P_noDups),
-#                       data.frame(id="intergenic",intergenic_P_noDups),
-#                       data.frame(id="known",known_lncRNA_P_noDups))
+P_noDups <-rbind(data.frame(id="novel_I",novel_I_P_noDups),
+                 data.frame(id="novel_II",novel_II_P_noDups),
+                 data.frame(id="novel_III",novel_III_P_noDups),
+                 data.frame(id="intergenic",intergenic_P_noDups),
+                 data.frame(id="known",known_lncRNA_P_noDups))
 #merge with TCONS names
-#P_noDups <- merge(P_noDups,all_f2_lncRNA,by=c("chr","start","stop"))
-#P_noDups <- P_noDups[with(P_noDups, order(chr,start)), ]
+P_noDups_id <- merge(P_noDups,all_f2_lncRNA,by=c("chr","start","stop"))
+P_noDups <- data.frame(P_noDups_id[ ,-4])
+P_noDups <- P_noDups[with(P_noDups, order(chr,start)), ]
+
+
 
 write.table(novel_I_P_noDups, "novel_I_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_II_P_noDups, "novel_II_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_III_P_noDups, "novel_III_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(intergenic_P_noDups, "intergenic_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(known_lncRNA_P_noDups, "known_ncRNA_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-#write.table(P_noDups, "P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(P_noDups, "P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(P_noDups_id, "P_id.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+
 
 #performing anti_join to get rid of any transcript which had a hit in blastp or hmmsearch && make the f4 outputs into bed files
 novel_I_bed <- anti_join(novel_I_bed_f2,novel_I_P_noDups, by=c("chr","start","stop"))
