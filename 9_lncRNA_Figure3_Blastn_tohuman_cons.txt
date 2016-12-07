@@ -23,6 +23,6 @@ blastn -query mergedTrans.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 
 #do the same for our promoters
 blastn -query lncRNA_promoters.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > lncRNApromoter_human_nt.outfmt6
 blastn -query lncRNA_down.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > lncRNAdown_human_nt.outfmt6
-blastn -query merged_5.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > genepromoter_human_nt.outfmt6
-blastn -query merged_3.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > genedown_human_nt.outfmt6
+blastn -query refined_nolncRNA_5.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > genepromoter_human_nt.outfmt6
+blastn -query refined_nolncRNA_3.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > genedown_human_nt.outfmt6
 
