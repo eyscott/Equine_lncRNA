@@ -248,6 +248,7 @@ known_lncRNA_P_noDups <- known_lncRNA_P[!duplicated(known_lncRNA_P),]
 known_lncRNA_P_noDups <- known_lncRNA_P_noDups[with(known_lncRNA_P_noDups, order(chr,start)), ]
 
 ###########
+#merge with TCONS names
 novel_I_P_noDups_bed <- merge(novel_I_P_noDups,all_f2_lncRNA,by=c("chr","start","stop"))
 novel_II_P_noDups_bed <- merge(novel_II_P_noDups,all_f2_lncRNA,by=c("chr","start","stop"))
 novel_III_P_noDups_bed <- merge(novel_III_P_noDups,all_f2_lncRNA,by=c("chr","start","stop"))
@@ -259,12 +260,11 @@ P_noDups_id <-rbind(data.frame(id="novel_I",novel_I_P_noDups_bed),
                  data.frame(id="novel_III",novel_III_P_noDups_bed),
                  data.frame(id="intergenic",intergenic_P_noDups_bed),
                  data.frame(id="known",known_lncRNA_P_noDups_bed))
-#merge with TCONS names
-#P_noDups_id <- merge(P_noDups,all_f2_lncRNA,by=c("chr","start","stop"))
-#P_noDups <- data.frame(P_noDups_id[ ,-4])
-#P_noDups <- P_noDups[with(P_noDups, order(chr,start)), ]
 
-
+P_noDups <- data.frame(P_noDups_id[ ,-1])
+P_noDups = P_noDups[!duplicated(P_noDups),]
+P_noDups[, c("start")] <- sapply(P_noDups[, c("start")], as.numeric)
+P_noDups <- P_noDups[with(P_noDups, order(chr,start)), ]
 
 write.table(novel_I_P_noDups, "novel_I_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_II_P_noDups, "novel_II_P.bed", row.names=F, col.names=F, quote=F, sep = "\t")
