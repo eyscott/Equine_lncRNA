@@ -1,12 +1,12 @@
 ##get fasta files for our lncRNA
 bedtools getfasta -s -fi equCab2.0_genome.fa -bed lncRNA_final.bed -fo lncRNA_final.fa
 ##then our transcriptome
-bedtools getfasta -s -fi equCab2.0_genome.fa -bed mergedTrans.bed -fo mergedTrans.fa
+bedtools getfasta -s -fi equCab2.0_genome.fa -bed refined_nolncRNA.bed -fo refined_nolncRNA.fa
 #then all our associated promoters
 bedtools getfasta -s -fi equCab2.0_genome.fa -bed lncRNA_promoters.bed -fo lncRNA_promoters.fa
 bedtools getfasta -s -fi equCab2.0_genome.fa -bed lncRNA_down.bed -fo lncRNA_down.fa
-bedtools getfasta -s -fi equCab2.0_genome.fa -bed merged_5.bed -fo merged_5.fa
-bedtools getfasta -s -fi equCab2.0_genome.fa -bed merged_3.bed -fo merged_3.fa
+bedtools getfasta -s -fi equCab2.0_genome.fa -bed refined_nolncRNA_5.bed -fo refined_nolncRNA_5.fa
+bedtools getfasta -s -fi equCab2.0_genome.fa -bed refined_nolncRNA_3.bed -fo refined_nolncRNA_3.fa
 
 #Make blast db for human ncRNA,genes and genome
 makeblastdb -in Homo_sapiens.GRCh38.ncrna.fa -input_type fasta -dbtype nucl -parse_seqids -out hg38_db
@@ -15,11 +15,14 @@ makeblastdb -in Homo_sapiens.GRCh38.dna.alt.fa -input_type fasta -dbtype nucl -p
 
 #blast our genes and lncRNA to respective human databases
 blastn -query lncRNA_final.fa  -db hg38_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > lncRNA_hg_nt.outfmt6
-blastn -query mergedTrans.fa  -db hg38_genes_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > human_genes_nt.outfmt6
+blastn -query refined_nolncRNA.fa  -db hg38_genes_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > human_genes_nt.outfmt6
+
+blastn -query lncRNA_all_final.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > lncRNA_humanGenome_nt.outfmt6
+blastn -query mergedTrans.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > genes_humanGenome_nt.outfmt6
 
 #do the same for our promoters
 blastn -query lncRNA_promoters.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > lncRNApromoter_human_nt.outfmt6
 blastn -query lncRNA_down.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > lncRNAdown_human_nt.outfmt6
-blastn -query merged_5.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > genepromoter_human_nt.outfmt6
-blastn -query merged_3.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > genedown_human_nt.outfmt6
+blastn -query refined_nolncRNA_5.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > genepromoter_human_nt.outfmt6
+blastn -query refined_nolncRNA_3.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 > genedown_human_nt.outfmt6
 
