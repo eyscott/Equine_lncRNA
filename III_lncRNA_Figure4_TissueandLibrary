@@ -1,47 +1,41 @@
 #Figure 4: tissue-specific expression of lncRNA
 #A) lncRNA vs annotated genes
 #Use the mergedTrans.bed without the novel I,II,III
-setwd("~/Dropbox/Horse_Transcriptome/downloads")
-mergedTrans_bed <- read.table("allTissues_BED/mergedTrans.bed", header=F, stringsAsFactors=F)
-mergedTrans <- mergedTrans_bed[ ,c("V1","V2","V3","V4")]
 setwd("~/Desktop/lncRNA")
-all <- read.table("lncRNA_final", header=F, stringsAsFactors=F)
-#make sure the mergedtrans has none of the novel I,II,III lncRNA
+refined_nolncRNA <- read.table("refined_nolncRNA.bed", header=F, stringsAsFactors=F)
+all <- read.table("lncRNA_final.bed", header=F, stringsAsFactors=F)
+
 library(dplyr)
-mergedTrans_noNovel <- anti_join(mergedTrans,all)
-mergedTrans_noNovel_bed <- anti_join(mergedTrans_bed,all)
-#order chr properly
-mergedTrans_noNovel_bed <- mergedTrans_noNovel_bed[with(mergedTrans_noNovel_bed, order(V1, V2)), ]
-write.table(mergedTrans_noNovel_bed,"mergedTrans_noNovel.bed",row.names=F, col.names=F, quote=F, sep = "\t")
 #join with expression data
-setwd("~/Dropbox/Horse_Transcriptome/downloads")
-tissue_specific_intergenic_exp <- read.table("intergenic_trans/allTissues_isoformTPM", header=T, stringsAsFactors=F)
-tissue_specific_exp <- read.table("backmapping_stats/allTissues_isoformTPM", header=T, stringsAsFactors=F)
+setwd("~/Dropbox/lncRNA/inputs/backmapping_stats")
+tissue_specific_intergenic_exp <- read.table("allTissues_isoformTPM", header=T, stringsAsFactors=F)
+tissue_specific_exp <- read.table("allTissues_isoformTPM", header=T, stringsAsFactors=F)
 #remove mt entries
 tissue_specific_exp <- tissue_specific_exp[-c(1,2),]
 rownames(tissue_specific_exp) <- c()
 #combine
 tissue_specific_all_exp <- rbind(tissue_specific_intergenic_exp,tissue_specific_exp)
-mergedTrans_noNovel_exp <- merge(mergedTrans_noNovel,tissue_specific_all_exp, by.x="V4",by.y="isoformName")
-mergedTrans_noNovel_exp <- mergedTrans_noNovel_exp[ , c("V4","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",	"Retina",	"Skin",	"SpinalCord")] 
+refined_nolncRNA_exp <- merge(refined_nolncRNA,tissue_specific_all_exp, by.x="V4",by.y="isoformName")
+refined_nolncRNA_exp <- refined_nolncRNA_exp[ , c("V4","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",  "Retina",	"Skin",	"SpinalCord")] 
 
 #calculate cumulative TPM for pie graph
-cumulative_annotated_TPM_BS<-sum(mergedTrans_noNovel_exp[["BrainStem"]])
-cumulative_annotated_TPM_C<-sum(mergedTrans_noNovel_exp[["Cerebellum"]])
-cumulative_annotated_TPM_EICM<-sum(mergedTrans_noNovel_exp[["Embryo.ICM"]])
-cumulative_annotated_TPM_ETE<-sum(mergedTrans_noNovel_exp[["Embryo.TE"]])
-cumulative_annotated_TPM_M<-sum(mergedTrans_noNovel_exp[["Muscle"]])
-cumulative_annotated_TPM_R<-sum(mergedTrans_noNovel_exp[["Retina"]])
-cumulative_annotated_TPM_S<-sum(mergedTrans_noNovel_exp[["Skin"]])
-cumulative_annotated_TPM_SC<-sum(mergedTrans_noNovel_exp[["SpinalCord"]])
+cumulative_annotated_TPM_BS<-sum(refined_nolncRNA_exp[["BrainStem"]])
+cumulative_annotated_TPM_C<-sum(refined_nolncRNA_exp[["Cerebellum"]])
+cumulative_annotated_TPM_EICM<-sum(refined_nolncRNA_exp[["Embryo.ICM"]])
+cumulative_annotated_TPM_ETE<-sum(refined_nolncRNA_exp[["Embryo.TE"]])
+cumulative_annotated_TPM_M<-sum(refined_nolncRNA_exp[["Muscle"]])
+cumulative_annotated_TPM_R<-sum(refined_nolncRNA_exp[["Retina"]])
+cumulative_annotated_TPM_S<-sum(refined_nolncRNA_exp[["Skin"]])
+cumulative_annotated_TPM_SC<-sum(refined_nolncRNA_exp[["SpinalCord"]])
 
 #attach tissue specific expression to our lncRNA
+setwd("~/Desktop/lncRNA")
 lncRNA_exp <- merge(all,tissue_specific_all_exp, by.x="V4",by.y="isoformName")
 lncRNA_exp <- lncRNA_exp[ , c("V4","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",  "Retina",	"Skin",	"SpinalCord")] 
 write.table(lncRNA_exp,"lncRNA_exp.txt")
 #combine all
 total_exp <- rbind(data.frame(id="lncRNA",lncRNA_exp),
-                   data.frame(id="annotated",mergedTrans_noNovel_exp))
+                   data.frame(id="annotated",refined_nolncRNA_exp))
 BrainStem <- total_exp[ ,c("id","BrainStem")]
 Cerebellum <- total_exp[ ,c("id","Cerebellum")]
 Embryo.ICM <- total_exp[ ,c("id","Embryo.ICM")]
@@ -142,17 +136,17 @@ library(caroline)
 par(lwd = 2)
 pies(
   list(
-    Brainstem=nv(c(302494,805591),c('lncRNA','annotated')),
-    Cerebellum=nv(c(414094,934609),c('lncRNA','annotated')),
-    Embryo_ICM=nv(c(252546,774785),c('lncRNA','annotated')),
-    Embryo_TE=nv(c(195885,828645),c('lncRNA','annotated')),
-    Muscle=nv(c(15216,807553),c('lncRNA','annotated')),
-    Retina=nv(c(206248,928996),c('lncRNA','annotated')),
-    Skin=nv(c(169409,921865),c('lncRNA','annotated')),
-    Spinal_cord=nv(c(349274,854957),c('lncRNA','annotated'))),
-  x0=c(62076,62981,54594,50282,41931,49381,46965,63031),
-  y0=c(6867,7027,6242,5758,3657,4440,4924,6807),
-  radii=4, border=c('purple','purple','black','black','blue','blue','blue','purple')) # to see labels add ",show.labels=T"
+    Brainstem=nv(c(202998,1591403),c('lncRNA','annotated')),
+    Cerebellum=nv(c(749440,1581990),c('lncRNA','annotated')),
+    Embryo_ICM=nv(c(540068,1575577),c('lncRNA','annotated')),
+    Embryo_TE=nv(c(494486,1685509),c('lncRNA','annotated')),
+    Muscle=nv(c(30384,1782583),c('lncRNA','annotated')),
+    Retina=nv(c(49625,1931580),c('lncRNA','annotated')),
+    Skin=nv(c(39880,1945668),c('lncRNA','annotated')),
+    Spinal_cord=nv(c(270866,1669640),c('lncRNA','annotated'))),
+  x0=c(142578,142578,107940,99348,83176,97610,93742,124296),
+  y0=c(7164,7146,5820,5314,4910,5346,5414,7246),
+  radii=4, border=c('purple','purple','black','black','blue','blue','blue','purple'),show.labels=T) # to see labels add ",show.labels=T"
 
 
 #B) tissue-specific heatmap
