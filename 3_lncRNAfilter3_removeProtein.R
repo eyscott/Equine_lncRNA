@@ -191,8 +191,6 @@ novel_II_bed_f2=read.table("novel_II_f2.bed", header=F, colClasses = "character"
 novel_III_bed_f2=read.table("novel_III_f2.bed", header=F, colClasses = "character",sep = "\t")
 intergenic_bed_f2=read.table("intergenic_f2.bed", header=F, colClasses = "character",sep = "\t")
 known_lncRNA_bed_f2=read.table("known_ncRNA_f2.bed", header=F, colClasses = "character",sep = "\t")
-#combine all
-#all_f2_lncRNA <- rbind(novel_I_bed_f2,novel_II_bed_f2,novel_III_bed_f2,intergenic_bed_f2,known_lncRNA_bed_f2)
 #format tables for comparison
 trunc_headers=c("chr","start","stop")
 names(novel_I_bed_f2)[1:3]=trunc_headers
@@ -200,7 +198,10 @@ names(novel_II_bed_f2)[1:3]=trunc_headers
 names(novel_III_bed_f2)[1:3]=trunc_headers
 names(intergenic_bed_f2)[1:3]=trunc_headers
 names(known_lncRNA_bed_f2)[1:3]=trunc_headers
-#names(all_f2_lncRNA)[1:3]=trunc_headers
+
+#combine all
+all_f2_lncRNA <- rbind(novel_I_bed_f2,novel_II_bed_f2,novel_III_bed_f2,intergenic_bed_f2,known_lncRNA_bed_f2)
+names(all_f2_lncRNA)[1:3]=trunc_headers
 
 novel_I_pfam_sub_trunc <-novel_I_pfam_sub[ ,trunc_headers]
 novel_II_pfam_sub_trunc <-novel_II_pfam_sub[ ,trunc_headers]
