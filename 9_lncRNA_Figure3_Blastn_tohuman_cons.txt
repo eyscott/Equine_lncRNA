@@ -5,8 +5,8 @@ bedtools getfasta -s -fi equCab2.0_genome.fa -bed mergedTrans.bed -fo mergedTran
 #then all our associated promoters
 bedtools getfasta -s -fi equCab2.0_genome.fa -bed lncRNA_promoters.bed -fo lncRNA_promoters.fa
 bedtools getfasta -s -fi equCab2.0_genome.fa -bed lncRNA_down.bed -fo lncRNA_down.fa
-bedtools getfasta -s -fi equCab2.0_genome.fa -bed merged_5.bed -fo merged_5.fa
-bedtools getfasta -s -fi equCab2.0_genome.fa -bed merged_3.bed -fo merged_3.fa
+bedtools getfasta -s -fi equCab2.0_genome.fa -bed refined_nolncRNA_5.bed -fo refined_nolncRNA_5.fa
+bedtools getfasta -s -fi equCab2.0_genome.fa -bed refined_nolncRNA_3.bed -fo refined_nolncRNA_3.fa
 
 #Make blast db for human ncRNA,genes and genome
 makeblastdb -in Homo_sapiens.GRCh38.ncrna.fa -input_type fasta -dbtype nucl -parse_seqids -out hg38_db
