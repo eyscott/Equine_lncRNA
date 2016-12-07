@@ -1,4 +1,7 @@
-setwd("~/Desktop/lncRNA")
+require(tidyr)
+require(dplyr)
+require(stringr)
+setwd("~/Dropbox/lncRNA")
 P_blastn <- read.table("lncRNA_hg_nt.outfmt6", header=F, stringsAsFactors=F,sep = "\t")
 #Get the protein that have hits to the lncRNA
 P_blastn_temp1=data.frame(str_split_fixed(P_blastn$V1, ":", 2))
@@ -17,5 +20,11 @@ P_lncRNA <- subset(P_blastn_T_bed, V4 >20)#makes a threshold of 20% coverage
 P_lncRNA <- merge(P_lncRNA,P_bed, by=c("chr","start","stop"))
 P_lncRNA <- P_lncRNA[ ,c("id","chr","start","stop","V4.y","V5","V6","V7","V8","V9","V10","V11","V12")]
 P_lncRNA <- P_lncRNA[!duplicated(P_lncRNA$V4.y),] #amounts to 264 transcripts
+
+P_lncRNA[, c("start","stop")] <- sapply(P_lncRNA[, c("start","stop")], as.numeric)
+P_final_bed <- anti_join(P_bed,P_lncRNA,by.x="V4",by.y="V4.y")
+P_final_bed <- P_final_bed[!duplicated(P_final_bed), ]
+
 write.table(P_blastn_bed, "P_lncRNAall.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(P_lncRNA, "P_lncRNA.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(P_final_bed, "P_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
