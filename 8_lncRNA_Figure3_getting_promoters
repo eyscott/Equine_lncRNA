@@ -5,7 +5,16 @@ novel_I_bed <- read.table("novel_I_final.bed", header=F, stringsAsFactors=F)
 novel_II_bed <- read.table("novel_II_final.bed", header=F, stringsAsFactors=F)
 novel_III_bed <- read.table("novel_III_final.bed", header=F, stringsAsFactors=F)
 intergenic_bed <- read.table("intergenic_final.bed", header=F, stringsAsFactors=F)
-lncRNA_bed <- rbind(novel_I_bed,novel_II_bed,novel_III_bed,intergenic_bed)
+P_bed<- read.table("P_id.bed", header=F, stringsAsFactors=F,sep = "\t")[-4]
+P_lncRNA <- read.table("P_lncRNA.bed", header=F, stringsAsFactors=F,sep = "\t")[-1]
+P_bed_IDs <- read.table("P_id.bed", header=F, stringsAsFactors=F,sep = "\t")[ ,c(4,5)]
+names(P_lncRNA) <- names(P_bed)
+P_final_bed <- anti_join(P_bed,P_lncRNA,by="V5")
+P_final_bed <- merge(P_final_bed,P_bed_IDs,by="V5")
+P_final_bed <- P_final_bed[!duplicated(P_final_bed), ]
+write.table(P_final_bed, "P_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+names(P_final_bed[-13]) <- names(novel_I_bed)
+lncRNA_bed <- rbind(novel_I_bed,novel_II_bed,novel_III_bed,intergenic_bed,P_final_bed[-13])
 lncRNA_bed <- lncRNA_bed[with(lncRNA_bed, order(V1, V2)), ]
 write.table(lncRNA_bed, "lncRNA_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
