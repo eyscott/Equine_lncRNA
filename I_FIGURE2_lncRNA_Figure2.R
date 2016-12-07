@@ -77,15 +77,15 @@ F2_intergenic <- read.table("F2_intergenic", header=F, stringsAsFactors=F)
 setwd("~/Desktop/lncRNA")
 Pcoding <- read.table("P_final.bed", header=F, stringsAsFactors=F)
 Pcoding_exp <- merge(Pcoding,overallExpression,by.x="V5",by.y="transcriptName")
-F3_I <- subset(Pcoding_exp, V4 %in% c("novel_I"))
+F3_I <- subset(Pcoding_exp, V1 %in% c("novel_I"))
 F3_I <- F3_I[ ,c("V5","length","calcTPM")]
-F3_II <- subset(Pcoding_exp, V4 %in% c("novel_II"))
+F3_II <- subset(Pcoding_exp, V1 %in% c("novel_II"))
 F3_II <- F3_II[ ,c("V5","length","calcTPM")]
-F3_III <- subset(Pcoding_exp, V4 %in% c("novel_III"))
+F3_III <- subset(Pcoding_exp, V1 %in% c("novel_III"))
 F3_III <- F3_III[ ,c("V5","length","calcTPM")]
-F3_intergenic <- subset(Pcoding_exp, V4 %in% c("intergenic"))
+F3_intergenic <- subset(Pcoding_exp, V1 %in% c("intergenic"))
 F3_intergenic <- F3_intergenic[ ,c("V5","length","calcTPM")]
-F3_known <- subset(Pcoding_exp, V4 %in% c("known"))
+F3_known <- subset(Pcoding_exp, V1 %in% c("known"))
 F3_known <- F3_known[ ,c("V5","length","calcTPM")]
 
 #Filter 4
@@ -242,6 +242,36 @@ ggplot(intergenic_total_exp,aes(x=factor(1),weight=calcTPM,fill=id)) +
   theme(axis.text = element_blank(),
         axis.ticks = element_blank())
 dev.off()
+
+
+##Figure 2B
+#merge lncRNA_keeps with expression data
+setwd("~/Dropbox/lncRNA/inputs")
+overallExpression <- read.table("dataSummary", header=T, stringsAsFactors=F)
+overallExpression$transcriptName=rownames(overallExpression)
+lncRNA_exp <- merge(overallExpression, lncRNA_keeps, by.x="transcriptName",by.y="V5" )
+lncRNA_exp <-lncRNA_exp[ ,c("V2","V3","V4","transcriptName","calcTPM","V1")]
+#get exon information from unfiltered bed
+unfiltered_bed <- read.table("allTissues_BED/unfiltered_Alltissues_Assembly.bed", header=F, stringsAsFactors=F)
+lncRNA_exp_exons <- merge(lncRNA_exp, unfiltered_bed, by.x="transcriptName",by.y="V4" )
+lncRNA_exp_exons <-lncRNA_exp_exons[ ,c("transcriptName","calcTPM","V10","V1.x")]
+#Figure 2F:cumulative expression and exons with categories
+library(RColorBrewer)
+my.cols <- brewer.pal(6, "Set1")
+pdf("Fig2F.pdf")
+ggplot(subset(lncRNA_exp_exons, V10 %in% c(1:10)), aes(V1.x,group=V10,fill=V10)) + 
+  geom_bar(aes(weight=calcTPM),position="stack") + xlab("Input") + 
+  ylab("cumulative expression (TPM)") + scale_fill_gradientn(colours=my.cols,
+                                                             breaks=c(1,2,3,4,5,6),
+                                                             labels=c("1","2","3","4","5","6-10")) +
+  scale_x_discrete(labels=c("intergenic","known lncRNA","novel I", "novel II", "novel III")) +
+  guides(fill=guide_legend(title="exon number")) +
+  theme(legend.title = element_text(colour="black", size=18, face="bold")) +
+  theme(legend.text = element_text(colour="black", size = 16)) +
+  theme(axis.text = element_text(colour="black", size = 14)) +
+  theme(axis.title = element_text(colour="black", size = 16))
+dev.off()
+
 
 #calculate some quick stats
 lncRNA_exp <- merge(lncRNA_keeps, overallExpression, by.x="V5",by.y="transcriptName" )
