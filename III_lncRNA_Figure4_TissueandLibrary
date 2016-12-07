@@ -8,7 +8,7 @@ all <- read.table("lncRNA_final.bed", header=F, stringsAsFactors=F)
 library(dplyr)
 #join with expression data
 setwd("~/Dropbox/lncRNA/inputs/backmapping_stats")
-tissue_specific_intergenic_exp <- read.table("allTissues_isoformTPM", header=T, stringsAsFactors=F)
+tissue_specific_intergenic_exp <- read.table("intergenic_allTissues_isoformTPM", header=T, stringsAsFactors=F)
 tissue_specific_exp <- read.table("allTissues_isoformTPM", header=T, stringsAsFactors=F)
 #remove mt entries
 tissue_specific_exp <- tissue_specific_exp[-c(1,2),]
@@ -17,16 +17,6 @@ rownames(tissue_specific_exp) <- c()
 tissue_specific_all_exp <- rbind(tissue_specific_intergenic_exp,tissue_specific_exp)
 refined_nolncRNA_exp <- merge(refined_nolncRNA,tissue_specific_all_exp, by.x="V4",by.y="isoformName")
 refined_nolncRNA_exp <- refined_nolncRNA_exp[ , c("V4","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",  "Retina",	"Skin",	"SpinalCord")] 
-
-#calculate cumulative TPM for pie graph
-cumulative_annotated_TPM_BS<-sum(refined_nolncRNA_exp[["BrainStem"]])
-cumulative_annotated_TPM_C<-sum(refined_nolncRNA_exp[["Cerebellum"]])
-cumulative_annotated_TPM_EICM<-sum(refined_nolncRNA_exp[["Embryo.ICM"]])
-cumulative_annotated_TPM_ETE<-sum(refined_nolncRNA_exp[["Embryo.TE"]])
-cumulative_annotated_TPM_M<-sum(refined_nolncRNA_exp[["Muscle"]])
-cumulative_annotated_TPM_R<-sum(refined_nolncRNA_exp[["Retina"]])
-cumulative_annotated_TPM_S<-sum(refined_nolncRNA_exp[["Skin"]])
-cumulative_annotated_TPM_SC<-sum(refined_nolncRNA_exp[["SpinalCord"]])
 
 #attach tissue specific expression to our lncRNA
 setwd("~/Desktop/lncRNA")
@@ -133,19 +123,19 @@ SpinalCord = list(c(cumulative_lncRNA_TPM_SC,cumulative_genes_TPM_SC))
 
 #Pies only including genes and lncRNA
 library(caroline)
-par(lwd = 2)
+par(lwd = 2.5)
 pies(
   list(
-    Brainstem=nv(c(202998,1591403),c('lncRNA','annotated')),
-    Cerebellum=nv(c(749440,1581990),c('lncRNA','annotated')),
-    Embryo_ICM=nv(c(540068,1575577),c('lncRNA','annotated')),
-    Embryo_TE=nv(c(494486,1685509),c('lncRNA','annotated')),
-    Muscle=nv(c(30384,1782583),c('lncRNA','annotated')),
-    Retina=nv(c(49625,1931580),c('lncRNA','annotated')),
-    Skin=nv(c(39880,1945668),c('lncRNA','annotated')),
-    Spinal_cord=nv(c(270866,1669640),c('lncRNA','annotated'))),
-  x0=c(142578,142578,107940,99348,83176,97610,93742,124296),
-  y0=c(7164,7146,5820,5314,4910,5346,5414,7246),
+    Brainstem=nv(c(375742,795701),c('lncRNA','annotated')),
+    Cerebellum=nv(c(791335,790995),c('lncRNA','annotated')),
+    Embryo_ICM=nv(c(420638,787788),c('lncRNA','annotated')),
+    Embryo_TE=nv(c(380430,842754),c('lncRNA','annotated')),
+    Muscle=nv(c(24987,891291),c('lncRNA','annotated')),
+    Retina=nv(c(268470,965790),c('lncRNA','annotated')),
+    Skin=nv(c(248121,972834),c('lncRNA','annotated')),
+    Spinal_cord=nv(c(454398,834820),c('lncRNA','annotated'))),
+  x0=c(61203,62094,53970,49674,41588,48805,46871,62148),
+  y0=c(10668,10898,9439,8691,6205,7224,7938,10695),
   radii=4, border=c('purple','purple','black','black','blue','blue','blue','purple'),show.labels=T) # to see labels add ",show.labels=T"
 
 
