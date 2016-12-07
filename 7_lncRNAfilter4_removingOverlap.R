@@ -47,9 +47,7 @@ known_upAnddown <- rbind(known_5_in,known_3_in)
 known_upAnddown <- known_upAnddown[ ,c("V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12")] 
 rownames(known_upAnddown) <- c()
 #known_upAnddown are the F3 rejects for intergenic
-write.table(known_upAnddown, "F4_known", row.names=F, col.names=F, quote=F, sep = "\t")
-
-
+write.table(known_upAnddown, "F4_known_ncRNA", row.names=F, col.names=F, quote=F, sep = "\t")
 
 #remove 3' upstream and 5' upstream lncRNA
 novel_I_bed <-read.table("novel_I_f3.bed",header=F)
@@ -85,29 +83,15 @@ write.table(novel_I_bed_f4, "novel_I_final.bed", row.names=F, col.names=F, quote
 write.table(novel_II_bed_f4, "novel_II_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(novel_III_bed_f4, "novel_III_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(intergenic_bed_f4, "intergenic_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
-write.table(known_bed_f4, "known_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+write.table(known_bed_f4, "known_ncRNA_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(all_lncRNA_bed, "lncRNA_final_IDs", row.names=F, col.names=F, quote=F, sep = "\t")
 
-setwd("~/Desktop/lncRNA")
-novel_I_bed <- read.table("novel_I_final.bed", header=F, stringsAsFactors=F)
-novel_II_bed <- read.table("novel_II_final.bed", header=F, stringsAsFactors=F)
-novel_III_bed <- read.table("novel_III_final.bed", header=F, stringsAsFactors=F)
-intergenic_bed <- read.table("intergenic_final.bed", header=F, stringsAsFactors=F)
-P_lncRNA_bed<- read.table("P_lncRNA.bed", header=F, stringsAsFactors=F,sep = "\t")[-1]
-known_bed <- read.table("known_final.bed", header=F, stringsAsFactors=F)
-names(P_lncRNA_bed) <- names(novel_I_bed)
-lncRNA_bed <- rbind(novel_I_bed,novel_II_bed,novel_III_bed,intergenic_bed,P_lncRNA_bed,known_bed)
+P_lncRNA_bed <- read.table("P_lncRNA.bed", header=F, stringsAsFactors=F,sep = "\t")[-1]
+P_lncRNA_bed <- P_lncRNA_bed[!duplicated(P_lncRNA_bed),]
+names(P_lncRNA_bed) <- names(novel_I_bed_f4)
+lncRNA_bed <- rbind(novel_I_bed_f4,novel_II_bed_f4,novel_III_bed_f4,intergenic_bed_f4,known_bed_f4,P_lncRNA_bed)
+lncRNA_bed <- lncRNA_bed[!duplicated(lncRNA_bed),]
 lncRNA_bed <- lncRNA_bed[with(lncRNA_bed, order(V1, V2)), ]
+write.table(P_lncRNA_bed, "lncRNA_rescued.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 write.table(lncRNA_bed, "lncRNA_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
 
-setwd("~/Desktop/lncRNA")
-novel_I_bed <- read.table("novel_I_final.bed", header=F, stringsAsFactors=F)
-novel_II_bed <- read.table("novel_II_final.bed", header=F, stringsAsFactors=F)
-novel_III_bed <- read.table("novel_III_final.bed", header=F, stringsAsFactors=F)
-intergenic_bed <- read.table("intergenic_final.bed", header=F, stringsAsFactors=F)
-P_lncRNA_bed<- read.table("P_lncRNA.bed", header=F, stringsAsFactors=F,sep = "\t")[-1]
-known_bed <- read.table("known_final.bed", header=F, stringsAsFactors=F)
-names(P_lncRNA_bed) <- names(novel_I_bed)
-lncRNA_bed <- rbind(novel_I_bed,novel_II_bed,novel_III_bed,intergenic_bed,P_lncRNA_bed,known_bed)
-lncRNA_bed <- lncRNA_bed[with(lncRNA_bed, order(V1, V2)), ]
-write.table(lncRNA_bed, "lncRNA_final.bed", row.names=F, col.names=F, quote=F, sep = "\t")
