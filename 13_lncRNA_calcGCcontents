@@ -4,4 +4,4 @@ bedtools nuc -fi equCab2.0_genome.fa -bed novel_I_final.bed > novel_I_GC.bed
 bedtools nuc -fi equCab2.0_genome.fa -bed novel_II_final.bed > novel_II_GC.bed
 bedtools nuc -fi equCab2.0_genome.fa -bed novel_III_final.bed > novel_III_GC.bed
 bedtools nuc -fi equCab2.0_genome.fa -bed intergenic_final.bed > intergenic_GC.bed
-bedtools nuc -fi equCab2.0_genome.fa -bed known_final.bed > known_GC.bed
+bedtools nuc -fi equCab2.0_genome.fa -bed known_ncRNA_final.bed > known_GC.bed
