@@ -6,27 +6,21 @@
 setwd("~/Desktop/lncRNA")
 lncRNA_all <- read.table("lncRNA_final_IDs", header=F, stringsAsFactors=F)
 #subset and remove overlap of known lncRNA
-require(dplyr)
-known <- subset(lncRNA_all,V1=="known")
-lncRNA_noO <- merge(lncRNA_all,known,by="V5")
-known_O <- subset(lncRNA_noO,V1.x==c("novel_I","novel_II","novel_III"))
-known_O <- known_O[ ,c("V1.x","V2.x","V3.x","V4.x","V5","V6.x","V7.x","V8.x","V9.x","V10.x","V11.x","V12.x","V13.x")]
-names(known_O)<-names(known)
-known_2 <- anti_join(known,known_O,by="V5")
-lncRNA_noO <- anti_join(lncRNA_all,known,by="V5")
-lncRNA_noO <- rbind(lncRNA_noO,known_2)
 #making chr plot
+library(RColorBrewer)
+my.cols <- brewer.pal(5, "Set1")
 library(ggplot2)
 keeps <- c("V1", "V2", "V3", "V4","V5")
-lncRNA_keeps <- lncRNA_noO[keeps]
+lncRNA_keeps <- lncRNA_all[keeps]
 chrs <- c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15", "chr16", "chr17", "chr18", "chr19", "chr20", "chr21", "chr22", "chr23", "chr24", "chr25", "chr26", "chr27", "chr28", "chr29", "chr30", "chr31", "chrUn", "chrX")
 chrs_N <- c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "Un", "X")    
 chromSizes<-read.table("equCab2.chrom.sizes.txt", header=T, col.names=c("chr","size"),stringsAsFactors=FALSE) 
 pdf("Fig1A.pdf")
 ggplot(data=lncRNA_keeps, aes(V2)) + geom_bar(aes(V2,group=V1,fill=V1),stat = "count") + 
   scale_x_discrete(limits = chrs, labels = chrs_N) + ylab("lncRNA count") + xlab("Chr") +
-  scale_fill_discrete(name  ="Input", 
+  scale_fill_manual(name  ="Input", 
                       guide = guide_legend(reverse = F),
+                    values=my.cols,
                       labels=c("intergenic","known lncRNA","novel I","novel II","novel III")) +
   theme(legend.title = element_text(colour="black", size=18, face="bold")) +
   theme(legend.text = element_text(colour="black", size = 16)) +
@@ -41,7 +35,6 @@ dev.off()
 setwd("~/Dropbox/lncRNA/inputs")
 overallExpression <- read.table("dataSummary", header=T, stringsAsFactors=F)
 overallExpression$transcriptName=rownames(overallExpression)
-lncRNA_keeps <- lncRNA_all[keeps]
 lncRNA_exp <- merge(overallExpression, lncRNA_keeps, by.x="transcriptName",by.y="V5" )
 lncRNA_exp <-lncRNA_exp[ ,c("V2","V3","V4","transcriptName","calcTPM","V1")]
 #get exon information from unfiltered bed
