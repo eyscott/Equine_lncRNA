@@ -87,7 +87,6 @@ write.table(known_bed_f4, "known_ncRNA_final.bed", row.names=F, col.names=F, quo
 write.table(all_lncRNA_bed, "lncRNA_final_IDs", row.names=F, col.names=F, quote=F, sep = "\t")
 
 P_lncRNA_bed <- read.table("P_lncRNA.bed", header=F, stringsAsFactors=F,sep = "\t")[-1]
-P_lncRNA_bed <- P_lncRNA_bed[!duplicated(P_lncRNA_bed),]
 names(P_lncRNA_bed) <- names(novel_I_bed_f4)
 lncRNA_bed <- rbind(novel_I_bed_f4,novel_II_bed_f4,novel_III_bed_f4,intergenic_bed_f4,known_bed_f4,P_lncRNA_bed)
 lncRNA_bed <- lncRNA_bed[!duplicated(lncRNA_bed),]
