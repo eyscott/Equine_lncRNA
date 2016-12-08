@@ -41,6 +41,7 @@ dev.off()
 setwd("~/Dropbox/lncRNA/inputs")
 overallExpression <- read.table("dataSummary", header=T, stringsAsFactors=F)
 overallExpression$transcriptName=rownames(overallExpression)
+lncRNA_keeps <- lncRNA_all[keeps]
 lncRNA_exp <- merge(overallExpression, lncRNA_keeps, by.x="transcriptName",by.y="V5" )
 lncRNA_exp <-lncRNA_exp[ ,c("V2","V3","V4","transcriptName","calcTPM","V1")]
 #get exon information from unfiltered bed
