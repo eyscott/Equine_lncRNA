@@ -1,7 +1,7 @@
-#Figure 4: tissue-specific expression of lncRNA
+Figure 4: tissue-specific expression of lncRNA
 #A) lncRNA vs annotated genes
 #Use the mergedTrans.bed without the novel I,II,III
-setwd("~/Desktop/lncRNA")
+setwd("~/Dropbox/lncRNA")
 refined_nolncRNA <- read.table("refined_nolncRNA.bed", header=F, stringsAsFactors=F)
 all <- read.table("lncRNA_final.bed", header=F, stringsAsFactors=F)
 
@@ -16,7 +16,7 @@ rownames(tissue_specific_exp) <- c()
 #combine
 tissue_specific_all_exp <- rbind(tissue_specific_intergenic_exp,tissue_specific_exp)
 refined_nolncRNA_exp <- merge(refined_nolncRNA,tissue_specific_all_exp, by.x="V4",by.y="isoformName")
-refined_nolncRNA_exp <- refined_nolncRNA_exp[ , c("V4","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",  "Retina",	"Skin",	"SpinalCord")] 
+refined_nolncRNA_exp <- refined_nolncRNA_exp[ , c("V4","BrainStem", "Cerebellum",  "Embryo.ICM", "Embryo.TE",  "Muscle",  "Retina",  "Skin",	"SpinalCord")] 
 
 #attach tissue specific expression to our lncRNA
 setwd("~/Desktop/lncRNA")
@@ -134,8 +134,8 @@ pies(
     Retina=nv(c(268470,965790),c('lncRNA','annotated')),
     Skin=nv(c(248121,972834),c('lncRNA','annotated')),
     Spinal_cord=nv(c(454398,834820),c('lncRNA','annotated'))),
-  x0=c(61203,62094,53970,49674,41588,48805,46871,62148),
-  y0=c(10668,10898,9439,8691,6205,7224,7938,10695),
+  x0=c(57892,58829,51222,47204,40102,46528,45107,58897),
+  y0=c(18660,18917,16715,20800,10540,12942,13749,18567),
   radii=4, border=c('purple','purple','black','black','blue','blue','blue','purple'),show.labels=T) # to see labels add ",show.labels=T"
 
 
@@ -180,7 +180,7 @@ hc <- hclust(as.dist(1-cor(datanumbers_smalls, method="spearman")), method="aver
 ## Plot heatmap
 setwd("~/Desktop/lncRNA")
 par(mar=c(7,4,4,2)+0.1) 
-png(filename='heatmap_manual_SEM_lncRNA.png', width=800, height=750)
+png(filename='heatmap_manual_lncRNA.png', width=800, height=750)
 col_breaks <- c(1:10,20,30,40,50,60,70,80,90,100)
 heatmap.2(datanumbers_smalls,    # data matrix
           #cellnote = mat_data,  # same data set for cell labels
