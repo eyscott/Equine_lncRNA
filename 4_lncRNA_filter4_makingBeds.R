@@ -1,6 +1,5 @@
 setwd("~/lncRNA")
 refined_bed <- read.table("inputs/allTissues_BED/refined.bed", header=F, stringsAsFactors=F)
-refined <- refined_bed[ ,c("V1","V2","V3","V4")]
 f3 <- read.table("lncRNA_f3_IDs", header=F, stringsAsFactors=F)[-1]
 #make sure the mergedtrans has none of the novel I,II,III lncRNA
 library(dplyr)
