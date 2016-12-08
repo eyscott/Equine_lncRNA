@@ -280,7 +280,7 @@ novel_I_bed <- anti_join(novel_I_bed_f2,novel_I_P_noDups, by=c("chr","start","st
 novel_II_bed <- anti_join(novel_II_bed_f2,novel_II_P_noDups, by=c("chr","start","stop"))
 novel_III_bed <- anti_join(novel_III_bed_f2,novel_III_P_noDups, by=c("chr","start","stop"))
 intergenic_bed <- anti_join(intergenic_bed_f2,intergenic_P_noDups, by=c("chr","start","stop"))
-known_lncRNA_bed <- anti_join(known_lncRNA_bed_f2,intergenic_P_noDups, by=c("chr","start","stop"))
+known_lncRNA_bed <- anti_join(known_lncRNA_bed_f2,known_lncRNA_P_noDups, by=c("chr","start","stop"))
 
 novel_I_bed[, c("start")] <- sapply(novel_I_bed[, c("start")], as.numeric)
 novel_II_bed[, c("start")] <- sapply(novel_II_bed[, c("start")], as.numeric)
