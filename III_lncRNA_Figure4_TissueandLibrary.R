@@ -5,6 +5,7 @@ setwd("~/lncRNA")
 refined_nolncRNA <- read.table("refined_nolncRNA.bed", header=F, stringsAsFactors=F)
 all <- read.table("lncRNA_final.bed", header=F, stringsAsFactors=F)
 
+library(plyr)
 library(dplyr)
 #join with expression data
 tissue_specific_intergenic_exp <- read.table("inputs/backmapping_stats/intergenic_allTissues_isoformTPM", header=T, stringsAsFactors=F)
@@ -119,8 +120,8 @@ SpinalCord = list(c(cumulative_lncRNA_TPM_SC,cumulative_genes_TPM_SC))
 
 #Pies only including genes and lncRNA
 library(caroline)
-par(lwd = 2.5)
 pdf("Fig4A.pdf")
+par(lwd = 2.5)
 pies(
   list(
     Brainstem=nv(c(634533,752408),c('lncRNA','annotated')),
@@ -137,26 +138,24 @@ pies(
 dev.off()
 
 #B) tissue-specific heatmap
-all_exp <- read.table("lncRNA_exp.txt", header=T, stringsAsFactors=F)
 #Melt data for manipulation
 library(reshape2)
-melted <- melt(all_exp, id.vars=c("V4"))
+melted <- melt(lncRNA_exp, id.vars=c("V4"))
 #Calculate the sum(TPM) and STDEV of each gene per tissue
-library(plyr)
 melted_new<- ddply(melted, c("V4"), summarise,
                    sum = sum(value), sd = sd(value),
                    sem = sd(value)/sqrt(length(value)))
 #Add the column of sum and sd to the original TPM values table
-complete <- merge(all_exp,melted_new,by="V4")
+complete <- merge(lncRNA_exp,melted_new,by="V4")
 #Subset data based on if sum>50 and sd>50
 sub <- subset(complete, c(sum > 100 & sd > 50))
 #make row.names the geneName
 rownames(sub)<-sub$V4
-#rownames(all_exp)<-all_exp$V4
+#rownames(lncRNA_exp)<-lncRNA_exp$V4
 # making the matrix for the heatmap
 #disable scientific notation so no "e+/-"
 options("scipen"=100, "digits"=4)
-#datanumbers <- data.matrix(all_exp[,2:9])
+#datanumbers <- data.matrix(lncRNA_exp[,2:9])
 datanumbers_smalls <- data.matrix(sub[,2:9])
 # creates a own color palette from red to green
 my_palette <- colorRampPalette(c("Blue", "white", "Red"))(n = 18)
@@ -175,7 +174,6 @@ hr <- hclust(as.dist(1-cor(t(datanumbers_smalls), method="pearson")),
 hc <- hclust(as.dist(1-cor(datanumbers_smalls, method="spearman")), method="average")
 
 ## Plot heatmap
-setwd("~/Desktop/lncRNA")
 par(mar=c(7,4,4,2)+0.1) 
 png(filename='heatmap_manual_lncRNA.png', width=800, height=750)
 col_breaks <- c(1:10,20,30,40,50,60,70,80,90,100)
@@ -204,7 +202,6 @@ graphics.off()  # close the PNG device
 hmap_order <- data.frame(datanumbers_smalls[rev(hr$labels[hr$order]), hc$labels[hc$order]])
 rownames(hmap_order) -> hmap_order$V4
 #merge with lncRNA bed
-setwd("~/Dropbox/lncRNA")
 lncRNA_bed <- read.table("lncRNA_final.bed", header=F,stringsAsFactors=FALSE)
 
 ##using a merge function provided by Tal Galili (thank you!) to retain order
@@ -230,24 +227,17 @@ merge.with.order <- function(x,y, ..., sort = T, keep_order)
 }
 #
 hmap_order_coord <- merge.with.order( hmap_order, lncRNA_bed, by='V4', sort=F ,keep_order = 1)
-setwd("~/Desktop/lncRNA")
 write.csv(datanumbers_smalls[rev(hr$labels[hr$order]), hc$labels[hc$order]],"tissue_4_hmap_order.csv")
 write.csv(hmap_order_coord ,"tissue_lncRNA_ordered_coord.csv")
 
 hmap_order_coord <- hmap_order_coord[ ,c(1:10)]
 #elt data so I can use group by
-library(reshape2)
 melted_hmap_order_coord <- melt(hmap_order_coord, id.vars=c("V4","V1"))
 #to find which chromosome is most frequent
 freq_chr2 <- as.table(with(melted_hmap_order_coord,by(V1,variable,function(xx)names(which.max(table(V1))))))
 
 #C) unique vs absent
-setwd("~/Dropbox/lncRNA")
 library(ggplot2)
-library(reshape2)
-library(dplyr)
-library(plyr)
-
 ###plotting figures with varying threshold for absent vs unique lncRNA
 data_0.1<-read.table("tissueSpecificSummary_cutoff.0.1")
 data_changed_0.1 <- cbind(as.data.frame(data_0.1[1:4,]),as.data.frame(data_0.1[5:8,]),as.data.frame(data_0.1[9:12,]),as.data.frame(data_0.1[13:16,]),as.data.frame(data_0.1[17:20,]),as.data.frame(data_0.1[21:24,]),as.data.frame(data_0.1[25:28,]),as.data.frame(data_0.1[29:32,]))   
@@ -255,7 +245,6 @@ data_changed_0.1 <- sapply(data_changed_0.1, as.character)
 colnames(data_changed_0.1) <- data_changed_0.1[1,]
 data_changed_0.1 <- as.data.frame(data_changed_0.1[-1,])
 data_0.1_table <-as.data.frame(t(data_changed_0.1))
-setwd("~/Desktop/lncRNA")
 rownames(data_changed_0.1) <- c("total","unique_lncRNA","not_unique_lncRNA")
 data_changed_0.1 <- data_changed_0.1[c(2,3), ]
 data <-as.data.frame(t(data_changed_0.1))
@@ -268,35 +257,35 @@ U_data_1 <- as.data.frame(data_01$unique_lncRNA)
 rownames(U_data_1) <- rownames(data_01)
 
 # to get cumulative TPM of those expressed
-setwd("~/Dropbox/lncRNA/uniqExp_lncRNA")
-BrainStem <- read.table("BrainStem.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE)
+BrainStem <- read.table("uniqExp_lncRNA/BrainStem.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE)
 BrainStem <- BrainStem[2]
 BrainStem <- sum(BrainStem)
-Cerebellum <- read.table("Cerebellum.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+Cerebellum <- read.table("uniqExp_lncRNA/Cerebellum.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
 Cerebellum <- Cerebellum[3]
 Cerebellum <- sum(Cerebellum)
-Embryo.ICM <- read.table("Embryo.ICM.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+Embryo.ICM <- read.table("uniqExp_lncRNA/Embryo.ICM.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
 Embryo.ICM <- Embryo.ICM[4]
 Embryo.ICM <- sum(Embryo.ICM)
-Embryo.TE <- read.table("Embryo.TE.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+Embryo.TE <- read.table("uniqExp_lncRNA/Embryo.TE.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
 Embryo.TE <- Embryo.TE[5]
 Embryo.TE <- sum(Embryo.TE)
-Muscle <- read.table("Muscle.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+Muscle <- read.table("uniqExp_lncRNA/Muscle.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
 Muscle <- Muscle[6]
 Muscle <- sum(Muscle)
-Retina <- read.table("Retina.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+Retina <- read.table("uniqExp_lncRNA/Retina.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
 Retina <- Retina[7]
 Retina <- sum(Retina)
-Skin <- read.table("Skin.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+Skin <- read.table("uniqExp_lncRNA/Skin.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
 Skin <- Skin[8]
 Skin <- sum(Skin)
-SpinalCord <- read.table("SpinalCord.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
+SpinalCord <- read.table("uniqExp_lncRNA/SpinalCord.isoform.expressed_uniqely_cutoff.0.1",stringsAsFactors=FALSE) 
 SpinalCord <- SpinalCord[9]
 SpinalCord <- sum(SpinalCord)
 sums <- data.frame(c(BrainStem,Cerebellum,Embryo.ICM,Embryo.TE,Muscle,Retina,Skin,SpinalCord))
 row.names(sums) <- c("BrainStem","Cerebellum","Embryo.ICM","Embryo.TE","Muscle","Retina","Skin","SpinalCord")
 names(sums) <- c("sum")
 
+png(filename='Fig4C.png', width=800, height=750)
 ggplot() +
   geom_bar(data=U_data_1, aes(x=rownames(data_01),y=data_01$unique_lncRNA,color="aliceblue"), stat="identity") +
   geom_bar(data=Absent_U_data_0.1, aes(x=rownames(data_01),y=data_01$not_unique_lncRNA,color="red"),stat = "identity") + 
@@ -307,3 +296,4 @@ ggplot() +
   theme(axis.text.x = element_text(colour="black", size = 9)) +
   theme(axis.title = element_text(colour="black", size = 14)) +
   geom_line(data=sums, aes(x=row.names(sums),y=sum / 5, group=1),colour="green")
+graphics.off()
