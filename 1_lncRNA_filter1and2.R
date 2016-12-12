@@ -10,6 +10,11 @@ novel_II <- read.table("inputs/novelAnn/unsup.cons/RNAseqSupTrans.merge.reduced.
 novel_III<- read.table("inputs/novelAnn/unsup.uncons.ORF/RNAseqSupTrans.merge.reduced.ORF_exons.candNovel.unsup.uncons.ORF", header=T, stringsAsFactors=F)
 intergenic<- read.table("inputs/intergenic/unsup.ids", header=F, stringsAsFactors=F)
 
+candidateNonCoding_ids=c(known_ncRNA$transcript.ID,novel_I$transcript.ID,novel_II$transcript.ID,novel_III$transcript.ID,intergenic$V1)
+candidateNonCoding_ids=candidateNonCoding_ids[!duplicated(candidateNonCoding_ids)]
+candidateNonCoding_ids <-data.frame(candidateNonCoding_ids, stringsAsFactors = FALSE)
+write.table(candidateNonCoding_ids, "candidateNonCoding_ids", row.names=F, col.names=F, quote=F)
+
 #attach global gene expression values and length 
 known_ncRNA <- merge(overallExpression, known_ncRNA, by.x="transcriptName",by.y="transcript.ID" )
 novel_I <- merge(overallExpression, novel_I, by.x="transcriptName",by.y="transcript.ID" )

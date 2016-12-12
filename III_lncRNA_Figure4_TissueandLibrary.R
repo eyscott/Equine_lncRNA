@@ -2,7 +2,7 @@
 #A) lncRNA vs annotated genes
 #Use the mergedTrans.bed without the novel I,II,III
 setwd("~/lncRNA")
-refined_nolncRNA <- read.table("refined_nolncRNA.bed", header=F, stringsAsFactors=F)
+refined_nolncRNA <- read.table("refined_codingRNA.bed", header=F, stringsAsFactors=F)
 all <- read.table("lncRNA_final.bed", header=F, stringsAsFactors=F)
 
 library(plyr)
@@ -46,29 +46,23 @@ SC_lncRNA<-subset(SpinalCord,id %in% "lncRNA")
 
 #make a cutoff of 0.1 TPM exp to be considered expressed in tissue
 BS_lncRNA_cut<-subset(BS_lncRNA,BrainStem > 0.1)
-#rownames(BS_lncRNA_cut) <- c()
 cumulative_lncRNA_TPM_BS<-sum(BS_lncRNA_cut[["BrainStem"]])
 C_lncRNA_cut<-subset(C_lncRNA,Cerebellum > 0.1)
-#rownames(C_lncRNA_cut) <- c()
 cumulative_lncRNA_TPM_C<-sum(C_lncRNA_cut[["Cerebellum"]])
 EICM_lncRNA_cut<-subset(EICM_lncRNA,Embryo.ICM > 0.1)#
-#rownames(EICM_lncRNA_cut) <- c()
 cumulative_lncRNA_TPM_EICM<-sum(EICM_lncRNA_cut[["Embryo.ICM"]])
 ETE_lncRNA_cut<-subset(ETE_lncRNA,Embryo.TE > 0.1)
-#rownames(ETE_lncRNA_cut) <- c()
 cumulative_lncRNA_TPM_ETE<-sum(ETE_lncRNA_cut[["Embryo.TE"]])
 M_lncRNA_cut<-subset(M_lncRNA,Muscle > 0.1)
-#rownames(M_lncRNA_cut) <- c()
 cumulative_lncRNA_TPM_M<-sum(M_lncRNA_cut[["Muscle"]])
 R_lncRNA_cut<-subset(R_lncRNA,Retina > 0.1)
-#rownames(R_lncRNA_cut) <- c()
 cumulative_lncRNA_TPM_R<-sum(R_lncRNA_cut[["Retina"]])
 S_lncRNA_cut<-subset(S_lncRNA,Skin > 0.1)
-#rownames(S_lncRNA_cut) <- c()
 cumulative_lncRNA_TPM_S<-sum(S_lncRNA_cut[["Skin"]])
 SC_lncRNA_cut<-subset(SC_lncRNA,SpinalCord > 0.1)
-#rownames(SC_lncRNA_cut) <- c()
 cumulative_lncRNA_TPM_SC<-sum(SC_lncRNA_cut[["SpinalCord"]])
+lncRNA_cut_counts=c(dim(BS_lncRNA_cut)[1], dim(C_lncRNA_cut)[1], dim(EICM_lncRNA_cut)[1], dim(ETE_lncRNA_cut)[1],
+                    dim(M_lncRNA_cut)[1], dim(R_lncRNA_cut)[1], dim(S_lncRNA_cut)[1], dim(SC_lncRNA_cut)[1])
 
 #now do the same for the genes
 #subset PCGs from each tissue
@@ -83,57 +77,53 @@ SC_genes<-subset(SpinalCord,id %in% "annotated")
 
 #make a cutoff of 0.1 TPM exp to be considered expressed in tissue
 BS_genes_cut<-subset(BS_genes,BrainStem > 0.1)
-#rownames(BS_genes_cut) <- c()
 cumulative_genes_TPM_BS<-sum(BS_genes_cut[["BrainStem"]])
 C_genes_cut<-subset(C_genes,Cerebellum > 0.1)
-#rownames(C_genes_cut) <- c()
 cumulative_genes_TPM_C<-sum(C_genes_cut[["Cerebellum"]])
 EICM_genes_cut<-subset(EICM_genes,Embryo.ICM > 0.1)
-#rownames(EICM_genes_cut) <- c()
 cumulative_genes_TPM_EICM<-sum(EICM_genes_cut[["Embryo.ICM"]])
 ETE_genes_cut<-subset(ETE_genes,Embryo.TE > 0.1)
-#rownames(ETE_genes_cut) <- c()
 cumulative_genes_TPM_ETE<-sum(ETE_genes_cut[["Embryo.TE"]])
 M_genes_cut<-subset(M_genes,Muscle > 0.1)
-#rownames(M_genes_cut) <- c()
 cumulative_genes_TPM_M<-sum(M_genes_cut[["Muscle"]])
 R_genes_cut<-subset(R_genes,Retina > 0.1)
-#rownames(R_genes_cut) <- c()
 cumulative_genes_TPM_R<-sum(R_genes_cut[["Retina"]])
 S_genes_cut<-subset(S_genes,Skin > 0.1)
-#rownames(S_genes_cut) <- c()
 cumulative_genes_TPM_S<-sum(S_genes_cut[["Skin"]])
 SC_genes_cut<-subset(SC_genes,SpinalCord > 0.1)
-#rownames(SC_genes_cut) <- c()
 cumulative_genes_TPM_SC<-sum(SC_genes_cut[["SpinalCord"]])
-
-#making lists for pie
-BrainStem = list(c(cumulative_lncRNA_TPM_BS,cumulative_genes_TPM_BS))
-Cerebellum = list(c(cumulative_lncRNA_TPM_C,cumulative_genes_TPM_C))
-Embryo.ICM = list(c(cumulative_lncRNA_TPM_EICM,cumulative_genes_TPM_EICM))
-Embryo.TE = list(c(cumulative_lncRNA_TPM_ETE,cumulative_genes_TPM_ETE))
-Muscle = list(c(cumulative_lncRNA_TPM_M,cumulative_genes_TPM_M))
-Retina = list(c(cumulative_lncRNA_TPM_R,cumulative_genes_TPM_R))
-Skin = list(c(cumulative_lncRNA_TPM_S,cumulative_genes_TPM_S))
-SpinalCord = list(c(cumulative_lncRNA_TPM_SC,cumulative_genes_TPM_SC))
-
+genes_cut_counts=c(dim(BS_genes_cut)[1], dim(C_genes_cut)[1], dim(EICM_genes_cut)[1], dim(ETE_genes_cut)[1],
+                    dim(M_genes_cut)[1], dim(R_genes_cut)[1], dim(S_genes_cut)[1], dim(SC_genes_cut)[1])
 
 #Pies only including genes and lncRNA
 library(caroline)
+BrainStem = nv(c(round(cumulative_lncRNA_TPM_BS),round(cumulative_genes_TPM_BS)),c('lncRNA','annotated'))
+Cerebellum = nv(c(round(cumulative_lncRNA_TPM_C),round(cumulative_genes_TPM_C)),c('lncRNA','annotated'))
+Embryo.ICM = nv(c(round(cumulative_lncRNA_TPM_EICM),round(cumulative_genes_TPM_EICM)),c('lncRNA','annotated'))
+Embryo.TE = nv(c(round(cumulative_lncRNA_TPM_ETE),round(cumulative_genes_TPM_ETE)),c('lncRNA','annotated'))
+Muscle = nv(c(round(cumulative_lncRNA_TPM_M),round(cumulative_genes_TPM_M)),c('lncRNA','annotated'))
+Retina = nv(c(round(cumulative_lncRNA_TPM_R),round(cumulative_genes_TPM_R)),c('lncRNA','annotated'))
+Skin = nv(c(round(cumulative_lncRNA_TPM_S),round(cumulative_genes_TPM_S)),c('lncRNA','annotated'))
+SpinalCord = nv(c(round(cumulative_lncRNA_TPM_SC),round(cumulative_genes_TPM_SC)),c('lncRNA','annotated'))
+
 pdf("Fig4A.pdf")
 par(lwd = 2.5)
+#pies(
+#  list(
+#    Brainstem=nv(c(634533,752408),c('lncRNA','annotated')),
+#    Cerebellum=nv(c(962495,743612),c('lncRNA','annotated')),
+#    Embryo_ICM=nv(c(637339,577346),c('lncRNA','annotated')),
+#    Embryo_TE=nv(c(586020,609540),c('lncRNA','annotated')),
+#    Muscle=nv(c(118968,848670),c('lncRNA','annotated')),
+#    Retina=nv(c(771653,933294),c('lncRNA','annotated')),
+#    Skin=nv(c(466649,941957),c('lncRNA','annotated')),
+#    Spinal_cord=nv(c(779894,792801),c('lncRNA','annotated'))),
+#  x0=c(57892,58829,51222,47204,40102,46528,45107,58897),
+#  y0=c(18660,18917,16715,20800,10540,12942,13749,18567),
+#  radii=4, border=c('purple','purple','black','black','blue','blue','blue','purple'))#,show.labels=T) # to see labels add ",show.labels=T"
 pies(
-  list(
-    Brainstem=nv(c(634533,752408),c('lncRNA','annotated')),
-    Cerebellum=nv(c(962495,743612),c('lncRNA','annotated')),
-    Embryo_ICM=nv(c(637339,577346),c('lncRNA','annotated')),
-    Embryo_TE=nv(c(586020,609540),c('lncRNA','annotated')),
-    Muscle=nv(c(118968,848670),c('lncRNA','annotated')),
-    Retina=nv(c(771653,933294),c('lncRNA','annotated')),
-    Skin=nv(c(466649,941957),c('lncRNA','annotated')),
-    Spinal_cord=nv(c(779894,792801),c('lncRNA','annotated'))),
-  x0=c(57892,58829,51222,47204,40102,46528,45107,58897),
-  y0=c(18660,18917,16715,20800,10540,12942,13749,18567),
+  list(BrainStem, Cerebellum, Embryo.ICM, Embryo.TE, Muscle, Retina, Skin, SpinalCord),
+  x0=genes_cut_counts,y0=lncRNA_cut_counts,
   radii=4, border=c('purple','purple','black','black','blue','blue','blue','purple'))#,show.labels=T) # to see labels add ",show.labels=T"
 dev.off()
 
@@ -174,8 +164,8 @@ hr <- hclust(as.dist(1-cor(t(datanumbers_smalls), method="pearson")),
 hc <- hclust(as.dist(1-cor(datanumbers_smalls, method="spearman")), method="average")
 
 ## Plot heatmap
-par(mar=c(7,4,4,2)+0.1) 
 png(filename='heatmap_manual_lncRNA.png', width=800, height=750)
+par(mar=c(7,4,4,2)+0.1) 
 col_breaks <- c(1:10,20,30,40,50,60,70,80,90,100)
 heatmap.2(datanumbers_smalls,    # data matrix
           #cellnote = mat_data,  # same data set for cell labels
@@ -297,3 +287,4 @@ ggplot() +
   theme(axis.title = element_text(colour="black", size = 14)) +
   geom_line(data=sums, aes(x=row.names(sums),y=sum / 5, group=1),colour="green")
 graphics.off()
+
