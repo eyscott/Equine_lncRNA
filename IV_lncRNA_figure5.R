@@ -21,7 +21,7 @@ library(ggplot2)
 my.cols <- brewer.pal(8, "Set1")
 #for just refined annotated transcripts
 r <- ggplot(refined_melted_new, aes(x=stable)) + geom_density(aes(group=variable,colour=variable)) +
-  xlab("log10(TPM+1)") + scale_colour_manual(values = my.cols) #+ xlim(-1,3)
+  xlab("log10(TPM+1)") + scale_colour_manual(values = my.cols) + xlim(-1,3)
 
 #for our lncRNA
 o <- ggplot(our_lncRNA_melt_new, aes(x=stable)) + geom_density(aes(group=variable,colour=variable)) +
@@ -52,18 +52,18 @@ colours <- factor(refined_points$colour)
 levels(colours) <- list(BrainStem="#377EB8", Cerebellum="#4DAF4A", Embryo.ICM="#984EA3", Embryo.TE="#A65628", Muscle="#E41A1C", Retina="#F781BF", Skin="#FF7F00", SpinalCord="#FFFF33")
 
 #obtaining the TPM that has highest density for each colour (=tissue)
-getmode <- function(v) {
-  v[which.max(v$density),]
-}
-result_refined <- by(refined_points,colours, getmode, simplify=T)
-print(result_refined)
+#getmode <- function(v) {
+#  v[which.max(v$density),]
+#}
+#result_refined <- by(refined_points,colours, getmode, simplify=T)
+#print(result_refined)
 
-result_lncRNA <- by(lncRNA_points,colours, getmode, simplify=T)
-print(result_lncRNA)
+#result_lncRNA <- by(lncRNA_points,colours, getmode, simplify=T)
+#print(result_lncRNA)
 
 #Obtain interval datapoints to make P(detection) curve
 #calculate areas with 0.1 TPM intervals
-getAreas_please <- function(v) {for (i in 1:dim(v)) {
+getAreas_please <- function(v) {for (i in 1:dim(v)[1]) {
   I<-v$x[i]-v$x[i-1]
   A<-v$density*I
 }
@@ -164,6 +164,7 @@ P_detections <- read.table("P_detection_table.txt", header=T, stringsAsFactors=F
 rownames(P_detections)->P_detections$Tissue
 library(RColorBrewer)
 library(ggplot2)
+png(filename='Fig5C.png', width=800, height=750)
 my.cols <- brewer.pal(8, "Set1")
 d <- ggplot(P_detections) +
   geom_point(aes(x=P_refined,y=P_lncRNA,colour=Tissue),size=3) + 
@@ -171,3 +172,5 @@ d <- ggplot(P_detections) +
   xlab("P(detecting mode expression of PCG)") +
   ylab("log10(P(detecting mode expression of lncRNA))") +
   scale_y_log10(breaks = c(0.01,0.02,0.03,0.04,0.05,0.06,0.1,0.2,0.3,0.4,0.5,0.6))
+print(d)
+graphics.off()
