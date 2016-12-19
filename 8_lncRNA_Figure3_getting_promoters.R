@@ -22,6 +22,16 @@ lncRNA_down <- lncRNA_down[with(lncRNA_down, order(V1, V3)), ]
 write.table(lncRNA_promoters, "lncRNA_promoters.bed", row.names=F, col.names=F, quote=F,, sep = "\t")
 write.table(lncRNA_down, "lncRNA_down.bed", row.names=F, col.names=F, quote=F,, sep = "\t")
 
+#getting extended version of lncRNA bed in both directions
+lncRNA_bed_extended <- lncRNA_all_bed[ ,c("V1","up","down","V4","V5","V6","V7","V8","V9","V10","V11","V12")]
+names(lncRNA_bed_extended)[2]<-paste("V2")
+names(lncRNA_bed_extended)[3]<-paste("V3")
+#convert all negative numbers into 0
+lncRNA_bed_extended$V2[lncRNA_bed_extended$V2 < 0] <- 0
+#order chr properly
+lncRNA_bed_extended <- lncRNA_bed_extended[with(lncRNA_bed_extended, order(V1, V2)), ]
+write.table(lncRNA_bed_extended, "lncRNA_bed_extended.bed", row.names=F, col.names=F, quote=F, sep = "\t")
+
 
 ## create bed files of coding transcripts
 candidateNonCoding_ids <- read.table("candidateNonCoding_ids", header=F,stringsAsFactors=F )
