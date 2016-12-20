@@ -65,7 +65,13 @@ ggplot(blast_lncRNA_gene_cumsum_rel, aes(x=cons, y=cum_rel, colour=id, group=id)
   ylab("cumulative frequency") + scale_color_discrete(name="Type of annotation")
 dev.off()
 
-##for promoters and down of lncRNA and genes
+blast_genes_promoter <- read.table("PCT_hg_up.outfmt6")
+blast_genes_down <- read.table("PCT_hg_down.outfmt6")
+blast_lncRNA_promoter <- read.table("lncRNA_hg_up.outfmt6")
+blast_lncRNA_down <- read.table("lncRNA_hg_down.outfmt6")
+blast_lncRNAg <- read.table("lncRNA_hg_genome.outfmt6")
+blast_random <- read.table("random_genome.outfmt6")
+setwd("~/Dropbox/lncRNA")
 blast_genes_promoter <- read.table("genepromoter_human_nt.outfmt6")
 blast_genes_down <- read.table("genedown_human_nt.outfmt6")
 blast_lncRNA_promoter <- read.table("lncRNApromoter_human_nt.outfmt6")
@@ -78,6 +84,7 @@ blast_lncRNA_down_new <- ddply(blast_lncRNA_down, c("V1"), summarise, cons=V3*(V
 blast_genes_promoter_new <- ddply(blast_genes_promoter, c("V1"), summarise, cons=V3*(V4/100))
 blast_genes_down_new <- ddply(blast_genes_down, c("V1"), summarise, cons=V3*(V4/100))
 blast_lncRNAg_new <- ddply(blast_lncRNAg, c("V1"), summarise, cons=V3*(V4/100))
+blast_random_new <- ddply(blast_random, c("V1"), summarise, cons=V3*(V4/100))
 
 blast_lncRNA_promoter_new <- blast_lncRNA_promoter_new[with(blast_lncRNA_promoter_new, order(V1, cons, decreasing = T)), ]
 blast_lncRNA_promoter_new <- blast_lncRNA_promoter_new[!duplicated(blast_lncRNA_promoter_new$V1),]
@@ -94,57 +101,36 @@ blast_genes_down_new <- blast_genes_down_new[!duplicated(blast_genes_down_new$V1
 blast_lncRNAg_new <- blast_lncRNAg_new[with(blast_lncRNAg_new, order(V1, cons, decreasing = T)), ]
 blast_lncRNAg_new <- blast_lncRNAg_new[!duplicated(blast_lncRNAg_new$V1),]
 
+blast_random_new <- blast_random_new[with(blast_random_new, order(V1, cons, decreasing = T)), ]
+blast_random_new <- blast_random_new[!duplicated(blast_random_new$V1),]
+
 blast_lncRNA_promoter_freq <- count(blast_lncRNA_promoter_new,'cons')
 blast_lncRNA_down_freq <- count(blast_lncRNA_down_new,'cons')
 blast_genes_promoter_freq <- count(blast_genes_promoter_new,'cons')
 blast_genes_down_freq <- count(blast_genes_down_new,'cons')
 blast_lncRNAg_freq <- count(blast_lncRNAg_new,'cons')
-
-#blank_count=data.frame(cons=0,freq=0)
-#blast_lncRNA_promoter_freq=rbind(blank_count,blast_lncRNA_promoter_freq)
-#blast_lncRNA_down_freq=rbind(blank_count,blast_lncRNA_down_freq)
-#blast_genes_promoter_freq=rbind(blank_count,blast_genes_promoter_freq)
-#blast_genes_down_freq=rbind(blank_count,blast_genes_down_freq)
+blast_random_freq <- count(blast_random_new,'cons')
 
 blast_lncRNA_promoter_cumsum <- cbind(blast_lncRNA_promoter_freq,cumsum(blast_lncRNA_promoter_freq$freq))
 blast_lncRNA_down_cumsum <- cbind(blast_lncRNA_down_freq,cumsum(blast_lncRNA_down_freq$freq))
 blast_genes_promoter_cumsum <- cbind(blast_genes_promoter_freq,cumsum(blast_genes_promoter_freq$freq))
 blast_genes_down_cumsum <- cbind(blast_genes_down_freq,cumsum(blast_genes_down_freq$freq))
 blast_lncRNAg_cumsum <- cbind(blast_lncRNAg_freq,cumsum(blast_lncRNAg_freq$freq))
+blast_random_cumsum <- cbind(blast_random_freq,cumsum(blast_random_freq$freq))
 
 names(blast_lncRNA_promoter_cumsum)[3] <-"cumsum" 
 names(blast_lncRNA_down_cumsum)[3] <-"cumsum" 
 names(blast_genes_promoter_cumsum)[3] <-"cumsum" 
 names(blast_genes_down_cumsum)[3] <-"cumsum" 
 names(blast_lncRNAg_cumsum)[3] <-"cumsum"
+names(blast_random_cumsum)[3] <-"cumsum"
 
-#divide the cumulative sum by the number of rows in the blast_lncRNA and blast_genes
-#to get cumulative relative freq
-#blast_lncRNA_promoter_cumsum["cum_rel"]<-(blast_lncRNA_promoter_cumsum$cumsum/dim(blast_lncRNA_promoter_new)[1])
-#blast_lncRNA_down_cumsum["cum_rel"]<-(blast_lncRNA_down_cumsum$cumsum/dim(blast_lncRNA_down_new)[1])
-#blast_genes_promoter_cumsum["cum_rel"]<-(blast_genes_promoter_cumsum$cumsum/dim(blast_genes_promoter_new)[1])
-#blast_genes_down_cumsum["cum_rel"]<-(blast_genes_down_cumsum$cumsum/dim(blast_genes_down_new)[1])
-
-#blast_lncRNA_gene_PD_cumsum_rel <- rbind(data.frame(id="lncRNA_promoters",blast_lncRNA_promoter_cumsum),
-#                                         data.frame(id="lncRNA_down",blast_lncRNA_down_cumsum),
-#                                         data.frame(id="gene_promoters",blast_genes_promoter_cumsum),
-#                                         data.frame(id="gene_down",blast_genes_down_cumsum))
-#write.table(blast_lncRNA_gene_PD_cumsum_rel,"blast_lncRNA_gene_PD_cumsum_rel.txt")                                     
-# plot
-#require(ggplot2)
-#pdf("Fig3B.pdf")
-#ggplot(blast_lncRNA_gene_PD_cumsum_rel, aes(x=cons, y=cum_rel, colour=id, group=id)) + 
-#  geom_line(position=position_dodge(width=0.2)) + xlab("Blast %identity* Blast % coverage") + 
-#  geom_line() + xlab("Blast %identity* Blast % coverage") +
-#  ylab("cumulative frequency") + scale_color_discrete(name="Type of annotation")
-#dev.off()
-
-## Re-run using total transcript count (replace line 112 - 129)
 ncPro_count=length(readLines("lncRNA_promoters_uniq.bed"))
 ncDown_count=length(readLines("lncRNA_down_uniq.bed"))
 codPro_count=length(readLines("refined_codingRNA_5_uniq.bed"))
 codDown_count=length(readLines("refined_codingRNA_3_uniq.bed"))
 nc_count=length(readLines("lncRNA_final.bed"))
+random_count=5000
 
 blast_lncRNA_promoter_cumsum[1,2]= blast_lncRNA_promoter_cumsum[1,2] + (ncPro_count - dim(blast_lncRNA_promoter_new)[1])
 blast_lncRNA_promoter_cumsum[,3]= blast_lncRNA_promoter_cumsum[,3] + (ncPro_count - dim(blast_lncRNA_promoter_new)[1])
@@ -156,12 +142,16 @@ blast_genes_down_cumsum[1,2]= blast_genes_down_cumsum[1,2] + (codDown_count - di
 blast_genes_down_cumsum[,3]= blast_genes_down_cumsum[,3] + (codDown_count - dim(blast_genes_down_new)[1])
 blast_lncRNAg_cumsum[1,2]= blast_lncRNAg_cumsum[1,2] + (nc_count - dim(blast_lncRNAg_new)[1])
 blast_lncRNAg_cumsum[,3]= blast_lncRNAg_cumsum[,3] + (nc_count - dim(blast_lncRNAg_new)[1])
+blast_random_cumsum[1,2]= blast_random_cumsum[1,2] + (random_count - dim(blast_random_new)[1])
+blast_random_cumsum[,3]= blast_random_cumsum[,3] + (random_count - dim(blast_random_new)[1])
+
 
 blast_lncRNA_promoter_cumsum["cum_rel"]<-(blast_lncRNA_promoter_cumsum$cumsum/ncPro_count)
 blast_lncRNA_down_cumsum["cum_rel"]<-(blast_lncRNA_down_cumsum$cumsum/ncDown_count)
 blast_genes_promoter_cumsum["cum_rel"]<-(blast_genes_promoter_cumsum$cumsum/codPro_count)
 blast_genes_down_cumsum["cum_rel"]<-(blast_genes_down_cumsum$cumsum/codDown_count)
 blast_lncRNAg_cumsum["cum_rel"]<-(blast_lncRNAg_cumsum$cumsum/nc_count)
+blast_random_cumsum["cum_rel"]<-(blast_random_cumsum$cumsum/random_count)
 
 blast_lncRNA_gene_PD_cumsum_rel <- rbind(data.frame(id="lncRNA_promoters",blast_lncRNA_promoter_cumsum),
                                          data.frame(id="lncRNA_down",blast_lncRNA_down_cumsum),
@@ -173,7 +163,7 @@ write.table(blast_lncRNA_gene_PD_cumsum_rel,"blast_lncRNA_gene_PD_cumsum_rel_v2.
 require(ggplot2)
 pdf("Fig3B_v2.pdf")
 ggplot(blast_lncRNA_gene_PD_cumsum_rel, aes(x=cons, y=cum_rel, colour=id, group=id)) +
-#  geom_line(position=position_dodge(width=0.2)) + xlab("Blast %identity* Blast % coverage") + 
+  #  geom_line(position=position_dodge(width=0.2)) + xlab("Blast %identity* Blast % coverage") + 
   geom_line() + xlab("Blast %identity* Blast % coverage") +
   ylab("cumulative frequency") + scale_color_discrete(name="Type of annotation")
 dev.off()
@@ -182,15 +172,16 @@ blast_lncRNA_gene_PD_cumsum_rel <- rbind(data.frame(id="lncRNA",blast_lncRNAg_cu
                                          data.frame(id="lncRNA_promoters",blast_lncRNA_promoter_cumsum),
                                          data.frame(id="lncRNA_down",blast_lncRNA_down_cumsum),
                                          data.frame(id="gene_promoters",blast_genes_promoter_cumsum),
-                                         data.frame(id="gene_down",blast_genes_down_cumsum))
+                                         data.frame(id="gene_down",blast_genes_down_cumsum),
+                                         data.frame(id="random",blast_random_cumsum))
 
 write.table(blast_lncRNA_gene_PD_cumsum_rel,"blast_lncRNA_gene_PD_cumsum_rel_v3.txt")
 # plot
 require(ggplot2)
 pdf("Fig3B_v3.pdf")
 ggplot(blast_lncRNA_gene_PD_cumsum_rel, aes(x=cons, y=cum_rel, colour=id, group=id)) +
-#  geom_line(position=position_dodge(width=0.2)) + xlab("Blast %identity* Blast % coverage") + 
-  geom_line() + xlab("Blast %identity* Blast % coverage") +
+  #  geom_line(position=position_dodge(width=0.2)) + xlab("Blast %identity* Blast % coverage") + 
+  geom_line(size=1) + xlab("Blast Conservation") +
   ylab("cumulative frequency") + scale_color_discrete(name="Type of annotation")
 dev.off()
 
