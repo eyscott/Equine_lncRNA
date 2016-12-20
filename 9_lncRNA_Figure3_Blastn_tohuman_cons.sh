@@ -47,10 +47,12 @@ makeblastdb -in Homo_sapiens.GRCh38.dna_rm.toplevel.fa -input_type fasta -dbtype
 
 
 #do the same for our promoters
-blastn -query lncRNA_promoters.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 1> lncRNApromoter_human_nt.outfmt6 2> lncRNApromoter_human_nt.err
-blastn -query lncRNA_down.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 1> lncRNAdown_human_nt.outfmt6 2> lncRNAdown_human_nt.err
-blastn -query refined_codingRNA_5.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 1> genepromoter_human_nt.outfmt6 2> genepromoter_human_nt.err
-blastn -query refined_codingRNA_3.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 1> genedown_human_nt.outfmt6 2> genedown_human_nt.err
+blastn -query lncRNA_promoters.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -num_threads 6 1> lncRNApromoter_human_nt.outfmt6 2> lncRNApromoter_human_nt.err
+blastn -query lncRNA_down.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -num_threads 6 1> lncRNAdown_human_nt.outfmt6 2> lncRNAdown_human_nt.err
+blastn -query refined_codingRNA_5.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -num_threads 6 1> genepromoter_human_nt.outfmt6 2> genepromoter_human_nt.err
+blastn -query refined_codingRNA_3.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -num_threads 6 1> genedown_human_nt.outfmt6 2> genedown_human_nt.err
 
-blastn -query lncRNA_final_genome.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -evalue 1e-5 -num_threads 10 1> lncRNA_hg_genome.outfmt6 2> lncRNA_hg_genome.err
+blastn -query lncRNA_final_genome.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -num_threads 6 1> lncRNA_hg_genome.outfmt6 2> lncRNA_hg_genome.err
+
+blastn -query random.fa  -db hg38_genome_db  -max_target_seqs 1 -outfmt "6 qseqid sseqid pident qcovs evalue" -num_threads 6 1> random_genome.outfmt6 2> random_genome.err
 
