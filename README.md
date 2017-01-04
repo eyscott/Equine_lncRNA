@@ -8,5 +8,8 @@ spanning eight tissues and including over fifty individuals.  We employed four l
   4. Isolate transcripts localizing to 3’& 5’ upstream sequences of genes (1 kb) 
   
 All the scripts used to run this pipeline are provided in numerical order in this Github page.  The scripts used to make the figures
-for the publication are also provided in this Github page. 
+for the publication are also provided, ordered using roman numerals, in this Github page. 
+
+The input data originated from the equine transcriptome annotation by Mansour et al (2016). Scripts and data needed for the inputs can be found at 
+[here](https://github.com/drtamermansour/horse_trans) 
 
