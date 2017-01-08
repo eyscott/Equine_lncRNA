@@ -61,8 +61,13 @@ write.table(blast_lncRNA_gene_cumsum_rel, "blast_lncRNA_gene_cumsum_rel_v2.txt")
 require(ggplot2)
 pdf("Fig3A_v2.pdf")
 ggplot(blast_lncRNA_gene_cumsum_rel, aes(x=cons, y=cum_rel, colour=id, group=id)) +
-  geom_line() + xlab("Blast %identity* Blast % coverage") +
-  ylab("cumulative frequency") + scale_color_discrete(name="Type of annotation")
+  geom_line() + ylab("cumulative frequency") + 
+  scale_color_discrete(name="Type of annotation",
+                       labels=c("lncRNA","PCT")) + xlab("Blast measure of conservation") +
+  theme(legend.title = element_text(colour="black", size=14, face="bold")) +
+  theme(legend.text = element_text(colour="black", size = 12)) +
+  theme(axis.text.x = element_text(colour="black", size = 9)) +
+  theme(axis.title = element_text(colour="black", size = 14))
 dev.off()
 
 blast_genes_promoter <- read.table("PCT_hg_up.outfmt6")
