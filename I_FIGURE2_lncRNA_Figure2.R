@@ -56,6 +56,27 @@ ggplot(subset(lncRNA_exp_exons, V10 %in% c(1:10)), aes(V1.x,group=V10,fill=V10))
   theme(axis.text = element_text(colour="black", size = 14)) +
   theme(axis.title = element_text(colour="black", size = 16))
 dev.off()
+#Figure for presentation
+lncRNA_novel <- subset(lncRNA_exp_exons, V1.x %in% c("novel_I", "novel_II", "novel_III"))
+lncRNA_rest <- subset(lncRNA_exp_exons, V1.x %in% c("intergenic","known"))
+lncRNA_novel["V1.x"] <- "novel"
+lncRNA_presentation <- rbind(lncRNA_rest,lncRNA_novel)
+
+library(RColorBrewer)
+my.cols <- brewer.pal(9, "Set1")
+
+ggplot(subset(lncRNA_presentation, V10 %in% c(1:10)), aes(V1.x,group=V10,fill=V10)) + 
+  geom_bar(aes(weight=calcTPM),position="stack") + xlab("Input") + 
+  ylab("Cumulative expression (TPM)") + scale_fill_gradientn(colours=my.cols,
+                                                             breaks=c(1,2,3,4,5,6),
+                                                             labels=c("1","2","3","4","5","6-10")) +
+  scale_x_discrete(labels=c("intergenic","known lncRNA","novel")) +
+  guides(fill=guide_legend(title="Exon number")) +
+  theme(legend.title = element_text(colour="black", size=18, face="bold")) +
+  theme(legend.text = element_text(colour="black", size = 16)) +
+  theme(axis.text = element_text(colour="black", size = 14)) +
+  theme(axis.title = element_text(colour="black", size = 16,face = "bold")) 
+  
 
 
 #Figure 2A: pie charts for overall RNAseq output for novel I,II,II, intergenic
