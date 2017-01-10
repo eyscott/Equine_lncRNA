@@ -277,14 +277,17 @@ names(sums) <- c("sum")
 
 png(filename='Fig4C.png', width=800, height=750)
 ggplot() +
-  geom_bar(data=U_data_1, aes(x=rownames(data_01),y=data_01$unique_lncRNA,color="aliceblue"), stat="identity") +
-  geom_bar(data=Absent_U_data_0.1, aes(x=rownames(data_01),y=data_01$not_unique_lncRNA,color="red"),stat = "identity") + 
-  ylab("Number of lncRNA") + scale_color_discrete(name="Unique lncRNA",
-                                                  labels=c("present","absent")) + xlab("Tissue") +
+  geom_bar(data=U_data_1, aes(x=rownames(data_01),y=data_01$unique_lncRNA,fill="goldenrod2"), stat="identity") +
+  geom_bar(data=Absent_U_data_0.1, aes(x=rownames(data_01),y=data_01$not_unique_lncRNA,fill="midnightblue"),stat = "identity") + 
+  ylab("Number of lncRNA") +
+  scale_fill_manual(values = c("goldenrod2","midnightblue"),
+                    name= "Unique lncRNA",
+                    labels=c("present","absent")) +
+  xlab("Tissue") +
   theme(legend.title = element_text(colour="black", size=14, face="bold")) +
   theme(legend.text = element_text(colour="black", size = 12)) +
-  theme(axis.text.x = element_text(colour="black", size = 9)) +
-  theme(axis.title = element_text(colour="black", size = 14)) +
-  geom_line(data=sums, aes(x=row.names(sums),y=sum / 5, group=1),colour="green")
+  theme(axis.text.x = element_text(colour="black", size = 9, angle=20)) +
+  theme(axis.title = element_text(colour="black", size = 14, face="bold")) +
+  geom_line(data=sums, aes(x=row.names(sums),y=sum / 5, group=1),colour="darkgreen")
 graphics.off()
 
