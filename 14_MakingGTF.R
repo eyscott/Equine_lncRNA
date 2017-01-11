@@ -1,12 +1,12 @@
-##making GTF from BED file
+##making GTF for the whole transcriptome
 setwd("~/Dropbox/lncRNA")
-lncRNA_bed <- read.table("lncRNA_final.bed", header=F, stringsAsFactors=F)
-#make some new columns for GTF
-lncRNA_bed["source"] <- "lncRNA"
-lncRNA_bed["feature"] <- "transcript"
-lncRNA_bed["score"] <- "."
-lncRNA_bed["frame"] <- "."
+lncRNA_gtf <- read.table("lncRNA_new.gtf", header=F, stringsAsFactors=F)
+refined_nolncRNA_gtf  <- read.table("refined_nolncRNA.gtf", header=F, stringsAsFactors=F)
+lncRNA_gtf["V2"] <- "lncRNA"
+refined_nolncRNA_gtf ["V2"] <- "PCT"
 
-# rearrange to make this into a GTF
-lncRNA_gtf <- lncRNA_bed[ ,c("V1","source","feature","V2","V3","source","V6","frame","V4")]
-write.table(lncRNA_gtf, "lncRNA.gtf", row.names=F, col.names=F, quote=F, sep = "\t")
+total_transcriptome <- rbind(lncRNA_gtf,refined_nolncRNA_gtf)
+#order chr properly
+total_transcriptome[, c("V4")] <- sapply(total_transcriptome[, c("V4")], as.numeric)
+total_transcriptome <- total_transcriptome[with(total_transcriptome, order(V1, V4)), ]
+write.table(total_transcriptome, "ecTranscriptome.gtf", row.names=F, col.names=F, quote=F, sep = "\t")
