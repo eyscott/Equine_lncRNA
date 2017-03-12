@@ -1,0 +1,226 @@
+###SUPPLEMENTAL BLASTING
+
+##mouse
+setwd("~/Dropbox/lncRNA_03092017")
+blast_genes_mouse <- read.table("coding_mm38_trans.outfmt6")
+blast_lncRNA_mouse <- read.table("lncRNA_mm38_trans.outfmt6")
+##[3]=%identity,
+
+#make a new column in dataset that is %identity*%coverage
+library(plyr)
+blast_lncRNA_new<- ddply(blast_lncRNA_mouse, c("V1"), summarise,
+                         cons=V3*(V4/100))
+blast_genes_new<- ddply(blast_genes_mouse, c("V1"), summarise,
+                        cons=V3*(V4/100))
+
+blast_lncRNA_new <- blast_lncRNA_new[with(blast_lncRNA_new, order(V1, cons, decreasing = T)), ]
+blast_lncRNA_new <- blast_lncRNA_new[!duplicated(blast_lncRNA_new$V1),]
+
+blast_genes_new <- blast_genes_new[with(blast_genes_new, order(V1, cons, decreasing = T)), ]
+blast_genes_new <- blast_genes_new[!duplicated(blast_genes_new$V1),]
+
+#need to calc or count-freq of each identity*coverage then cumsum(this)=y
+blast_lncRNA_freq <- count(blast_lncRNA_new,'cons')
+blast_genes_freq <- count(blast_genes_new,'cons')
+
+blast_lncRNA_freq_cumsum <- cbind(blast_lncRNA_freq,cumsum(blast_lncRNA_freq$freq))
+blast_genes_freq_cumsum <- cbind(blast_genes_freq,cumsum(blast_genes_freq$freq))
+
+names(blast_lncRNA_freq_cumsum)[3] <-"cumsum" 
+names(blast_genes_freq_cumsum)[3] <-"cumsum"
+#divide the cumulative sum by the number of rows in the blast_lncRNA and blast_genes
+#to get cumulative relative freq
+#blast_lncRNA_freq_cumsum["cum_rel"]<-(blast_lncRNA_freq_cumsum$cumsum/dim(blast_lncRNA_new)[1])
+#blast_genes_freq_cumsum["cum_rel"]<-(blast_genes_freq_cumsum$cumsum/dim(blast_genes_new)[1])
+
+#blast_lncRNA_gene_cumsum_rel <- rbind(data.frame(id="lncRNA",blast_lncRNA_freq_cumsum),
+#                                      data.frame(id="PCG",blast_genes_freq_cumsum))
+#write.table(blast_lncRNA_gene_cumsum_rel, "blast_lncRNA_gene_cumsum_rel.txt")
+# plot
+#require(ggplot2)
+#pdf("Fig3A.pdf")
+#ggplot(blast_lncRNA_gene_cumsum_rel, aes(x=cons, y=cum_rel, colour=id, group=id)) + 
+#  geom_line() + xlab("Blast %identity* Blast % coverage") + 
+#  ylab("cumulative frequency") + scale_color_discrete(name="Type of annotation")
+#dev.off()
+
+## Re-run using total transcript count (replace line 32 - 44)
+setwd("~/Dropbox/lncRNA")
+nc_count=length(readLines("lncRNA_final.bed"))
+cod_count=length(readLines("refined_codingRNA.bed"))
+blast_lncRNA_freq_cumsum[1,2]= blast_lncRNA_freq_cumsum[1,2] + (nc_count - dim(blast_lncRNA_new)[1])
+blast_lncRNA_freq_cumsum[,3]= blast_lncRNA_freq_cumsum[,3] + (nc_count - dim(blast_lncRNA_new)[1])
+blast_genes_freq_cumsum[1,2]= blast_genes_freq_cumsum[1,2] + (cod_count - dim(blast_genes_new)[1]) 
+blast_genes_freq_cumsum[,3]= blast_genes_freq_cumsum[,3] + (cod_count - dim(blast_genes_new)[1])
+
+blast_lncRNA_freq_cumsum["cum_rel"]<-(blast_lncRNA_freq_cumsum$cumsum/nc_count) 
+blast_genes_freq_cumsum["cum_rel"]<-(blast_genes_freq_cumsum$cumsum/cod_count) 
+
+blast_lncRNA_gene_cumsum_rel <- rbind(data.frame(id="lncRNA",blast_lncRNA_freq_cumsum),
+                                      data.frame(id="PCG",blast_genes_freq_cumsum))
+setwd("~/Dropbox/lncRNA_03092017")
+write.table(blast_lncRNA_gene_cumsum_rel, "blast_lncRNA_gene_cumsum_rel_mouse.txt")
+# plot
+require(ggplot2)
+pdf("Fig3_mouse.pdf")
+ggplot(blast_lncRNA_gene_cumsum_rel, aes(x=cons, y=cum_rel, colour=id, group=id)) +
+  geom_line(lwd=2) + ylab("Cumulative frequency") + 
+  scale_color_discrete(name="Type of annotation",
+                       labels=c("lncRNA","Protein coding transcript")) + xlab("Blast conservation") +
+  theme(legend.title = element_text(colour="black", size=16, face="bold")) +
+  theme(legend.text = element_text(colour="black", size = 14)) +
+  theme(axis.text = element_text(colour="black", size = 11)) +
+  theme(axis.title = element_text(colour="black", size = 16, face="bold")) +
+  theme(panel.background = element_rect(colour = "black", size=0.25))
+dev.off()
+
+##COW
+##Cow
+blast_genes_cow <- read.table("coding_bt_trans.outfmt6")
+blast_lncRNA_cow <- read.table("lncRNA_bt_trans.outfmt6")
+##[3]=%identity,
+
+#make a new column in dataset that is %identity*%coverage
+library(plyr)
+blast_lncRNA_new<- ddply(blast_lncRNA_cow, c("V1"), summarise,
+                         cons=V3*(V4/100))
+blast_genes_new<- ddply(blast_genes_cow, c("V1"), summarise,
+                        cons=V3*(V4/100))
+
+blast_lncRNA_new <- blast_lncRNA_new[with(blast_lncRNA_new, order(V1, cons, decreasing = T)), ]
+blast_lncRNA_new <- blast_lncRNA_new[!duplicated(blast_lncRNA_new$V1),]
+
+blast_genes_new <- blast_genes_new[with(blast_genes_new, order(V1, cons, decreasing = T)), ]
+blast_genes_new <- blast_genes_new[!duplicated(blast_genes_new$V1),]
+
+#need to calc or count-freq of each identity*coverage then cumsum(this)=y
+blast_lncRNA_freq <- count(blast_lncRNA_new,'cons')
+blast_genes_freq <- count(blast_genes_new,'cons')
+
+blast_lncRNA_freq_cumsum <- cbind(blast_lncRNA_freq,cumsum(blast_lncRNA_freq$freq))
+blast_genes_freq_cumsum <- cbind(blast_genes_freq,cumsum(blast_genes_freq$freq))
+
+names(blast_lncRNA_freq_cumsum)[3] <-"cumsum" 
+names(blast_genes_freq_cumsum)[3] <-"cumsum"
+#divide the cumulative sum by the number of rows in the blast_lncRNA and blast_genes
+#to get cumulative relative freq
+#blast_lncRNA_freq_cumsum["cum_rel"]<-(blast_lncRNA_freq_cumsum$cumsum/dim(blast_lncRNA_new)[1])
+#blast_genes_freq_cumsum["cum_rel"]<-(blast_genes_freq_cumsum$cumsum/dim(blast_genes_new)[1])
+
+#blast_lncRNA_gene_cumsum_rel <- rbind(data.frame(id="lncRNA",blast_lncRNA_freq_cumsum),
+#                                      data.frame(id="PCG",blast_genes_freq_cumsum))
+#write.table(blast_lncRNA_gene_cumsum_rel, "blast_lncRNA_gene_cumsum_rel.txt")
+# plot
+#require(ggplot2)
+#pdf("Fig3A.pdf")
+#ggplot(blast_lncRNA_gene_cumsum_rel, aes(x=cons, y=cum_rel, colour=id, group=id)) + 
+#  geom_line() + xlab("Blast %identity* Blast % coverage") + 
+#  ylab("cumulative frequency") + scale_color_discrete(name="Type of annotation")
+#dev.off()
+
+## Re-run using total transcript count (replace line 32 - 44)
+setwd("~/Dropbox/lncRNA")
+nc_count=length(readLines("lncRNA_final.bed"))
+cod_count=length(readLines("refined_codingRNA.bed"))
+blast_lncRNA_freq_cumsum[1,2]= blast_lncRNA_freq_cumsum[1,2] + (nc_count - dim(blast_lncRNA_new)[1])
+blast_lncRNA_freq_cumsum[,3]= blast_lncRNA_freq_cumsum[,3] + (nc_count - dim(blast_lncRNA_new)[1])
+blast_genes_freq_cumsum[1,2]= blast_genes_freq_cumsum[1,2] + (cod_count - dim(blast_genes_new)[1]) 
+blast_genes_freq_cumsum[,3]= blast_genes_freq_cumsum[,3] + (cod_count - dim(blast_genes_new)[1])
+
+blast_lncRNA_freq_cumsum["cum_rel"]<-(blast_lncRNA_freq_cumsum$cumsum/nc_count) 
+blast_genes_freq_cumsum["cum_rel"]<-(blast_genes_freq_cumsum$cumsum/cod_count) 
+
+blast_lncRNA_gene_cumsum_rel <- rbind(data.frame(id="lncRNA",blast_lncRNA_freq_cumsum),
+                                      data.frame(id="PCG",blast_genes_freq_cumsum))
+setwd("~/Dropbox/lncRNA_03092017")
+write.table(blast_lncRNA_gene_cumsum_rel, "blast_lncRNA_gene_cumsum_rel_cow.txt")
+# plot
+require(ggplot2)
+pdf("Fig3_cow.pdf")
+ggplot(blast_lncRNA_gene_cumsum_rel, aes(x=cons, y=cum_rel, colour=id, group=id)) +
+  geom_line(lwd=2) + ylab("Cumulative frequency") + 
+  scale_color_discrete(name="Type of annotation",
+                       labels=c("lncRNA","Protein coding transcript")) + xlab("Blast conservation") +
+  theme(legend.title = element_text(colour="black", size=16, face="bold")) +
+  theme(legend.text = element_text(colour="black", size = 14)) +
+  theme(axis.text = element_text(colour="black", size = 11)) +
+  theme(axis.title = element_text(colour="black", size = 16, face="bold")) +
+  theme(panel.background = element_rect(colour = "black", size=0.25))
+dev.off()
+
+
+##PIG
+blast_genes_pig <- read.table("coding_ss10_trans.outfmt6")
+blast_lncRNA_pig <- read.table("lncRNA_ss10_trans.outfmt6")
+##[3]=%identity,
+
+#make a new column in dataset that is %identity*%coverage
+library(plyr)
+blast_lncRNA_new<- ddply(blast_lncRNA_pig, c("V1"), summarise,
+                         cons=V3*(V4/100))
+blast_genes_new<- ddply(blast_genes_pig, c("V1"), summarise,
+                        cons=V3*(V4/100))
+
+blast_lncRNA_new <- blast_lncRNA_new[with(blast_lncRNA_new, order(V1, cons, decreasing = T)), ]
+blast_lncRNA_new <- blast_lncRNA_new[!duplicated(blast_lncRNA_new$V1),]
+
+blast_genes_new <- blast_genes_new[with(blast_genes_new, order(V1, cons, decreasing = T)), ]
+blast_genes_new <- blast_genes_new[!duplicated(blast_genes_new$V1),]
+
+#need to calc or count-freq of each identity*coverage then cumsum(this)=y
+blast_lncRNA_freq <- count(blast_lncRNA_new,'cons')
+blast_genes_freq <- count(blast_genes_new,'cons')
+
+blast_lncRNA_freq_cumsum <- cbind(blast_lncRNA_freq,cumsum(blast_lncRNA_freq$freq))
+blast_genes_freq_cumsum <- cbind(blast_genes_freq,cumsum(blast_genes_freq$freq))
+
+names(blast_lncRNA_freq_cumsum)[3] <-"cumsum" 
+names(blast_genes_freq_cumsum)[3] <-"cumsum"
+#divide the cumulative sum by the number of rows in the blast_lncRNA and blast_genes
+#to get cumulative relative freq
+#blast_lncRNA_freq_cumsum["cum_rel"]<-(blast_lncRNA_freq_cumsum$cumsum/dim(blast_lncRNA_new)[1])
+#blast_genes_freq_cumsum["cum_rel"]<-(blast_genes_freq_cumsum$cumsum/dim(blast_genes_new)[1])
+
+#blast_lncRNA_gene_cumsum_rel <- rbind(data.frame(id="lncRNA",blast_lncRNA_freq_cumsum),
+#                                      data.frame(id="PCG",blast_genes_freq_cumsum))
+#write.table(blast_lncRNA_gene_cumsum_rel, "blast_lncRNA_gene_cumsum_rel.txt")
+# plot
+#require(ggplot2)
+#pdf("Fig3A.pdf")
+#ggplot(blast_lncRNA_gene_cumsum_rel, aes(x=cons, y=cum_rel, colour=id, group=id)) + 
+#  geom_line() + xlab("Blast %identity* Blast % coverage") + 
+#  ylab("cumulative frequency") + scale_color_discrete(name="Type of annotation")
+#dev.off()
+
+## Re-run using total transcript count (replace line 32 - 44)
+setwd("~/Dropbox/lncRNA")
+nc_count=length(readLines("lncRNA_final.bed"))
+cod_count=length(readLines("refined_codingRNA.bed"))
+blast_lncRNA_freq_cumsum[1,2]= blast_lncRNA_freq_cumsum[1,2] + (nc_count - dim(blast_lncRNA_new)[1])
+blast_lncRNA_freq_cumsum[,3]= blast_lncRNA_freq_cumsum[,3] + (nc_count - dim(blast_lncRNA_new)[1])
+blast_genes_freq_cumsum[1,2]= blast_genes_freq_cumsum[1,2] + (cod_count - dim(blast_genes_new)[1]) 
+blast_genes_freq_cumsum[,3]= blast_genes_freq_cumsum[,3] + (cod_count - dim(blast_genes_new)[1])
+
+blast_lncRNA_freq_cumsum["cum_rel"]<-(blast_lncRNA_freq_cumsum$cumsum/nc_count) 
+blast_genes_freq_cumsum["cum_rel"]<-(blast_genes_freq_cumsum$cumsum/cod_count) 
+
+blast_lncRNA_gene_cumsum_rel <- rbind(data.frame(id="lncRNA",blast_lncRNA_freq_cumsum),
+                                      data.frame(id="PCG",blast_genes_freq_cumsum))
+setwd("~/Dropbox/lncRNA_03092017")
+write.table(blast_lncRNA_gene_cumsum_rel, "blast_lncRNA_gene_cumsum_rel_pig.txt")
+# plot
+require(ggplot2)
+pdf("Fig3_mouse.pdf")
+ggplot(blast_lncRNA_gene_cumsum_rel, aes(x=cons, y=cum_rel, colour=id, group=id)) +
+  geom_line(lwd=2) + ylab("Cumulative frequency") + 
+  scale_color_discrete(name="Type of annotation",
+                       labels=c("lncRNA","Protein coding transcript")) + xlab("Blast conservation") +
+  theme(legend.title = element_text(colour="black", size=16, face="bold")) +
+  theme(legend.text = element_text(colour="black", size = 14)) +
+  theme(axis.text = element_text(colour="black", size = 11)) +
+  theme(axis.title = element_text(colour="black", size = 16, face="bold")) +
+  theme(panel.background = element_rect(colour = "black", size=0.25))
+dev.off()
+
+
+
