@@ -1,4 +1,4 @@
-#**Identifying Equine lncRNA from RNA-seq data**#
+**Identifying Equine lncRNA from RNA-seq data**
 
 The horse lacks a multi-tissue lncRNA annotation across several individuals.  We have identified candidate lncRNA from RNA-seq data
 spanning eight tissues and including over fifty individuals.  We employed four levels of filtration to get these candidate lncRNA:
