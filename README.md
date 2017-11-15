@@ -13,7 +13,7 @@ for the publication are also provided, ordered using roman numerals, in this Git
 The input data originated from the equine transcriptome annotation by Mansour et al (2016). Scripts and data needed for the inputs can be found 
 [here](https://github.com/drtamermansour/horse_trans) 
 
-The lncRNA gene transfer format (GTF) file can be downloaded [here] (http://de.cyverse.org/dl/d/EBBAF4AF-7A5D-42F2-AE59-E1FF5A3C460C/lncRNA_new.gtf)
+The lncRNA gene transfer format (GTF) file can be downloaded (http://de.cyverse.org/dl/d/EBBAF4AF-7A5D-42F2-AE59-E1FF5A3C460C/lncRNA_new.gtf)
 
 The lncRNA browser extensible data (BED) file can be downloaded [here] (http://de.cyverse.org/dl/d/7A350F1A-C796-4D0C-B2DF-36AC604BBE11/lncRNA_final.bed)  
 
